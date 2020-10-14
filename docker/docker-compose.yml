@@ -1,0 +1,63 @@
+version: '3'
+services:
+  eureka:
+    build: ../microservice/microservice-eureka-server
+    ports:
+      - "8761:8761"
+      
+  user:
+    build: ../microservice/microservice-user
+    links:
+     - eureka
+
+  security:
+    build: ../microservice/microservice-security
+    links:
+     - eureka
+
+  message:
+    build: ../microservice/microservice-message
+    links:
+     - eureka
+
+  group:
+    build: ../microservice/microservice-group
+    links:
+     - eureka
+     
+  filemanagement:
+    build: ../microservice/microservice-file-management
+    links:
+     - eureka
+
+  filestorage:
+    build: ../microservice/microservice-file-storage
+    links:
+     - eureka
+
+  zuul:
+    build: ../microservice/microservice-zuul-server
+    links:
+     - eureka
+    ports:
+      - "8080:8080"
+
+  turbine:
+    build: ../microservice/microservice-turbine-server
+    links:
+     - eureka
+    ports:
+      - "8989:8989"
+
+  mysql:
+    build: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      
+  adminer:
+    image: adminer
+    ports:
+      - 6060:8080
+
+
+
