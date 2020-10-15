@@ -1,4 +1,3 @@
-- Tăng thời gian timeout của Zuul để không bị lỗi 504 Timeout khi gửi request
-- Kiểm tra lại api: lấy thông tin của user/mod/admin, đã gửi token những vẫn bị lỗi 401 Unauthorized. 
-  "/security/api/test/user"
+- Tăng thời gian timeout của Zuul để không bị lỗi 504 Timeout khi gửi request @done
+- Kiểm tra lại api: lấy thông tin của user/mod/admin, đã gửi token những vẫn bị lỗi 401 Unauthorized. @done
 - Áp dụng Authen từ service security vào các service khác như group/message/filestorage/filemanagement

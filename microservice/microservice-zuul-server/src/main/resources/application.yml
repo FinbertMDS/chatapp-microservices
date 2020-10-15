@@ -7,6 +7,32 @@ eureka:
     statusPageUrlPath: /info
     healthCheckUrlPath: /health    
     
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 40000
+
+ribbon:
+  ConnectTimeout: 10000
+  ReadTimeout: 10000
+
+zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
+  host:
+    connect-timeout-millis: 60000
+    max-per-route-connections: 10000
+    max-total-connections: 5000
+    socket-timeout-millis: 60000
+  ribbon:
+    eager-load:
+        enabled: true
+  semaphore:
+    max-semaphores: 500
+
 logging:
   level:
     ROOT: INFO
