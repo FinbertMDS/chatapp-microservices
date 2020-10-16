@@ -29,11 +29,17 @@ services:
     build: ../microservice/microservice-file-management
     links:
      - eureka
+     - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   filestorage:
     build: ../microservice/microservice-file-storage
     links:
      - eureka
+     - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   zuul:
     build: ../microservice/microservice-zuul-server
@@ -48,6 +54,19 @@ services:
      - eureka
     ports:
       - "8989:8989"
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    links:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "file:5:1"
 
   mysql:
     build: mysql

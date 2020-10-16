@@ -1,5 +1,5 @@
 #!/bin/sh
-services=("file-management" "file-storage" "group" "message" "security" "user")
+services=("file-management" "file-storage" "group" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server")
 
 main() {
   for ARG in $@; do
@@ -28,7 +28,7 @@ buildService() {
   fi
   echo "Rebuilding service $1"
   local serviceName="microservice-$1"
-  ./mvnw -pl $serviceName -am clean package -Dmaven.test.skip=true
+  ./mvnw -am clean package -Dmaven.test.skip=true -pl $serviceName 
 }
 
 buildDocker() {

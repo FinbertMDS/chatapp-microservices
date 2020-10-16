@@ -9,22 +9,30 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+import com.finbertmds.microservice.filestorage.logic.File;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class FileSystemStorageService implements StorageService {
 
 	private final Path rootLocation;
 
+	private KafkaTemplate<String, File> kafkaTemplate;
+
 	@Autowired
-	public FileSystemStorageService(StorageProperties properties) {
+	public FileSystemStorageService(StorageProperties properties, KafkaTemplate<String, File> kafkaTemplate) {
+		super();
 		this.rootLocation = Paths.get(properties.getLocation());
+		this.kafkaTemplate = kafkaTemplate;
 	}
 
 	@Override
@@ -43,12 +51,23 @@ public class FileSystemStorageService implements StorageService {
 			try (InputStream inputStream = file.getInputStream()) {
 				Files.copy(inputStream, this.rootLocation.resolve(filename),
 					StandardCopyOption.REPLACE_EXISTING);
+
+				fireFileUploadedEvent(new File(filename, getFileDownloadUri(filename), file.getContentType(), file.getSize()));
+
 				return filename;
 			}
 		}
 		catch (IOException e) {
 			throw new StorageException("Failed to store file " + filename, e);
 		}
+	}
+
+	private void fireFileUploadedEvent(File file) {
+		kafkaTemplate.send("file", file.getFileName() + "created", file);
+	}
+
+	private String getFileDownloadUri(String fileName) {
+		return ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(fileName).toUriString();
 	}
 
 	@Override
