@@ -4,5 +4,8 @@
 - Implement microservice-file-storage
   - Basic: Upload file, upload multiple files, download file @done
   - Add Authentication
-  - When upload file, send event to service filemanagement to save info to DB
-- Implement microservice-file-management
+  - When upload file, send event to service filemanagement to save info to DB @done
+- Implement microservice-file-management @done
+- Implement microservice-group
+- Implement microservice-message
+  - Add rabbitmq to send notify to client when chat
