@@ -22,8 +22,8 @@ public class FileKafkaListener {
 	}
 
 	@KafkaListener(topics = "file")
-	public void order(File file, Acknowledgment acknowledgment) {
-		log.info("Received file {}", file.getFileName());
+	public void file(File file, Acknowledgment acknowledgment) {
+		log.info("Received file {}", file.getFileId());
 		fileService.generateFile(file);
 		acknowledgment.acknowledge();
 	}

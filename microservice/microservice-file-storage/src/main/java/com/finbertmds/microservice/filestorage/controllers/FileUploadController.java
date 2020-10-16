@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.finbertmds.microservice.filestorage.controllers.storage.StorageFileNotFoundException;
 import com.finbertmds.microservice.filestorage.controllers.storage.StorageService;
+import com.finbertmds.microservice.filestorage.logic.File;
 import com.finbertmds.microservice.filestorage.payload.UploadFileResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -25,13 +27,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 
 @RestController
 public class FileUploadController {
 	private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
 	private final StorageService storageService;
+
+	@Value("${spring.application.name}")
+	private String appName;
 
 	@Autowired
 	public FileUploadController(StorageService storageService) {
@@ -45,12 +50,14 @@ public class FileUploadController {
 
 	@PostMapping("/uploadFile")
 	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-		String fileName = storageService.store(file);
+		File fileObject = storageService.store(file);
 
-		String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(fileName)
-				.toUriString();
+		return new UploadFileResponse(fileObject.getFileName(), getFileDownloadUri(fileObject), file.getContentType(),
+				file.getSize());
+	}
 
-		return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+	private String getFileDownloadUri(File file) {
+		return appName + "/downloadFile/" + file.getFileId() + "/" + file.getFileName();
 	}
 
 	@PostMapping("/uploadMultipleFiles")
@@ -58,10 +65,11 @@ public class FileUploadController {
 		return Arrays.asList(files).stream().map(file -> uploadFile(file)).collect(Collectors.toList());
 	}
 
-	@GetMapping("/downloadFile/{fileName:.+}")
-	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+	@GetMapping("/downloadFile/{fileId:.+}/{fileName:.+}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable String fileId, @PathVariable String fileName,
+			HttpServletRequest request) {
 		// Load file as Resource
-		Resource resource = storageService.loadAsResource(fileName);
+		Resource resource = storageService.loadAsResource(fileId, fileName);
 
 		// Try to determine file's content type
 		String contentType = null;

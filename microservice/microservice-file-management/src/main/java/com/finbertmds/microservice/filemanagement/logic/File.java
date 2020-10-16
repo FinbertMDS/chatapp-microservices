@@ -16,15 +16,19 @@ public class File {
   private String fileId;
   
   private String fileName;
-  private String fileDownloadUri;
+  private String filePath;
   private String fileType;
   private long size;
 
-  public File(String fileId, String fileName, String fileDownloadUri, String fileType, long size) {
+	public File() {
+		super();
+  }
+  
+  public File(String fileId, String fileName, String filePath, String fileType, long size) {
     super();
     this.fileId = fileId;
     this.fileName = fileName;
-    this.fileDownloadUri = fileDownloadUri;
+    this.filePath = filePath;
     this.fileType = fileType;
     this.size = size;
   }
@@ -45,12 +49,12 @@ public class File {
     this.fileName = fileName;
   }
 
-  public String getFileDownloadUri() {
-    return fileDownloadUri;
+  public String getFilePath() {
+    return filePath;
   }
 
-  public void setFileDownloadUri(String fileDownloadUri) {
-    this.fileDownloadUri = fileDownloadUri;
+  public void setFilePath(String filePath) {
+    this.filePath = filePath;
   }
 
   public String getFileType() {

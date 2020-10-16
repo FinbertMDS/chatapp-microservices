@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 import com.finbertmds.microservice.filestorage.logic.File;
+import com.finbertmds.microservice.filestorage.utils.UUIDGenerator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -19,12 +20,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Service
 public class FileSystemStorageService implements StorageService {
 
 	private final Path rootLocation;
+
+	private final String location;
 
 	private KafkaTemplate<String, File> kafkaTemplate;
 
@@ -32,11 +34,12 @@ public class FileSystemStorageService implements StorageService {
 	public FileSystemStorageService(StorageProperties properties, KafkaTemplate<String, File> kafkaTemplate) {
 		super();
 		this.rootLocation = Paths.get(properties.getLocation());
+		this.location = properties.getLocation();
 		this.kafkaTemplate = kafkaTemplate;
 	}
 
 	@Override
-	public String store(MultipartFile file) {
+	public File store(MultipartFile file) {
 		String filename = StringUtils.cleanPath(file.getOriginalFilename());
 		try {
 			if (file.isEmpty()) {
@@ -44,65 +47,58 @@ public class FileSystemStorageService implements StorageService {
 			}
 			if (filename.contains("..")) {
 				// This is a security check
-				throw new StorageException(
-						"Cannot store file with relative path outside current directory "
-								+ filename);
+				throw new StorageException("Cannot store file with relative path outside current directory " + filename);
 			}
+			String fileId = UUIDGenerator.generateType4UUID().toString();
+			Files.createDirectories(this.rootLocation.resolve(fileId));
 			try (InputStream inputStream = file.getInputStream()) {
-				Files.copy(inputStream, this.rootLocation.resolve(filename),
-					StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(inputStream, this.rootLocation.resolve(fileId + "/" + filename),
+						StandardCopyOption.REPLACE_EXISTING);
 
-				fireFileUploadedEvent(new File(filename, getFileDownloadUri(filename), file.getContentType(), file.getSize()));
+				String fileDownloadUri = location + "/" + fileId + "/" + filename;
+				File fileEventObject = new File(fileId, filename, fileDownloadUri, file.getContentType(),
+						file.getSize());
+				fireFileUploadedEvent(fileEventObject);
 
-				return filename;
+				return fileEventObject;
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new StorageException("Failed to store file " + filename, e);
 		}
 	}
 
 	private void fireFileUploadedEvent(File file) {
-		kafkaTemplate.send("file", file.getFileName() + "created", file);
-	}
-
-	private String getFileDownloadUri(String fileName) {
-		return ServletUriComponentsBuilder.fromCurrentContextPath().path("/downloadFile/").path(fileName).toUriString();
+		kafkaTemplate.send("file", file.getFileId() + "created", file);
 	}
 
 	@Override
 	public Stream<Path> loadAll() {
 		try {
-			return Files.walk(this.rootLocation, 1)
-				.filter(path -> !path.equals(this.rootLocation))
-				.map(this.rootLocation::relativize);
-		}
-		catch (IOException e) {
+			return Files.walk(this.rootLocation, 2).filter(path -> !path.equals(this.rootLocation))
+					.map(this.rootLocation::relativize);
+		} catch (IOException e) {
 			throw new StorageException("Failed to read stored files", e);
 		}
 
 	}
 
 	@Override
-	public Path load(String filename) {
-		return rootLocation.resolve(filename);
+	public Path load(String fileId, String filename) {
+		return rootLocation.resolve(fileId + "/" + filename);
 	}
 
 	@Override
-	public Resource loadAsResource(String filename) {
+	public Resource loadAsResource(String fileId, String filename) {
 		try {
-			Path file = load(filename);
+			Path file = load(fileId, filename);
 			Resource resource = new UrlResource(file.toUri());
 			if (resource.exists() || resource.isReadable()) {
 				return resource;
-			}
-			else {
-				throw new StorageFileNotFoundException(
-						"Could not read file: " + filename);
+			} else {
+				throw new StorageFileNotFoundException("Could not read file: " + filename);
 
 			}
-		}
-		catch (MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			throw new StorageFileNotFoundException("Could not read file: " + filename, e);
 		}
 	}
@@ -116,8 +112,7 @@ public class FileSystemStorageService implements StorageService {
 	public void init() {
 		try {
 			Files.createDirectories(rootLocation);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new StorageException("Could not initialize storage", e);
 		}
 	}

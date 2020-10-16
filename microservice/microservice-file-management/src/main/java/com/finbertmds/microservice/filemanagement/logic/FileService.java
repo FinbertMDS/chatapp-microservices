@@ -21,7 +21,11 @@ public class FileService {
 
 	@Transactional
 	public void generateFile(File file) {
-		fileRepository.save(file);
+		if (fileRepository.existsById(file.getFileId())) {
+			log.info("File id {} already exists - ignored", file.getFileId());
+		} else {
+			fileRepository.save(file);
+		}
 	}
 
 }
