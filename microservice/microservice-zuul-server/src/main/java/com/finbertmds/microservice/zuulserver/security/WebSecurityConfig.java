@@ -1,8 +1,8 @@
-package com.finbertmds.microservice.security.security;
+package com.finbertmds.microservice.zuulserver.security;
 
-import com.finbertmds.microservice.security.security.jwt.AuthEntryPointJwt;
-import com.finbertmds.microservice.security.security.jwt.AuthTokenFilter;
-import com.finbertmds.microservice.security.security.services.UserDetailsServiceImpl;
+import com.finbertmds.microservice.zuulserver.security.jwt.AuthEntryPointJwt;
+import com.finbertmds.microservice.zuulserver.security.jwt.AuthTokenFilter;
+import com.finbertmds.microservice.zuulserver.security.services.UserDetailsServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -57,8 +57,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
-			.antMatchers("/api/test/**").permitAll()
+			.authorizeRequests().antMatchers("/security/**").permitAll()
+			.antMatchers("/filestorage/downloadFile/**").permitAll()
+			.antMatchers("/filestorage/uploadFile/**").hasAnyRole("USER")
 			.anyRequest().authenticated();
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

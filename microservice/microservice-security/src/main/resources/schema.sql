@@ -1,4 +1,8 @@
+DROP TABLE IF EXISTS `user_roles`;
 DROP TABLE IF EXISTS `roles`;
+DROP TABLE IF EXISTS `users`;
+
+
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
@@ -6,7 +10,6 @@ CREATE TABLE `roles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `email` varchar(50) DEFAULT NULL,
@@ -18,7 +21,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `user_roles`;
 CREATE TABLE `user_roles` (
   `user_id` bigint(20) NOT NULL,
   `role_id` int(11) NOT NULL,

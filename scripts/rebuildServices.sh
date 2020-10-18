@@ -6,11 +6,17 @@ declare -a servicesWillBeRebuild
 main() {
   printListService
   getInputFromUser
-  buildService
+  read -p "Do you wish to rebuild services? y/n: " ynService
+  read -p "Do you wish to build and start docker? y/n: " ynDocker
+  case $ynService in
+      [Yy]* ) buildService;;
+  esac
   if [[ "$?" -ne 0 ]] ; then
     echo 'Build service has error. Please check your code.'; exit $rc
   fi
-  buildDocker
+  case $ynDocker in
+      [Yy]* ) buildAndStartDocker;;
+  esac
 }
 
 printListService() {
@@ -47,12 +53,13 @@ buildService() {
   eval $executeCommand
 }
 
-buildDocker() {
+buildAndStartDocker() {
   cd ../docker
   local dockerBuildCommand="docker-compose build "
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="${services[$serviceIndex]//-}"
+    serviceName="${serviceName//server}"
     dockerBuildCommand+="$serviceName "
   done
   eval $dockerBuildCommand
