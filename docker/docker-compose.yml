@@ -14,11 +14,14 @@ services:
     build: ../microservice/microservice-security
     links:
      - eureka
+     - mysql
 
   message:
     build: ../microservice/microservice-message
     links:
      - eureka
+     - cassandra-load-keyspace
+     - cassandra
 
   group:
     build: ../microservice/microservice-group
@@ -30,6 +33,7 @@ services:
     links:
      - eureka
      - kafka
+     - mysql
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
@@ -68,6 +72,26 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "file:5:1"
 
+  cassandra:
+    image: cassandra:latest
+    ports:
+      - 9042:9042
+    environment:
+      # - CASSANDRA_USER=user
+      # - CASSANDRA_PASSWORD=pass
+      - MAX_HEAP_SIZE=256M
+      - HEAP_NEWSIZE=128M
+
+  cassandra-load-keyspace:
+    image: cassandra:latest
+    depends_on:
+      - cassandra
+    links:
+      - cassandra
+    volumes:
+      - ./cassandra/initdb/schema.cql:/schema.cql
+    command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
+    
   mysql:
     build: mysql
     environment:
