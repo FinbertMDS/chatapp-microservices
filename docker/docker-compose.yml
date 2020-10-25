@@ -1,67 +1,66 @@
-version: '3'
+version: "3"
 services:
   eureka:
     build: ../microservice/microservice-eureka-server
     ports:
       - "8761:8761"
-      
+
   user:
     build: ../microservice/microservice-user
     links:
-     - eureka
+      - eureka
 
   security:
     build: ../microservice/microservice-security
     links:
-     - eureka
-     - mysql
+      - eureka
+      - mysql
 
   message:
     build: ../microservice/microservice-message
     links:
-     - eureka
-     - cassandra-load-keyspace
-     - cassandra
+      - eureka
+      - cassandra
 
   group:
     build: ../microservice/microservice-group
     links:
-     - eureka
-     
+      - eureka
+
   filemanagement:
     build: ../microservice/microservice-file-management
     links:
-     - eureka
-     - kafka
-     - mysql
+      - eureka
+      - kafka
+      - mysql
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   filestorage:
     build: ../microservice/microservice-file-storage
     links:
-     - eureka
-     - kafka
+      - eureka
+      - kafka
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   zuul:
     build: ../microservice/microservice-zuul-server
     links:
-     - eureka
+      - eureka
     ports:
       - "8080:8080"
 
   turbine:
     build: ../microservice/microservice-turbine-server
     links:
-     - eureka
+      - eureka
     ports:
       - "8989:8989"
 
   zookeeper:
     image: wurstmeister/zookeeper:3.4.6
-    
+
   kafka:
     image: wurstmeister/kafka:2.12-2.5.0
     links:
@@ -74,33 +73,18 @@ services:
 
   cassandra:
     image: cassandra:latest
+    # build: ./cassandra
     ports:
       - 9042:9042
-    environment:
-      # - CASSANDRA_USER=user
-      # - CASSANDRA_PASSWORD=pass
-      - MAX_HEAP_SIZE=256M
-      - HEAP_NEWSIZE=128M
+    # environment:
+    #   CASSANDRA_KEYSPACE: db_messages
 
-  cassandra-load-keyspace:
-    image: cassandra:latest
-    depends_on:
-      - cassandra
-    links:
-      - cassandra
-    volumes:
-      - ./cassandra/initdb/schema.cql:/schema.cql
-    command: /bin/bash -c "sleep 60 && echo loading cassandra keyspace && cqlsh cassandra -f /schema.cql"
-    
   mysql:
     build: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      
+
   adminer:
     image: adminer
     ports:
       - 6060:8080
-
-
-
