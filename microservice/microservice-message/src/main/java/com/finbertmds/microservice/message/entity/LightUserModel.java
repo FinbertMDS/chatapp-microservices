@@ -1,4 +1,4 @@
-package com.finbertmds.microservice.message.model;
+package com.finbertmds.microservice.message.entity;
 
 import java.util.Objects;
 
@@ -6,7 +6,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 
+@UserDefinedType(value = Schema.USER_LOGIN_INFO_UDT)
 public class LightUserModel {
 
     @NotEmpty

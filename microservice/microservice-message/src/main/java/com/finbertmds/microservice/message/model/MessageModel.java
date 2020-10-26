@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.finbertmds.microservice.message.entity.LightUserModel;
 import com.finbertmds.microservice.message.json.JsonDateSerializer;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

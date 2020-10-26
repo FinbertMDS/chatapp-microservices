@@ -7,11 +7,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.datastax.oss.driver.api.core.uuid.Uuids;
-import com.finbertmds.microservice.message.model.LightUserModel;
 import com.finbertmds.microservice.message.model.MessageModel;
 
 import org.springframework.data.cassandra.core.cql.Ordering;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
+import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.Frozen;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
@@ -29,6 +29,7 @@ public class MessageEntity {
     @NotNull
     @Column
     @Frozen
+    @CassandraType(type = CassandraType.Name.UDT, userTypeName = "author")
     private LightUserModel author;
 
     @NotEmpty
@@ -64,23 +65,6 @@ public class MessageEntity {
         model.setCreationDate(new Date(Uuids.unixTimestamp(this.getMessageId())));
         return model;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      *

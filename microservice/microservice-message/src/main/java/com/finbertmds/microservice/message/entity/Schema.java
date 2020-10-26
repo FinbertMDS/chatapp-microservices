@@ -13,6 +13,7 @@ public interface Schema {
     String CHATROOM_MESSAGES = "chat_room_messages";
     String PERSISTENT_TOKEN = "security_tokens";
     String CHATAPP_USER_LOGIN = "user";
+    String USER_LOGIN_INFO_UDT = "user_login_info";
     UserModel CHATAPP_USER = new UserModel(CHATAPP_USER_LOGIN, RandomStringUtils.randomAlphanumeric(10),
             CHATAPP_USER_LOGIN, CHATAPP_USER_LOGIN,
             "Administrative account", "");

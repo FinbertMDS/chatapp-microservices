@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.finbertmds.microservice.message.entity.ChatRoomEntity;
+import com.finbertmds.microservice.message.entity.LightUserModel;
 import com.finbertmds.microservice.message.exceptions.ChatRoomDoesNotExistException;
 import com.finbertmds.microservice.message.model.ChatRoomModel;
-import com.finbertmds.microservice.message.model.LightUserModel;
 import com.google.common.collect.Sets;
 
 import org.springframework.stereotype.Service;
@@ -76,7 +76,8 @@ public class ChatRoomService {
         if (chatRoom == null) {
             throw new ChatRoomDoesNotExistException(format("Chat room '%s' does not exists", roomName));
         }
-        return chatRoom.toModel();
+        return null;
+        // return chatRoom.toModel();
     }
 
     public List<ChatRoomModel> listChatRooms(int fetchSize) {

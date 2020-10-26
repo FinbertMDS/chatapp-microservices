@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.finbertmds.microservice.message.entity.LightUserModel;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserModel extends LightUserModel {

@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.Frozen;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -60,6 +61,7 @@ public class PersistentTokenEntity implements Serializable {
     // TODO: update
     // @EmptyCollectionIfNull
     @Column
+    @CassandraType(type = CassandraType.Name.UDT, userTypeName = "authorities")
     private Set<@Frozen UserAuthority> authorities = new HashSet<>();
 
     public PersistentTokenEntity() {

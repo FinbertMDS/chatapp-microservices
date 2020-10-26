@@ -6,9 +6,7 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
-import com.finbertmds.microservice.message.model.ChatRoomModel;
-import com.finbertmds.microservice.message.model.LightUserModel;
-
+import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.Frozen;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -39,6 +37,7 @@ public class ChatRoomEntity {
     // TODO: update
     // @EmptyCollectionIfNull
     @Column
+    @CassandraType(type = CassandraType.Name.UDT, userTypeName = "participants")
     private Set<@Frozen LightUserModel> participants = new HashSet<>();
 
 
@@ -51,21 +50,9 @@ public class ChatRoomEntity {
         this.participants = participants;
     }
 
-    public ChatRoomModel toModel() {
-        return new ChatRoomModel(roomName, creator, creationDate, banner, participants);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
+    // public ChatRoomModel toModel() {
+    //     return new ChatRoomModel(roomName, creator, creationDate, banner, participants);
+    // }
 
     /**
      *

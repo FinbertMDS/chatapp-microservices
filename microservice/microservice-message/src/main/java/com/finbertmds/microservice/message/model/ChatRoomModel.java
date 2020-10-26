@@ -1,16 +1,18 @@
 package com.finbertmds.microservice.message.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.finbertmds.microservice.message.json.JsonDateSerializer;
-
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.finbertmds.microservice.message.entity.LightUserModel;
+import com.finbertmds.microservice.message.json.JsonDateSerializer;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ChatRoomModel extends LightChatRoomModel{
+public class ChatRoomModel extends LightChatRoomModel {
 
     @NotNull
     @JsonSerialize(using = JsonDateSerializer.class)
@@ -20,7 +22,8 @@ public class ChatRoomModel extends LightChatRoomModel{
 
     private Set<LightUserModel> participants;
 
-    public ChatRoomModel(String roomName, LightUserModel creator, Date creationDate, String banner, Set<LightUserModel> participants) {
+    public ChatRoomModel(String roomName, LightUserModel creator, Date creationDate, String banner,
+            Set<LightUserModel> participants) {
         super(roomName, creator);
         this.creationDate = creationDate;
         this.banner = banner;
@@ -37,7 +40,6 @@ public class ChatRoomModel extends LightChatRoomModel{
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
-
 
     public String getBanner() {
         return banner;
@@ -57,13 +59,14 @@ public class ChatRoomModel extends LightChatRoomModel{
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         ChatRoomModel that = (ChatRoomModel) o;
 
-        return Objects.equals(this.roomName, that.roomName)
-                && Objects.equals(this.creator, that.creator)
+        return Objects.equals(this.roomName, that.roomName) && Objects.equals(this.creator, that.creator)
                 && Objects.equals(this.participants, that.participants);
     }
 

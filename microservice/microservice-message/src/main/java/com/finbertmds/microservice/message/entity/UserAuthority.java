@@ -7,7 +7,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.UserDefinedType;
 import org.springframework.security.core.GrantedAuthority;
 
-@UserDefinedType
+@UserDefinedType(value = Schema.USER_AUTHORITY_UDT)
 @JsonTypeInfo(use= JsonTypeInfo.Id.CLASS, include= JsonTypeInfo.As.PROPERTY, property="@class")
 public class UserAuthority implements GrantedAuthority {
     /**

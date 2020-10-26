@@ -14,9 +14,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.finbertmds.microservice.message.entity.LightUserModel;
 import com.finbertmds.microservice.message.model.ChatRoomModel;
 import com.finbertmds.microservice.message.model.ChatRoomModel.Action;
-import com.finbertmds.microservice.message.model.LightUserModel;
 import com.finbertmds.microservice.message.model.MessageModel;
 import com.finbertmds.microservice.message.resource.model.ChatRoomCreationModel;
 import com.finbertmds.microservice.message.resource.model.ChatRoomDeletionModel;

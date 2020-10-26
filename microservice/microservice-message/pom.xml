@@ -15,6 +15,7 @@
 		<joda-time.version>2.10.7</joda-time.version>
 		<el-api.version>3.0.0</el-api.version>
 		<jackson.version>2.11.3</jackson.version>
+		<cassandra-driver-core.version>2.1.9</cassandra-driver-core.version>
 		<logback.conf.file>${basedir}/src/main/resources/logback.xml</logback.conf.file>
 	</properties>
 
@@ -55,6 +56,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-cassandra</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.datastax.cassandra</groupId>
+			<artifactId>cassandra-driver-core</artifactId>
+			<version>${cassandra-driver-core.version}</version>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>

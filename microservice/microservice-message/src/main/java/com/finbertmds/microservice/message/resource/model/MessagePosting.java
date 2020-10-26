@@ -1,10 +1,10 @@
 package com.finbertmds.microservice.message.resource.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.finbertmds.microservice.message.model.LightUserModel;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.finbertmds.microservice.message.entity.LightUserModel;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MessagePosting {

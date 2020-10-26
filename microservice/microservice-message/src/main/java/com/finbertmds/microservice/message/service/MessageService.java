@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.datastax.oss.driver.api.core.uuid.Uuids;
+import com.finbertmds.microservice.message.entity.LightUserModel;
 import com.finbertmds.microservice.message.entity.MessageEntity;
-import com.finbertmds.microservice.message.model.LightUserModel;
 import com.finbertmds.microservice.message.model.MessageModel;
 
 import org.springframework.stereotype.Service;
