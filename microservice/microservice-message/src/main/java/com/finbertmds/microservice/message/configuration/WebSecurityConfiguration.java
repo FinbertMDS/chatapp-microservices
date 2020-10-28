@@ -33,6 +33,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	        	.and()
 	        .authorizeRequests()
 						.antMatchers("/api/**").permitAll()
+						.antMatchers("/**/health/**").permitAll()
 	        	.antMatchers("/login", "/new-account", "/").permitAll()
 	        	.antMatchers(HttpMethod.POST, "/chatroom").hasRole("ADMIN")
 	        	.anyRequest().authenticated();

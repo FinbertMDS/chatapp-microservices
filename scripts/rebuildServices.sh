@@ -1,5 +1,7 @@
 #!/bin/sh
 services=("file-management" "file-storage" "group" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server")
+servicesNeedWaitWhenStart=("filemanagement" "filestorage" "group" "message" "security" "user")
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 declare -a servicesWillBeRebuild
 
@@ -9,13 +11,13 @@ main() {
   read -p "Do you wish to rebuild services? y/n: " ynService
   read -p "Do you wish to build and start docker? y/n: " ynDocker
   case $ynService in
-      [Yy]* ) buildService;;
+    [Yy]* ) buildService;;
   esac
   if [[ "$?" -ne 0 ]] ; then
     echo 'Build service has error. Please check your code.'; exit $rc
   fi
   case $ynDocker in
-      [Yy]* ) buildAndStartDocker;;
+    [Yy]* ) buildAndStartDocker;;
   esac
 }
 
@@ -33,13 +35,6 @@ getInputFromUser() {
   do
     servicesWillBeRebuild+=($i)
   done
-}
-
-containsElement() {
-  local e match="$1"
-  shift
-  for e; do [[ "$e" == "$match" ]] && return 0; done
-  return 1
 }
 
 buildService() {
@@ -66,10 +61,18 @@ buildAndStartDocker() {
   done
   eval $dockerBuildCommand
   
-  docker-compose up -d --build cassandra redis rabbitmq mysql
-  docker-compose up -d --build eureka zuul turbine
-  sleep 15
+  docker-compose up -d cassandra redis rabbitmq mysql
+  docker-compose up -d eureka zuul turbine
   eval $dockerUpCommand
+
+  for index in "${!servicesWillBeRebuild[@]}"; do
+    local serviceIndex="${servicesWillBeRebuild[$index]}"
+    local serviceName="${services[$serviceIndex]//-}"
+    serviceName="${serviceName//server}"
+    if [[ " ${servicesNeedWaitWhenStart[@]} " =~ " ${serviceName} " ]]; then
+      $DIR/wait-for-services.sh $serviceName
+    fi
+  done
 }
 
 main $@

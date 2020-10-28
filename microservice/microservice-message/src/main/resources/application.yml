@@ -1,8 +1,7 @@
-ebook:
-  chat:
-    relay:
-      host: rabbitmq
-      port: 61613
+chatapp:
+  relay:
+    host: rabbitmq
+    port: 61613
 eureka:
   client:
     serviceUrl:
