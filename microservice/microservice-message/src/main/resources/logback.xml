@@ -5,21 +5,6 @@
         </encoder>
     </appender>
 
-    <logger name="ACHILLES_DDL_SCRIPT" level="DEBUG" additivity="false">
-        <appender-ref ref="STDOUT" />
-    </logger>
-
-    <logger name="ACHILLES_DML_STATEMENT" level="DEBUG" additivity="false">
-        <appender-ref ref="STDOUT" />
-    </logger>
-    <logger name="info.archinnov.achilles.embedded" level="INFO" additivity="false">
-        <appender-ref ref="STDOUT" />
-    </logger>
-
-    <logger name="info.archinnov.achilles" level="WARN" additivity="false">
-        <appender-ref ref="STDOUT" />
-    </logger>
-
     <logger name="org.apache.cassandra.cql3.QueryProcessor" level="OFF" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>

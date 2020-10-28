@@ -56,14 +56,20 @@ buildService() {
 buildAndStartDocker() {
   cd ../docker
   local dockerBuildCommand="docker-compose build "
+  local dockerUpCommand="docker-compose up -d "
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="${services[$serviceIndex]//-}"
     serviceName="${serviceName//server}"
     dockerBuildCommand+="$serviceName "
+    dockerUpCommand+="$serviceName "
   done
   eval $dockerBuildCommand
-  docker-compose up -d
+  
+  docker-compose up -d --build cassandra redis rabbitmq mysql
+  docker-compose up -d --build eureka zuul turbine
+  sleep 15
+  eval $dockerUpCommand
 }
 
 main $@

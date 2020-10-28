@@ -18,9 +18,14 @@ services:
 
   message:
     build: ../microservice/microservice-message
+    ports:
+      - "8079:8080"
     links:
       - eureka
       - cassandra
+      - redis
+      - rabbitmq
+      - mysql
 
   group:
     build: ../microservice/microservice-group
@@ -71,13 +76,31 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "file:5:1"
 
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    links:
+      - redis
+    environment:
+      - REDIS_HOSTS=redis
+    ports:
+      - "7070:8081"
+
   cassandra:
-    image: cassandra:latest
-    # build: ./cassandra
+    image: "cassandra:3.0"
     ports:
       - 9042:9042
-    # environment:
-    #   CASSANDRA_KEYSPACE: db_messages
+
+  rabbitmq:
+    build: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
 
   mysql:
     build: mysql
