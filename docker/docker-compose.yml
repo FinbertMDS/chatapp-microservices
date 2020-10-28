@@ -77,7 +77,7 @@ services:
       KAFKA_CREATE_TOPICS: "file:5:1"
 
   redis:
-    image: redis
+    image: redis:3.0.6
     ports:
       - "6379:6379"
 

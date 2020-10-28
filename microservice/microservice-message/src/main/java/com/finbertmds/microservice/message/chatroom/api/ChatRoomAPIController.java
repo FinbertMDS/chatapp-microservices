@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -84,26 +85,24 @@ public class ChatRoomAPIController {
 
 	@PutMapping(value = "/participant/{chatRoomId}")
 	@ResponseBody
-	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<ChatRoom> addUserToChatRoom(@PathVariable @NotEmpty String chatRoomId,
 			@RequestBody String participant) {
 		try {
 			ChatRoomUser joiningUser = new ChatRoomUser(participant);
 			ChatRoom _chatRoom = chatRoomService.join(joiningUser, chatRoomService.findById(chatRoomId));
-			return new ResponseEntity<>(_chatRoom, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(_chatRoom, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	@RequestMapping(value = "/participant/{chatRoomId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PatchMapping(value = "/participant/{chatRoomId}")
 	public ResponseEntity<ChatRoom> removeUserFromChatRoom(@PathVariable @NotEmpty String chatRoomId,
 			@RequestBody String participant) {
 		try {
 			ChatRoomUser leavingUser = new ChatRoomUser(participant);
 			ChatRoom _chatRoom = chatRoomService.leave(leavingUser, chatRoomService.findById(chatRoomId));
-			return new ResponseEntity<>(_chatRoom, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(_chatRoom, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
