@@ -32,6 +32,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	        	.logoutSuccessUrl("/")
 	        	.and()
 	        .authorizeRequests()
+						.antMatchers("/api/**").permitAll()
 	        	.antMatchers("/login", "/new-account", "/").permitAll()
 	        	.antMatchers(HttpMethod.POST, "/chatroom").hasRole("ADMIN")
 	        	.anyRequest().authenticated();
