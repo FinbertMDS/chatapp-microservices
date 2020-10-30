@@ -1,5 +1,5 @@
 #!/bin/sh
-services=("file-management" "file-storage" "group" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server")
+services=("file-management" "file-storage" "group" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server" "chatapp")
 servicesNeedWaitWhenStart=("filemanagement" "filestorage" "group" "message" "security" "user", "zuul")
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 

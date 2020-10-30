@@ -1,7 +1,9 @@
 package com.finbertmds.microservice.message.authentication.domain.service;
 
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.finbertmds.microservice.message.authentication.domain.model.ERole;
 import com.finbertmds.microservice.message.authentication.domain.model.Role;
 import com.finbertmds.microservice.message.authentication.domain.model.User;
 import com.finbertmds.microservice.message.authentication.domain.repository.RoleRepository;
@@ -14,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DefaultUserService implements UserService {
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private RoleRepository roleRepository;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -28,8 +30,11 @@ public class DefaultUserService implements UserService {
 	@Transactional
 	public User createUser(User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		Role userRole = roleRepository.findByName("ROLE_USER");
-		user.addRoles(Arrays.asList(userRole));
+		Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+				.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+		Set<Role> roles = new HashSet<>();
+		roles.add(userRole);
+		user.setRoles(roles);
 		return userRepository.save(user);
 	}
 }

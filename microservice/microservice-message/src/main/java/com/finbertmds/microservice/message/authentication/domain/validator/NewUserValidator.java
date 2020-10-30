@@ -22,7 +22,7 @@ public class NewUserValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		User newUser = (User) target;
-		if (userRepository.exists(newUser.getUsername())) {
+		if (userRepository.findByUsername(newUser.getUsername()).isPresent()) {
 			errors.rejectValue("username", "new.account.username.already.exists");
 		}
 	}

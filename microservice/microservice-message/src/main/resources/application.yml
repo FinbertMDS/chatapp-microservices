@@ -38,15 +38,13 @@ spring:
     refresh:
       refreshable: none
   datasource:
-    url: jdbc:mysql://mysql:3306/db_messages?useSSL=false
+    url: jdbc:mysql://mysql/db_security?useSSL=false
     username: root
     password: root
-    testWhileIdle: true
-    validationQuery: SELECT 1
+    initialization-mode: always
   jpa:
-    show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     properties:
       hibernate:
@@ -69,6 +67,5 @@ spring:
     host: redis
     port: 6379
 
-flyway.enabled: true    
 security.headers.cache: false 
 server.session.timeout: 600
