@@ -7,4 +7,13 @@
 - Implement microservice-file-management @done
 - Implement microservice-group
 - Implement microservice-message
-  - Add rabbitmq to send notify to client when chat
+  - Add rabbitmq to send notify to client when chat @done
+  - Update use security from microservice-security
+- Add client ui use react
+  - SignIn @done
+  - SignUp: add message alert success / failure @done
+  - Side bar: Improve api to get last message in rooms
+  - Chat: 
+    - post message @done
+    - scroll then load more message (need add api), default load 20 message first
+    - attach file to send message
