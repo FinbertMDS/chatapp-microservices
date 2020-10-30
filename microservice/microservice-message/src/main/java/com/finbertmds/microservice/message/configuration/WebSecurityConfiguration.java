@@ -1,6 +1,5 @@
 package com.finbertmds.microservice.message.configuration;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,37 +14,40 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-	
-    @Autowired
-    private UserDetailsService userDetailsService;
-	
+
+	@Autowired
+	private UserDetailsService userDetailsService;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-        http
-	        .csrf().disable()
-	        .formLogin()
-	        	.loginProcessingUrl("/login")
-	        	.loginPage("/")
-	        	.defaultSuccessUrl("/chat")
-	        	.and()
-	        .logout()
-	        	.logoutSuccessUrl("/")
-	        	.and()
-	        .authorizeRequests()
-						.antMatchers("/api/**").permitAll()
-						.antMatchers("/**/health/**").permitAll()
-	        	.antMatchers("/login", "/new-account", "/").permitAll()
-	        	.antMatchers(HttpMethod.POST, "/chatroom").hasRole("ADMIN")
-	        	.anyRequest().authenticated();
+		// @formatter:off
+		http
+			.csrf().disable()
+			.formLogin()
+				.loginProcessingUrl("/login")
+				.loginPage("/")
+				.defaultSuccessUrl("/chat")
+				.and()
+			.logout()
+				.logoutSuccessUrl("/")
+				.and()
+			.authorizeRequests()
+				.antMatchers("/api/**").permitAll()
+				.antMatchers("/**/ws/**").permitAll()
+				.antMatchers("/**/health/**").permitAll()
+				.antMatchers("/login", "/new-account", "/").permitAll()
+				.antMatchers(HttpMethod.POST, "/chatroom").hasRole("ADMIN")
+				.anyRequest().permitAll();
+		// @formatter:on
 	}
-	
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
-    
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+	}
+
+	@Bean
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }

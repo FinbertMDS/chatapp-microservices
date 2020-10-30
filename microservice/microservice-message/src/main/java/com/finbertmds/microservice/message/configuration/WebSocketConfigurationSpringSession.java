@@ -12,7 +12,8 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 @Configuration
 @EnableScheduling
 @EnableWebSocketMessageBroker
-public class WebSocketConfigurationSpringSession extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
+public class WebSocketConfigurationSpringSession
+		extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
 
 	@Value("${chatapp.relay.host}")
 	private String relayHost;
@@ -21,15 +22,12 @@ public class WebSocketConfigurationSpringSession extends AbstractSessionWebSocke
 	private Integer relayPort;
 
 	protected void configureStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws").withSockJS();
+		registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
 	}
 
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.enableStompBrokerRelay("/queue/", "/topic/")
-			.setUserDestinationBroadcast("/topic/unresolved.user.dest")
-			.setUserRegistryBroadcast("/topic/registry.broadcast")
-			.setRelayHost(relayHost)
-			.setRelayPort(relayPort);
+		registry.enableStompBrokerRelay("/queue/", "/topic/").setUserDestinationBroadcast("/topic/unresolved.user.dest")
+				.setUserRegistryBroadcast("/topic/registry.broadcast").setRelayHost(relayHost).setRelayPort(relayPort);
 
 		registry.setApplicationDestinationPrefixes("/chatroom");
 	}

@@ -44,6 +44,7 @@ public class ChatAPIController {
     instantMessage.setFromUser(messagePosting.getFromUser());
     instantMessage.setChatRoomId(chatRoomId);
     instantMessage.setText(messagePosting.getText());
+    instantMessage.setIsNotification(false);
     if (instantMessage.isPublic()) {
       chatRoomService.sendPublicMessage(instantMessage);
     } else {

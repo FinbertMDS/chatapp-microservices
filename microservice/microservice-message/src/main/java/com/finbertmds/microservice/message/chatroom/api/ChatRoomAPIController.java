@@ -86,11 +86,14 @@ public class ChatRoomAPIController {
 	@PutMapping(value = "/participant/{chatRoomId}")
 	@ResponseBody
 	public ResponseEntity<ChatRoom> addUserToChatRoom(@PathVariable @NotEmpty String chatRoomId,
-			@RequestBody String participant) {
+			@RequestBody ChatRoomUser participant) {
 		try {
-			ChatRoomUser joiningUser = new ChatRoomUser(participant);
-			ChatRoom _chatRoom = chatRoomService.join(joiningUser, chatRoomService.findById(chatRoomId));
-			return new ResponseEntity<>(_chatRoom, HttpStatus.OK);
+			ChatRoom chatRoom = chatRoomService.findById(chatRoomId);
+			if (!chatRoom.getConnectedUsers().stream().filter(o -> o.getUsername().equals(participant.getUsername()))
+					.findFirst().isPresent()) {
+				chatRoom = chatRoomService.join(participant, chatRoom);
+			}
+			return new ResponseEntity<>(chatRoom, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -98,10 +101,9 @@ public class ChatRoomAPIController {
 
 	@PatchMapping(value = "/participant/{chatRoomId}")
 	public ResponseEntity<ChatRoom> removeUserFromChatRoom(@PathVariable @NotEmpty String chatRoomId,
-			@RequestBody String participant) {
+			@RequestBody ChatRoomUser participant) {
 		try {
-			ChatRoomUser leavingUser = new ChatRoomUser(participant);
-			ChatRoom _chatRoom = chatRoomService.leave(leavingUser, chatRoomService.findById(chatRoomId));
+			ChatRoom _chatRoom = chatRoomService.leave(participant, chatRoomService.findById(chatRoomId));
 			return new ResponseEntity<>(_chatRoom, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

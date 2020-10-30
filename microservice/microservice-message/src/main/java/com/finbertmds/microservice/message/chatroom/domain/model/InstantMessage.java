@@ -27,9 +27,11 @@ public class InstantMessage {
 	private String fromUser;
 	private String toUser;
 	private String text;
+	private boolean isNotification;
 	
 	public InstantMessage() { 
 		this.date = new Date();
+		this.isNotification = false;
 	}
 	
 	public boolean isPublic() {
@@ -73,6 +75,18 @@ public class InstantMessage {
 	}
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public boolean isIsNotification() {
+		return this.isNotification;
+	}
+
+	public boolean getIsNotification() {
+		return this.isNotification;
+	}
+
+	public void setIsNotification(boolean isNotification) {
+		this.isNotification = isNotification;
 	}
 
 	@Override
@@ -120,6 +134,11 @@ public class InstantMessage {
 			if (other.username != null)
 				return false;
 		} else if (!username.equals(other.username))
+			return false;
+		if (isNotification == false) {
+			if (other.isNotification != false)
+				return false;
+		} else if (isNotification != other.isNotification)
 			return false;
 		return true;
 	}
