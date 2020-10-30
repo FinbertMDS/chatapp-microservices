@@ -18,7 +18,8 @@ function Notification() {
       return;
     }
     dispatch({
-      type: actionTypes.CLEAR_NOTIFICATION
+      type: actionTypes.SET_NOTIFICATION,
+      notification: null
     });
     setOpen(false);
   };

@@ -8,8 +8,7 @@ import './SidebarChat.css';
 function SidebarChat({ addNewChat, id, name }) {
   const [seed, setSeed] = useState('');
   const [messages, /* setMessages */] = useState('')
-  // eslint-disable-next-line
-  const [{ /* user */ },] = useStateValue();
+  const [{ currentRoomId /* user */ },] = useStateValue();
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
@@ -38,7 +37,7 @@ function SidebarChat({ addNewChat, id, name }) {
   }
   return !addNewChat ? (
     <Link to={`/rooms/${id}`}>
-      <div className='sidebarChat'>
+      <div className={`sidebarChat ${id === currentRoomId && "current"}`}>
         <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
         <div className='sidebarChat__info'>
           <h2>{name}</h2>

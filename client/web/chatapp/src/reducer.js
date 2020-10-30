@@ -1,12 +1,13 @@
 export const initialState = {
 	user: null,
 	notification: null,
+	currentRoomId: null,
 }
 
 export const actionTypes = {
 	SET_USER: "SET_USER",
 	SET_NOTIFICATION: "SET_NOTIFICATION",
-	CLEAR_NOTIFICATION: "CLEAR_NOTIFICATION",
+	SET_CURRENT_ROOM_ID: "SET_CURRENT_ROOM_ID",
 }
 
 const reducer = (state, action) => {
@@ -21,10 +22,10 @@ const reducer = (state, action) => {
 				...state,
 				notification: action.notification
 			}
-		case actionTypes.CLEAR_NOTIFICATION:
+		case actionTypes.SET_CURRENT_ROOM_ID:
 			return {
 				...state,
-				notification: null
+				currentRoomId: action.currentRoomId
 			}
 		default:
 			return state;

@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import SockJsClient from "react-stomp";
 import ChatRoomAPI from '../apis/ChatRoomAPI';
 import MessageAPI from '../apis/MessageAPI';
+import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
 import './Chat.css';
 
@@ -18,7 +19,7 @@ function Chat() {
   const { roomId } = useParams();
   const [roomName, setRoomName] = useState('');
   const [messages, setMessages] = useState([]);
-  const [{ user },] = useStateValue();
+  const [{ user }, dispatch] = useStateValue();
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
@@ -48,6 +49,20 @@ function Chat() {
         .catch(error => alert(error.message));
     };
   }, [roomId, user.username]);
+
+  useEffect(() => {
+    dispatch({
+      type: actionTypes.SET_CURRENT_ROOM_ID,
+      currentRoomId: roomId
+    });
+    return () => {
+      dispatch({
+        type: actionTypes.SET_CURRENT_ROOM_ID,
+        currentRoomId: null
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId]);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -91,7 +106,7 @@ function Chat() {
     return () => {
       window.removeEventListener('beforeunload', onbeforeunloadFn);
     }
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // const handleDisconnect = () => {
