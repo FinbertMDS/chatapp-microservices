@@ -1,6 +1,6 @@
 #!/bin/sh
 services=("file-management" "file-storage" "group" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server")
-servicesNeedWaitWhenStart=("filemanagement" "filestorage" "group" "message" "security" "user")
+servicesNeedWaitWhenStart=("filemanagement" "filestorage" "group" "message" "security" "user", "zuul")
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 declare -a servicesWillBeRebuild
@@ -61,7 +61,7 @@ buildAndStartDocker() {
   done
   eval $dockerBuildCommand
   
-  docker-compose up -d cassandra redis rabbitmq mysql
+  docker-compose up -d mysql
   docker-compose up -d eureka zuul turbine
   eval $dockerUpCommand
 
