@@ -21,7 +21,7 @@ ribbon:
   ReadTimeout: 10000
 
 zuul:
-  sensitiveHeaders: Cookie,Set-Cookie
+  sensitiveHeaders: 
   host:
     connect-timeout-millis: 60000
     max-per-route-connections: 10000
