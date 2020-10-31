@@ -2,9 +2,9 @@ package com.finbertmds.microservice.message.authentication.api;
 
 import javax.validation.Valid;
 
-import com.finbertmds.microservice.message.authentication.domain.model.User;
-import com.finbertmds.microservice.message.authentication.domain.service.UserService;
-import com.finbertmds.microservice.message.authentication.domain.validator.NewUserValidator;
+import com.finbertmds.microservice.message.security.model.User;
+import com.finbertmds.microservice.message.security.services.UserService;
+import com.finbertmds.microservice.message.security.validator.NewUserValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

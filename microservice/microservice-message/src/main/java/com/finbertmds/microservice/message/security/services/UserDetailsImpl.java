@@ -1,4 +1,4 @@
-package com.finbertmds.microservice.message.authentication.domain.service;
+package com.finbertmds.microservice.message.security.services;
 
 import java.util.Collection;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.finbertmds.microservice.message.authentication.domain.model.User;
+import com.finbertmds.microservice.message.security.model.User;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

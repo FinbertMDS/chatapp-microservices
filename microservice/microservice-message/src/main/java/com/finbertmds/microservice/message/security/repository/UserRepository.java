@@ -1,8 +1,8 @@
-package com.finbertmds.microservice.message.authentication.domain.repository;
+package com.finbertmds.microservice.message.security.repository;
 
 import java.util.Optional;
 
-import com.finbertmds.microservice.message.authentication.domain.model.User;
+import com.finbertmds.microservice.message.security.model.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

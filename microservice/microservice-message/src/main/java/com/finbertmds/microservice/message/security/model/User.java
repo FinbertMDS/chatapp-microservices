@@ -1,4 +1,4 @@
-package com.finbertmds.microservice.message.authentication.domain.model;
+package com.finbertmds.microservice.message.security.model;
 
 import java.util.HashSet;
 import java.util.Set;

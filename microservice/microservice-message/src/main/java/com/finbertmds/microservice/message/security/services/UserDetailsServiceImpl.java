@@ -1,7 +1,7 @@
-package com.finbertmds.microservice.message.authentication.domain.service;
+package com.finbertmds.microservice.message.security.services;
 
-import com.finbertmds.microservice.message.authentication.domain.model.User;
-import com.finbertmds.microservice.message.authentication.domain.repository.UserRepository;
+import com.finbertmds.microservice.message.security.model.User;
+import com.finbertmds.microservice.message.security.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

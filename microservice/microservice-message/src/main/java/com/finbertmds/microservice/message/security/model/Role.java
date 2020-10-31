@@ -1,4 +1,4 @@
-package com.finbertmds.microservice.message.authentication.domain.model;
+package com.finbertmds.microservice.message.security.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

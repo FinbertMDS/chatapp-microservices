@@ -2,6 +2,10 @@ chatapp:
   relay:
     host: rabbitmq
     port: 61613
+finbertmds:
+  app:
+    jwtExpirationMs: 86400000
+    jwtSecret: finbertmdsSecretKey    
 eureka:
   client:
     serviceUrl:

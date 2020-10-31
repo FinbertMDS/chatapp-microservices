@@ -1,13 +1,13 @@
-package com.finbertmds.microservice.message.authentication.domain.service;
+package com.finbertmds.microservice.message.security.services;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.finbertmds.microservice.message.authentication.domain.model.ERole;
-import com.finbertmds.microservice.message.authentication.domain.model.Role;
-import com.finbertmds.microservice.message.authentication.domain.model.User;
-import com.finbertmds.microservice.message.authentication.domain.repository.RoleRepository;
-import com.finbertmds.microservice.message.authentication.domain.repository.UserRepository;
+import com.finbertmds.microservice.message.security.model.ERole;
+import com.finbertmds.microservice.message.security.model.Role;
+import com.finbertmds.microservice.message.security.model.User;
+import com.finbertmds.microservice.message.security.repository.RoleRepository;
+import com.finbertmds.microservice.message.security.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
