@@ -19,3 +19,5 @@
     - attach file to send message
   - Security API with Token @done
   - Add docker @done
+- Add client mobile app use react-native
+- Add logback to all services

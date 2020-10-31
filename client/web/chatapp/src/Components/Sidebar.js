@@ -4,7 +4,7 @@ import DonutLargeIcon from '@material-ui/icons/DonutLarge';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import ChatRoomAPI from '../apis/ChatRoomAPI';
 import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
@@ -78,9 +78,12 @@ function Sidebar() {
     setIsOpenMoreButton(false);
   };
 
+  const history = useHistory();
+
   const handleLogout = () => {
     setIsOpenMoreButton(false);
     localStorage.removeItem("userInfo");
+    history.push("/");
     dispatch({
       type: actionTypes.SET_USER,
       user: null

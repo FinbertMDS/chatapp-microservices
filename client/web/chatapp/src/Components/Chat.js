@@ -82,8 +82,8 @@ function Chat() {
   }
   useEffect(scrollToBottom, [messages]);
 
-  const wsSourceUrl = process.env.REACT_APP_SOCKET_BASE_URL
-  const publicMessageTopicStr = "/topic/" + roomId + ".public.messages"
+  const publicTopicStr = MessageAPI.getPublicMessageTopicUrl(roomId);
+  // const privateTopicStr = MessageAPI.getPrivateMessageTopicUrl(roomId);
   const [/* clientRef */, setClientRef] = useState(null);
   const [/* clientConnected */, setClientConnected] = useState(false);
   const onMessageReceive = (msg, topic) => {
@@ -177,12 +177,22 @@ function Chat() {
           <MicIcon />
         </IconButton>
       </div>
-      <SockJsClient url={wsSourceUrl} topics={[publicMessageTopicStr]}
+      <SockJsClient
+        url={MessageAPI.wsSourceUrl}
+        topics={[publicTopicStr]}
         header={{ "chatRoomId": roomId }}
         onMessage={onMessageReceive} ref={(client) => { setClientRef(client) }}
         onConnect={() => { setClientConnected(true) }}
         onDisconnect={() => { setClientConnected(false) }}
         debug={false} />
+      {/* <SockJsClient
+        url={MessageAPI.wsSourceUrl}
+        topics={[privateTopicStr]}
+        header={{ "chatRoomId": roomId }}
+        onMessage={onMessageReceive} ref={(client) => { setClientRef(client) }}
+        onConnect={() => { setClientConnected(true) }}
+        onDisconnect={() => { setClientConnected(false) }}
+        debug={false} /> */}
     </div>
   )
 }

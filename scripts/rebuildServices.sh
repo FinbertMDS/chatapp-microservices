@@ -29,7 +29,7 @@ printListService() {
 }
 
 getInputFromUser() {
-  echo "Choice service that you want to rebuild, default will rebuild all service."
+  echo "Choice service that you want to rebuild, default do not rebuild any services."
   read -p "Enter service index (that will be rebuild) separated by 'space' : " input
   for i in ${input[@]}
   do
@@ -40,12 +40,21 @@ getInputFromUser() {
 buildService() {
   cd ../microservice
   local executeCommand="./mvnw -am clean package -Dmaven.test.skip=true "
+  local needBuildServiceJava=0
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="microservice-${services[$serviceIndex]}"
-    executeCommand+="-pl $serviceName "
+    if [[ "${serviceName}" != "chatapp" ]]; then
+      needBuildServiceJava=1
+      executeCommand+="-pl $serviceName "
+    else
+      cd $DIR/../client/web/chatapp && yarn build
+      cd $DIR/../microservice
+    fi
   done
-  eval $executeCommand
+  if [[ "${needBuildServiceJava}" = "1" ]]; then
+    eval $executeCommand
+  fi
 }
 
 buildAndStartDocker() {

@@ -108,17 +108,17 @@ function SignIn() {
     SecurityAPI.signIn(signInData)
       .then(result => {
         AsyncLocalStorage.setItem("userInfo", JSON.stringify(result))
-          .then(
+          .then(() => {
+            let loginMessage = {"message": "User login successfully!"}
+            dispatch({
+              type: actionTypes.SET_NOTIFICATION,
+              notification: loginMessage
+            });
             dispatch({
               type: actionTypes.SET_USER,
               user: result
-            })
-          );
-        let loginMessage = {"message": "User login successfully!"}
-        dispatch({
-          type: actionTypes.SET_NOTIFICATION,
-          notification: loginMessage
-        });
+            });
+          });
       })
       .catch(error => {
         dispatch({
