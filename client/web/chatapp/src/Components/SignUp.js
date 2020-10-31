@@ -38,8 +38,8 @@ function SignUp(props) {
   const [{ }, dispatch] = useStateValue();
 
   const [state, setState] = useState({
-    username: "user",
-    email: "user@gmail.com",
+    username: "user123",
+    email: "user123@gmail.com",
     password: "user123",
   });
 

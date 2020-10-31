@@ -17,5 +17,5 @@
     - post message @done
     - scroll then load more message (need add api), default load 20 message first
     - attach file to send message
-  - Security API with Token
+  - Security API with Token @done
   - Add docker @done

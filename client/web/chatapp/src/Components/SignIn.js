@@ -2,10 +2,8 @@ import { Modal } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import React, { useState } from 'react';
 import SecurityAPI from '../apis/SecurityAPI';
+import AsyncLocalStorage from '../helpers/AsyncLocalStorage';
 import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
 import SignUp from "./SignUp";
@@ -93,32 +92,28 @@ function SignIn() {
 
   const [state, setState] = useState({
     username: "user123",
-    password: "user123",
-    rememberMe: true
+    password: "user123"
   });
 
   const handleChange = event => {
-    if (event.target.name === "rememberMe") {
-      setState({ ...state, [event.target.name]: event.target.checked });
-    } else {
-      setState({ ...state, [event.target.name]: event.target.value });
-    }
+    setState({ ...state, [event.target.name]: event.target.value });
   };
 
-  const signIn = () => {
+  const signIn = (event) => {
+    event.preventDefault();
     const signInData = {
       "username": state.username,
       "password": state.password
     };
     SecurityAPI.signIn(signInData)
       .then(result => {
-        if (state.rememberMe) {
-          localStorage.setItem("userInfo", JSON.stringify(result));
-        }
-        dispatch({
-          type: actionTypes.SET_USER,
-          user: result
-        });
+        AsyncLocalStorage.setItem("userInfo", JSON.stringify(result))
+          .then(
+            dispatch({
+              type: actionTypes.SET_USER,
+              user: result
+            })
+          );
         let loginMessage = {"message": "User login successfully!"}
         dispatch({
           type: actionTypes.SET_NOTIFICATION,
@@ -143,7 +138,7 @@ function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={signIn}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -170,15 +165,8 @@ function SignIn() {
             onChange={handleChange}
             autoComplete="current-password"
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            checked={state.rememberMe}
-            name="rememberMe"
-            onChange={handleChange}
-            label="Remember me"
-          />
           <Button
-            // type="submit"
+            type="submit"
             onClick={signIn}
             fullWidth
             variant="contained"
