@@ -17,9 +17,13 @@ const getAuthToken = () => {
   return null;
 };
 
-let authToken = getAuthToken();
-if (authToken) {
-  instance.defaults.headers.common['Authorization'] = authToken;
+export const addAuthTokenToHeader = () => {
+  let authToken = getAuthToken();
+  if (authToken) {
+    instance.defaults.headers.common['Authorization'] = authToken;
+  }
 }
+
+addAuthTokenToHeader();
 
 export default instance;

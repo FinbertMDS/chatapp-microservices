@@ -1,4 +1,4 @@
-import axios from "./axios";
+import axios, { addAuthTokenToHeader } from "./axios";
 
 const getAllUrl = "./message/api/chatroom";
 const createRoomUrl = "./message/api/chatroom";
@@ -8,6 +8,7 @@ const removeUserFromChatRoomUrl = "./message/api/chatroom/participant";
 
 const ChatRoomAPI = {
   getAll: function () {
+    addAuthTokenToHeader();
     return axios.get(getAllUrl)
       .then(response => response.data);
   },
