@@ -44,7 +44,7 @@ buildService() {
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="microservice-${services[$serviceIndex]}"
-    if [[ "${serviceName}" != "chatapp" ]]; then
+    if [[ ${serviceName} != *"chatapp"* ]]; then
       needBuildServiceJava=1
       executeCommand+="-pl $serviceName "
     else
