@@ -1,7 +1,8 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { Fontisto, Ionicons } from 'react-native-vector-icons';
+import Fontisto from "react-native-vector-icons/Fontisto";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ChatsScreen from '../Screens/ChatsScreen';
@@ -12,7 +13,7 @@ const MainTab = createMaterialTopTabNavigator();
 
 export default function MainTabNavigator() {
   const colorScheme = useColorScheme();
-
+Fontisto.getF
   return (
     <MainTab.Navigator
       initialRouteName="Chats"

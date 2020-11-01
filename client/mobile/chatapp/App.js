@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StatusBar, useColorScheme } from "react-native";
-import { Provider as PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Theme from "./src/CustomProperties/Theme";
 import useCachedResources from "./src/hooks/useCachedResources";
 import Navigation from "./src/navigation";
 
@@ -46,12 +44,10 @@ function App() {
   }, [])
 
   return (
-    <PaperProvider theme={Theme}>
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
-    </PaperProvider>
+    <SafeAreaProvider>
+      <Navigation colorScheme={colorScheme} />
+      <StatusBar />
+    </SafeAreaProvider>
   );
 }
 

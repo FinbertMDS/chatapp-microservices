@@ -5,6 +5,7 @@ import { FlatList, StyleSheet } from 'react-native';
 import ContactListItem from '../Components/ContactListItem';
 import { View } from '../Components/Themed';
 // import { listUsers } from '../src/graphql/queries';
+import usersData from '../data/Users';
 
 
 export default function ContactsScreen() {
@@ -25,6 +26,7 @@ export default function ContactsScreen() {
     //   }
     // }
     // fetchUsers();
+    setUsers(usersData);
   }, [])
 
   return (

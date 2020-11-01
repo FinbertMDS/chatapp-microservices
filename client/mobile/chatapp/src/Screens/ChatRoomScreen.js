@@ -11,6 +11,8 @@ import InputBox from "../Components/InputBox";
 // } from 'aws-amplify';
 // import { messagesByChatRoom } from '../src/graphql/queries';
 // import { onCreateMessage } from '../src/graphql/subscriptions';
+import chatsData from '../data/Chats';
+import usersData from '../data/Users';
 
 const ChatRoomScreen = () => {
 
@@ -31,6 +33,7 @@ const ChatRoomScreen = () => {
 
     console.log("FETCH MESSAGES")
     // setMessages(messagesData.data.messagesByChatRoom.items);
+    setMessages(chatsData);
   }
 
   useEffect(() => {
@@ -41,6 +44,7 @@ const ChatRoomScreen = () => {
     const getMyId = async () => {
       // const userInfo = await Auth.currentAuthenticatedUser();
       // setMyId(userInfo.attributes.sub);
+      setMyId(usersData[0].id);
     }
     getMyId();
   }, [])

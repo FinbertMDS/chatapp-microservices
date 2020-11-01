@@ -2,10 +2,10 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { View } from 'react-native';
-import {
-  FontAwesome5, MaterialCommunityIcons,
-  MaterialIcons, Octicons
-} from 'react-native-vector-icons';
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Octicons from "react-native-vector-icons/Octicons";
 import Colors from "../constants/Colors";
 import ChatRoomScreen from '../Screens/ChatRoomScreen';
 import ContactsScreen from "../Screens/ContactsScreen";

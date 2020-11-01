@@ -4,6 +4,7 @@ import { FlatList, StyleSheet } from 'react-native';
 import ChatListItem from '../Components/ChatListItem';
 import NewMessageButton from "../Components/NewMessageButton";
 import { View } from '../Components/Themed';
+import chatRoomsData from '../data/ChatRooms';
 
 
 export default function ChatsScreen() {
@@ -11,6 +12,7 @@ export default function ChatsScreen() {
   const [chatRooms, setChatRooms] = useState([]);
 
   useEffect(() => {
+    setChatRooms(chatRoomsData)
     // const fetchChatRooms = async () => {
     //   try {
     //     const userInfo = await Auth.currentAuthenticatedUser();

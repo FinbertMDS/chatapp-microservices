@@ -9,11 +9,11 @@
 // } from '../../src/graphql/mutations';
 import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View } from "react-native";
-import {
-  Entypo, FontAwesome5,
-  Fontisto, MaterialCommunityIcons,
-  MaterialIcons
-} from 'react-native-vector-icons';
+import Entypo from "react-native-vector-icons/Entypo";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import Fontisto from "react-native-vector-icons/Fontisto";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import styles from './styles';
 
 
