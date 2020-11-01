@@ -1,5 +1,7 @@
 package com.finbertmds.microservice.security.security;
 
+import java.util.Arrays;
+
 import com.finbertmds.microservice.security.security.jwt.AuthEntryPointJwt;
 import com.finbertmds.microservice.security.security.jwt.AuthTokenFilter;
 import com.finbertmds.microservice.security.security.services.UserDetailsServiceImpl;
@@ -17,6 +19,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -55,14 +60,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		// @formatter:off
-		http.csrf().disable()
+		http
+			.cors().and()
+			.csrf().disable()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
 			.antMatchers("/**/actuator/**").permitAll()
-			.antMatchers("/api/test/**").permitAll()
+			.antMatchers("/api/test/**").authenticated()
 			.anyRequest().authenticated();
 		// @formatter:on	
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+	}
+
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS"));
+		configuration.addAllowedHeader("*");
+		configuration.addAllowedOrigin("*");
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 }

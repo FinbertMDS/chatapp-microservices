@@ -59,8 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests()
 			.antMatchers("/**/actuator/**").permitAll()
-			.antMatchers("/security/**").permitAll()
-			.antMatchers("/message/**").permitAll()
 			.antMatchers("/filestorage/downloadFile/**").permitAll()
 			.antMatchers("/filestorage/uploadFile/**").hasAnyRole("USER")
 			.anyRequest().permitAll();

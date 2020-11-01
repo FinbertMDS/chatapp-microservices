@@ -1,5 +1,7 @@
 package com.finbertmds.microservice.message.security;
 
+import java.util.Arrays;
+
 import com.finbertmds.microservice.message.security.jwt.AuthEntryPointJwt;
 import com.finbertmds.microservice.message.security.jwt.AuthTokenFilter;
 
@@ -17,6 +19,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -52,16 +57,27 @@ public class WebSecurityConfig {
 		protected void configure(HttpSecurity http) throws Exception {
 			// @formatter:off
 			http
+				.cors().and()
 				.csrf().disable()
 				.antMatcher("/api/**")
 				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeRequests()
-					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 					.antMatchers("/api/**").hasAnyRole("USER")
 					.anyRequest().authenticated();
 			// @formatter:on
 			http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+		}
+
+		@Bean
+		CorsConfigurationSource corsConfigurationSource() {
+			CorsConfiguration configuration = new CorsConfiguration();
+			configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS"));
+			configuration.addAllowedHeader("*");
+			configuration.addAllowedOrigin("*");
+			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+			source.registerCorsConfiguration("/**", configuration);
+			return source;
 		}
 	}
 
@@ -86,6 +102,7 @@ public class WebSecurityConfig {
 		protected void configure(HttpSecurity http) throws Exception {
 			// @formatter:off
 			http
+				// .cors().and()
 				.csrf().disable()
 				.formLogin()
 					.loginProcessingUrl("/login")
@@ -97,55 +114,25 @@ public class WebSecurityConfig {
 					.and()
 				.authorizeRequests()
 					.antMatchers("/webjars/**").permitAll()
-					.antMatchers("/**/ws/**").permitAll()
+					.antMatchers("/ws/**").permitAll()
+					.antMatchers("/topic/**").permitAll()
+					.antMatchers("/user/queue/**").permitAll()
 					.antMatchers("/**/health/**").permitAll()
 					.antMatchers("/login", "/new-account", "/").permitAll()
 					.antMatchers(HttpMethod.POST, "/chatroom").hasRole("ADMIN")
 					.anyRequest().authenticated();
 			// @formatter:on
 		}
+
+		// @Bean
+		// CorsConfigurationSource corsConfigurationSource() {
+		// 	CorsConfiguration configuration = new CorsConfiguration();
+		// 	configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS"));
+		// 	configuration.addAllowedHeader("*");
+		// 	configuration.addAllowedOrigin("*");
+		// 	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		// 	source.registerCorsConfiguration("/**", configuration);
+		// 	return source;
+		// }
 	}
-	// @Override
-	// protected void configure(HttpSecurity http) throws Exception {
-	// 	// @formatter:off
-	// 	http
-	// 		.csrf().disable()
-	// 		.formLogin()
-	// 			.loginProcessingUrl("/login")
-	// 			.loginPage("/")
-	// 			.defaultSuccessUrl("/chat")
-	// 			.and()
-	// 		.logout()
-	// 			.logoutSuccessUrl("/")
-	// 			.and()
-	// 		.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-	// 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-	// 		.authorizeRequests()
-	// 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-	// 			.antMatchers("/api/**").hasAnyRole("USER")
-	// 			.antMatchers("/**/ws/**").permitAll()
-	// 			.antMatchers("/**/health/**").permitAll()
-	// 			.antMatchers("/login", "/new-account", "/").permitAll()
-	// 			.antMatchers(HttpMethod.POST, "/chatroom").hasRole("ADMIN")
-	// 			.anyRequest().authenticated();
-	// 	// @formatter:on
-	// http.addFilterBefore(authenticationJwtTokenFilter(),
-	// UsernamePasswordAuthenticationFilter.class);
-	// }
-
-	// @Bean
-	// @Override
-	// public AuthenticationManager authenticationManagerBean() throws Exception {
-	// return super.authenticationManagerBean();
-	// }
-
-	// @Autowired
-	// public void configure(AuthenticationManagerBuilder auth) throws Exception {
-	// auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-	// }
-
-	// @Bean
-	// public BCryptPasswordEncoder bCryptPasswordEncoder() {
-	// return new BCryptPasswordEncoder();
-	// }
 }
