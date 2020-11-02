@@ -7,9 +7,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 import Colors from "../constants/Colors";
-import ChatRoomScreen from '../Screens/ChatRoomScreen';
-import ContactsScreen from "../Screens/ContactsScreen";
-import NotFoundScreen from '../Screens/NotFoundScreen';
+import StackScreenName from '../constants/StackScreenName';
+import ChatRoomScreen from '../screens/ChatRoomScreen';
+import ContactsScreen from "../screens/ContactsScreen";
+import NotFoundScreen from '../screens/NotFoundScreen';
+import SignInScreen from '../screens/SignInScreen';
+import SignUpScreen from '../screens/SignUpScreen';
 import LinkingConfiguration from './LinkingConfiguration';
 import MainTabNavigator from './MainTabNavigator';
 
@@ -45,7 +48,15 @@ function RootNavigator() {
       }
     }}>
       <Stack.Screen
-        name="Root"
+        name={StackScreenName.SignIn}
+        component={SignInScreen}
+      />
+      <Stack.Screen
+        name={StackScreenName.SignUp}
+        component={SignUpScreen}
+      />
+      <Stack.Screen
+        name={StackScreenName.Root}
         component={MainTabNavigator}
         options={{
           title: "WhatsApp",
@@ -63,9 +74,9 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen
-        name="ChatRoom"
+        name={StackScreenName.ChatRoom}
         component={ChatRoomScreen}
-        options={({ route })  => ({
+        options={({ route }) => ({
           title: route.params.name,
           headerRight: () => (
             <View style={{
@@ -82,7 +93,7 @@ function RootNavigator() {
         })}
       />
       <Stack.Screen
-        name="Contacts"
+        name={StackScreenName.Contacts}
         component={ContactsScreen}
       />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />

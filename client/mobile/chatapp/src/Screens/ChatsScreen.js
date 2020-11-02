@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from 'react-native';
-import ChatListItem from '../Components/ChatListItem';
-import NewMessageButton from "../Components/NewMessageButton";
-import { View } from '../Components/Themed';
+import ChatListItem from '../components/ChatListItem';
+import NewMessageButton from "../components/NewMessageButton";
+import { View } from '../components/Themed';
 import chatRoomsData from '../data/ChatRooms';
 
 

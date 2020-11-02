@@ -1,8 +1,12 @@
 import React, { useEffect } from "react";
 import { StatusBar, useColorScheme } from "react-native";
+import { Provider as PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import reducer, { initialState } from "./reducer";
+import { theme } from "./src/core/theme";
 import useCachedResources from "./src/hooks/useCachedResources";
 import Navigation from "./src/navigation";
+import { StateProvider } from "./StateProvider";
 
 function App() {
   const isLoadingComplete = useCachedResources();
@@ -45,8 +49,12 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <Navigation colorScheme={colorScheme} />
-      <StatusBar />
+      <StateProvider initialState={initialState} reducer={reducer}>
+        <PaperProvider theme={theme}>
+          <Navigation colorScheme={colorScheme} />
+          <StatusBar />
+        </PaperProvider>
+      </StateProvider>
     </SafeAreaProvider>
   );
 }

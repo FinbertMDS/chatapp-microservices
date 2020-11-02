@@ -2,8 +2,8 @@ import { useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, ImageBackground } from 'react-native';
 import BG from '../assets/images/BG.png';
-import ChatMessage from "../Components/ChatMessage";
-import InputBox from "../Components/InputBox";
+import ChatMessage from "../components/ChatMessage";
+import InputBox from "../components/InputBox";
 // import {
 //   API,
 //   graphqlOperation,

@@ -2,8 +2,8 @@
 import * as React from 'react';
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from 'react-native';
-import ContactListItem from '../Components/ContactListItem';
-import { View } from '../Components/Themed';
+import ContactListItem from '../components/ContactListItem';
+import { View } from '../components/Themed';
 // import { listUsers } from '../src/graphql/queries';
 import usersData from '../data/Users';
 

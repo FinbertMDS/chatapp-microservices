@@ -5,8 +5,8 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import ChatsScreen from '../Screens/ChatsScreen';
-import TabTwoScreen from '../Screens/TabTwoScreen';
+import ChatsScreen from '../screens/ChatsScreen';
+import TabTwoScreen from '../screens/TabTwoScreen';
 
 
 const MainTab = createMaterialTopTabNavigator();
