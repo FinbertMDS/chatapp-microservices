@@ -12,7 +12,7 @@
 - Add client ui use react
   - SignIn @done
   - SignUp: add message alert success / failure @done
-  - Side bar: Improve api to get last message in rooms
+  - Side bar: Improve api to get last message in rooms. (add lastMessage to room info)
   - Chat: 
     - post message @done
     - scroll then load more message (need add api), default load 20 message first
