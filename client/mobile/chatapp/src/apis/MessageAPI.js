@@ -1,10 +1,11 @@
+import { SOCKET_BASE_URL } from "@env";
 import axios from "./axios";
 
 const getAllMessageInRoomUrl = "/message/api/messages";
 const sendMessageUrl = "/message/api/messages";
 
 const MessageAPI = {
-  wsSourceUrl: "http://10.0.2.2:8079/ws"/* process.env.SOCKET_BASE_URL */,
+  wsSourceUrl: SOCKET_BASE_URL,
 
   getPublicMessageTopicUrl: function (roomId) {
     return "/topic/" + roomId + ".public.messages"

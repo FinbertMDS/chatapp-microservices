@@ -1,15 +1,15 @@
 import { API_BASE_URL } from "@env";
 import axios from "axios";
+import { AppData } from "../core/appData";
 
 const instance = axios.create({
-  baseURL: API_BASE_URL/* process.env.API_BASE_URL */,
+  baseURL: API_BASE_URL,
 });
 
 const getAuthToken = () => {
-  let userInfo = null;
+  let userInfo = AppData.user;
   if (userInfo) {
     try {
-      userInfo = JSON.parse(userInfo);
       return userInfo.tokenType + " " + userInfo.accessToken;
     } catch (error) {
       console.log(error.message);

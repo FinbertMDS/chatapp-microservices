@@ -37,8 +37,8 @@ const SignInScreen = () => {
     SecurityAPI.signIn(signInData)
       .then(async (result) => {
         await AsyncStorage.setItem("userInfo", JSON.stringify(result));
-        let loginMessage = {"message": "User login successfully!"}
-        Alert.alert(loginMessage.message);
+        // let loginMessage = {"message": "User login successfully!"}
+        // Alert.alert(loginMessage.message);
         dispatch({
           type: actionTypes.SET_USER,
           user: result

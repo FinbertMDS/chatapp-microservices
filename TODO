@@ -21,3 +21,4 @@
   - Add docker @done
 - Add client mobile app use react-native
 - Add logback to all services
+- Build mechanism like aws-amplify Auth.currentAuthenticatedUser() to get current logined at client

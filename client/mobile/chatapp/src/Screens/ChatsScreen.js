@@ -1,74 +1,55 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { FlatList, StyleSheet } from 'react-native';
-import ChatListItem from '../components/ChatListItem';
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, ImageBackground } from 'react-native';
+import ChatRoomAPI from '../apis/ChatRoomAPI';
+import BG from '../assets/images/BG.png';
+import ChatListItem from "../components/ChatListItem";
 import NewMessageButton from "../components/NewMessageButton";
-import { Text, View } from '../components/Themed';
-import chatRoomsData from '../data/ChatRooms';
-
+import StackScreenName from "../constants/StackScreenName";
 
 export default function ChatsScreen() {
-
+  const [isLoading, setIsLoading] = useState(false);
   const [chatRooms, setChatRooms] = useState([]);
 
-  const navigation = useNavigation();
-  const headerLeft = () => {
-    return (
-      <View style={{ marginLeft: 20 }}>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate(StackScreenName.Setting)}>
-          <Avatar.Image size={24} source={require('../assets/logo.png')} />
-        </TouchableWithoutFeedback>
-      </View>
-    )
+  const fetchChatRooms = async () => {
+    ChatRoomAPI.getAll()
+      .then(result => {
+        setChatRooms(result);
+      })
+      .catch(error => Alert.alert(error.message));
   }
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <Text>test234</Text>
-      )
-    });
-  }, [navigation]);
 
   useEffect(() => {
-    setChatRooms(chatRoomsData)
-    // const fetchChatRooms = async () => {
-    //   try {
-    //     const userInfo = await Auth.currentAuthenticatedUser();
+    if (isLoading) {
+      fetchChatRooms();
+      setIsLoading(false);
+    }
+  }, [isLoading]);
 
-    //     const userData = await API.graphql(
-    //       graphqlOperation(
-    //         getUser, {
-    //           id: userInfo.attributes.sub,
-    //         }
-    //       )
-    //     )
+  const navigation = useNavigation();
+  const handlePress = () => {
+    navigation.navigate(StackScreenName.CreateRoom)
+  }
 
-    //     setChatRooms(userData.data.getUser.chatRoomUser.items)
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }
-    // fetchChatRooms();
-  }, []);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setIsLoading(true);
+    });
+
+    return () => {
+      unsubscribe;
+    };
+  }, [navigation]);
 
   return (
-    <View style={styles.container}>
+    <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
       <FlatList
         style={{ width: '100%' }}
         data={chatRooms}
         renderItem={({ item }) => <ChatListItem chatRoom={item} />}
         keyExtractor={(item) => item.id}
       />
-      <NewMessageButton />
-    </View>
+      <NewMessageButton onPress={handlePress} />
+    </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-});

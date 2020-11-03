@@ -1,3 +1,5 @@
+import { AppData } from "./src/core/appData";
+
 export const initialState = {
 	user: null,
 	notification: null,
@@ -13,6 +15,7 @@ export const actionTypes = {
 const reducer = (state, action) => {
 	switch (action.type) {
 		case actionTypes.SET_USER:
+			AppData.user = action.user;
 			return {
 				...state,
 				user: action.user

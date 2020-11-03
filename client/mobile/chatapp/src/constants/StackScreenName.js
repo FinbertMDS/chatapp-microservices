@@ -7,6 +7,7 @@ export default {
   ChatRoom: "ChatRoom",
   Contacts: "Contacts",
   Setting: "Setting",
+  CreateRoom: "CreateRoom",
   Chats: "Chats",
   Camera: "Camera",
   Status: "Status",

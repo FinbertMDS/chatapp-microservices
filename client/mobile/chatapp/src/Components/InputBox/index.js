@@ -7,7 +7,7 @@
 //   createMessage,
 //   updateChatRoom,
 // } from '../../src/graphql/mutations';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, TouchableOpacity, View } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -22,65 +22,18 @@ const InputBox = (props) => {
   const { chatRoomID } = props;
 
   const [message, setMessage] = useState('');
-  const [myUserId, setMyUserId] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userInfo = await Auth.currentAuthenticatedUser();
-      setMyUserId(userInfo.attributes.sub);
-    }
-    fetchUser();
-  }, [])
 
   const onMicrophonePress = () => {
     console.warn('Microphone')
   }
 
-  const updateChatRoomLastMessage = async (messageId) => {
-    try {
-      // await API.graphql(
-      //   graphqlOperation(
-      //     updateChatRoom, {
-      //       input: {
-      //         id: chatRoomID,
-      //         lastMessageID: messageId,
-      //       }
-      //     }
-      //   )
-      // );
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  const onSendPress = async () => {
-    try {
-      // const newMessageData = await API.graphql(
-      //   graphqlOperation(
-      //     createMessage, {
-      //       input: {
-      //         content: message,
-      //         userID: myUserId,
-      //         chatRoomID
-      //       }
-      //     }
-      //   )
-      // )
-
-      await updateChatRoomLastMessage(newMessageData.data.createMessage.id)
-    } catch (e) {
-      console.log(e);
-    }
-
-    setMessage('');
-  }
-
-  const onPress = () => {
+  const onPress = async () => {
     if (!message) {
       onMicrophonePress();
     } else {
-      onSendPress();
+      await props.onSendPress(message);
     }
+    setMessage('');
   }
 
   return (

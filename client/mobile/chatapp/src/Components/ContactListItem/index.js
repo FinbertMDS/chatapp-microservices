@@ -1,10 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {
-  Image, Text,
-
-  TouchableWithoutFeedback, View
-} from "react-native";
+import { Image, Text, TouchableWithoutFeedback, View } from "react-native";
 import styles from "./style";
 
 // import {
@@ -67,7 +63,7 @@ const ContactListItem = (props) => {
       //     }
       //   )
       // )
-
+      const newChatRoom = {id: "123"};
       navigation.navigate('ChatRoom', {
         id: newChatRoom.id,
         name: "Hardcoded name",
@@ -82,7 +78,7 @@ const ContactListItem = (props) => {
     <TouchableWithoutFeedback onPress={onClick}>
       <View style={styles.container}>
         <View style={styles.lefContainer}>
-          <Image source={{ uri: user.imageUri }} style={styles.avatar}/>
+          <Image source={{ uri: user.imageUri }} style={styles.avatar} />
 
           <View style={styles.midContainer}>
             <Text style={styles.username}>{user.name}</Text>

@@ -1,20 +1,12 @@
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { TouchableOpacity, View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "./styles";
 
-const NewMessageButton = () => {
-
-  const navigation = useNavigation();
-
-  const onPress = () => {
-    navigation.navigate('Contacts');
-  }
-
+const NewMessageButton = (props) => {
   return (  
     <View style={styles.container}>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={props.onPress}>
         <MaterialCommunityIcons
           name="message-reply-text"
           size={28}

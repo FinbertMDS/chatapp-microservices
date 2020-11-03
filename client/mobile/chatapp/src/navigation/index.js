@@ -14,6 +14,7 @@ import Colors from "../constants/Colors";
 import StackScreenName from '../constants/StackScreenName';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import ContactsScreen from "../screens/ContactsScreen";
+import CreateRoomScreen from "../screens/CreateRoomScreen";
 import NotFoundScreen from '../screens/NotFoundScreen';
 import SettingScreen from '../screens/SettingScreen';
 import SignInScreen from '../screens/SignInScreen';
@@ -76,7 +77,8 @@ function RootNavigator() {
       headerTitleAlign: 'left',
       headerTitleStyle: {
         fontWeight: 'bold',
-      }
+      },
+      headerBackTitleVisible: false,
     }}>
       {
         isLoading ? (
@@ -143,6 +145,10 @@ function RootNavigator() {
                 <Stack.Screen
                   name={StackScreenName.Contacts}
                   component={ContactsScreen}
+                />
+                <Stack.Screen
+                  name={StackScreenName.CreateRoom}
+                  component={CreateRoomScreen}
                 />
                 <Stack.Screen
                   name={StackScreenName.Setting}
