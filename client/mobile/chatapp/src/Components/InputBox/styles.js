@@ -18,8 +18,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    marginHorizontal: 10,
-    marginBottom: 5
+    marginHorizontal: 10
   },
   icon: {
     marginHorizontal: 5,

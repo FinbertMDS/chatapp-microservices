@@ -19,6 +19,7 @@
     - attach file to send message
   - Security API with Token @done
   - Add docker @done
-- Add client mobile app use react-native
+- Add client mobile app use react-native @done
+  - SignIn, SignUp, Create room, Send and receive message @done
 - Add logback to all services
 - Build mechanism like aws-amplify Auth.currentAuthenticatedUser() to get current logined at client
