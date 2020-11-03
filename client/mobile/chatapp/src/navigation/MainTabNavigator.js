@@ -1,9 +1,14 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import * as React from 'react';
+import React, { useLayoutEffect } from 'react';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { Avatar } from 'react-native-paper';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { View } from '../components/Themed';
 import Colors from '../constants/Colors';
+import StackScreenName from '../constants/StackScreenName';
 import useColorScheme from '../hooks/useColorScheme';
 import ChatsScreen from '../screens/ChatsScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
@@ -13,10 +18,23 @@ const MainTab = createMaterialTopTabNavigator();
 
 export default function MainTabNavigator() {
   const colorScheme = useColorScheme();
-Fontisto.getF
+
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <View style={{ marginLeft: 20 }}>
+          <TouchableWithoutFeedback onPress={() => navigation.navigate(StackScreenName.Setting)}>
+            <Avatar.Image size={24} source={require('../assets/logo.png')} />
+          </TouchableWithoutFeedback>
+        </View>
+      )
+    });
+  }, [navigation]);
+
   return (
     <MainTab.Navigator
-      initialRouteName="Chats"
+      initialRouteName={StackScreenName.Chats}
       tabBarOptions={{
         activeTintColor: Colors[colorScheme].background,
         style: {
@@ -32,7 +50,7 @@ Fontisto.getF
         showIcon: true,
       }}>
       <MainTab.Screen
-        name="Camera"
+        name={StackScreenName.Camera}
         component={TabOneNavigator}
         options={{
           tabBarIcon: ({ color }) => <Fontisto name="camera" color={color} size={18} />,
@@ -40,15 +58,15 @@ Fontisto.getF
         }}
       />
       <MainTab.Screen
-        name="Chats"
+        name={StackScreenName.Chats}
         component={ChatsScreen}
       />
       <MainTab.Screen
-        name="Status"
+        name={StackScreenName.Status}
         component={TabTwoNavigator}
       />
       <MainTab.Screen
-        name="Calls"
+        name={StackScreenName.Calls}
         component={TabTwoNavigator}
       />
     </MainTab.Navigator>

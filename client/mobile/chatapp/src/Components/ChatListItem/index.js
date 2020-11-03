@@ -1,8 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import moment from "moment";
 import React, { useEffect, useState } from 'react';
 import {
-  Image, Text,
 
   TouchableWithoutFeedback, View
 } from "react-native";
@@ -14,10 +12,9 @@ import styles from "./style";
 
 const ChatListItem = (props) => {
   const { chatRoom } = props;
-  const [ otherUser, setOtherUser] = useState(null);
+  const [otherUser, setOtherUser] = useState(null);
 
   const navigation = useNavigation();
-
   useEffect(() => {
     // const getOtherUser = async () => {
     //   const userInfo = await Auth.currentAuthenticatedUser();

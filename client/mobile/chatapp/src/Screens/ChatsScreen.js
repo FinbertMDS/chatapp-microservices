@@ -1,15 +1,33 @@
-import * as React from 'react';
-import { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { FlatList, StyleSheet } from 'react-native';
 import ChatListItem from '../components/ChatListItem';
 import NewMessageButton from "../components/NewMessageButton";
-import { View } from '../components/Themed';
+import { Text, View } from '../components/Themed';
 import chatRoomsData from '../data/ChatRooms';
 
 
 export default function ChatsScreen() {
 
   const [chatRooms, setChatRooms] = useState([]);
+
+  const navigation = useNavigation();
+  const headerLeft = () => {
+    return (
+      <View style={{ marginLeft: 20 }}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate(StackScreenName.Setting)}>
+          <Avatar.Image size={24} source={require('../assets/logo.png')} />
+        </TouchableWithoutFeedback>
+      </View>
+    )
+  }
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Text>test234</Text>
+      )
+    });
+  }, [navigation]);
 
   useEffect(() => {
     setChatRooms(chatRoomsData)
@@ -36,9 +54,9 @@ export default function ChatsScreen() {
   return (
     <View style={styles.container}>
       <FlatList
-        style={{width: '100%'}}
+        style={{ width: '100%' }}
         data={chatRooms}
-        renderItem={({ item }) => <ChatListItem chatRoom={item.chatRoom} />}
+        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
         keyExtractor={(item) => item.id}
       />
       <NewMessageButton />

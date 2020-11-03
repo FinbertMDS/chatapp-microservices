@@ -1,6 +1,5 @@
 // import { API, graphqlOperation } from 'aws-amplify';
-import * as React from 'react';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import ContactListItem from '../components/ContactListItem';
 import { View } from '../components/Themed';

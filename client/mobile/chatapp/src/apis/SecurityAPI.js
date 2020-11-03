@@ -10,7 +10,10 @@ const SecurityAPI = {
   },
   signUp: function (data) {
     return axios.post(signUpUrl, data)
-      .then(response => response.data);
+      .then(response => response.data)
+      .catch(error => {
+        throw(error.response.data);
+      });
   }
 };
 

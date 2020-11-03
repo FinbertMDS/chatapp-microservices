@@ -1,7 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { memo, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useStateValue } from '../../StateProvider';
 import SecurityAPI from '../apis/SecurityAPI';
+import BackButton from '../components/BackButton';
 import Background from '../components/Background';
 import Button from '../components/Button';
 import Header from '../components/Header';
@@ -15,10 +17,11 @@ import {
 } from '../core/utils';
 
 const SignUpScreen = () => {
+  const [{}, dispatch] = useStateValue();
   const navigation = useNavigation();
-  const [username, setUsername] = useState({ value: '', error: '' });
-  const [email, setEmail] = useState({ value: '', error: '' });
-  const [password, setPassword] = useState({ value: '', error: '' });
+  const [username, setUsername] = useState({ value: 'user123', error: '' });
+  const [email, setEmail] = useState({ value: 'user123@gmail.com', error: '' });
+  const [password, setPassword] = useState({ value: 'user123', error: '' });
 
   const _onSignUpPressed = () => {
     const nameError = nameValidator(username.value);
@@ -32,27 +35,24 @@ const SignUpScreen = () => {
       return;
     }
     const signUpData = {
-      "username": state.username,
-      "email": state.email,
-      "password": state.password
+      "username": username.value,
+      "email": email.value,
+      "password": password.value
     };
-    navigation.navigate(StackScreenName.SignIn);
-    return;
     SecurityAPI.signUp(signUpData)
       .then(result => {
+        let loginMessage = {"message": "User registered successfully!"}
+        Alert.alert(loginMessage.message);
         navigation.navigate(StackScreenName.SignIn);
       })
       .catch(error => {
-        dispatch({
-          type: actionTypes.SET_NOTIFICATION,
-          notification: error.response ? error.response.data : error
-        });
+        Alert.alert("User registered failure", error.message ? error.message : JSON.stringify(error))
       });
   };
 
   return (
     <Background>
-      {/* <BackButton goBack={() => navigation.navigate(StackScreenName.SignIn)} /> */}
+      <BackButton goBack={() => navigation.navigate(StackScreenName.SignIn)} />
 
       <Logo />
 

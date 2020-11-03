@@ -1,7 +1,8 @@
+import { API_BASE_URL } from "@env";
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://192.168.11.2:8080"/* process.env.API_BASE_URL */,
+  baseURL: API_BASE_URL/* process.env.API_BASE_URL */,
 });
 
 const getAuthToken = () => {

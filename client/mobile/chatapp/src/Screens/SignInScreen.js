@@ -1,6 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import React, { memo, useState } from 'react';
-import { Alert, AsyncStorage, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { actionTypes } from '../../reducer';
+import { useStateValue } from '../../StateProvider';
 import SecurityAPI from '../apis/SecurityAPI';
 import Background from '../components/Background';
 import Button from '../components/Button';
@@ -12,6 +15,7 @@ import { theme } from '../core/theme';
 import { nameValidator, passwordValidator } from '../core/utils';
 
 const SignInScreen = () => {
+  const [{}, dispatch] = useStateValue();
   const navigation = useNavigation();
   const [username, setUsername] = useState({ value: 'user123', error: '' });
   const [password, setPassword] = useState({ value: 'user123', error: '' });
@@ -31,16 +35,14 @@ const SignInScreen = () => {
       "password": password.value
     };
     SecurityAPI.signIn(signInData)
-      .then(result => {
-        AsyncStorage.setItem("userInfo", JSON.stringify(result))
-          .then(() => {
-            Alert.alert("Login successful");
-            navigation.navigate(StackScreenName.Root);
-            dispatch({
-              type: actionTypes.SET_USER,
-              user: result
-            });
-          });
+      .then(async (result) => {
+        await AsyncStorage.setItem("userInfo", JSON.stringify(result));
+        let loginMessage = {"message": "User login successfully!"}
+        Alert.alert(loginMessage.message);
+        dispatch({
+          type: actionTypes.SET_USER,
+          user: result
+        });
       })
       .catch(error => {
         Alert.alert(JSON.stringify(error))
