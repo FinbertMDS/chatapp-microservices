@@ -1,0 +1,176 @@
+version: "3"
+services:
+  eureka:
+    # build: ../microservice/microservice-eureka-server
+    image: ngovanhuy0241/chatapp_eureka
+    ports:
+      - "8761:8761"
+
+  security:
+    # build: ../microservice/microservice-security
+    image: ngovanhuy0241/chatapp_security
+    links:
+      - eureka
+      - mysql
+
+  message:
+    # build: ../microservice/microservice-message
+    image: ngovanhuy0241/chatapp_message
+    ports:
+      - "8079:8080"
+    links:
+      - eureka
+      - cassandra
+      - redis
+      - rabbitmq
+      - mysql
+
+  filemanagement:
+    build: ../microservice/microservice-file-management
+    # image: ngovanhuy0241/chatapp_filemanagement
+    links:
+      - eureka
+      - kafka
+      - mysql
+      - logstash
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    volumes:
+      - /tmp:/logs
+
+  filestorage:
+    # build: ../microservice/microservice-file-storage
+    image: ngovanhuy0241/chatapp_filestorage
+    links:
+      - eureka
+      - kafka
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+
+  zuul:
+    build: ../microservice/microservice-zuul-server
+    # image: ngovanhuy0241/chatapp_zuul
+    links:
+      - eureka
+      - logstash
+    ports:
+      - "8080:8080"
+    volumes:
+      - /tmp:/logs
+
+  turbine:
+    # build: ../microservice/microservice-turbine-server
+    image: ngovanhuy0241/chatapp_turbine
+    links:
+      - eureka
+    ports:
+      - "8989:8989"
+
+  chatapp:
+    # build: ../client/web/chatapp
+    image: ngovanhuy0241/chatapp_chatapp
+    links:
+      - zuul
+      - security
+      - message
+    ports:
+      - "8000:80"
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    links:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "file:5:1"
+
+  redis:
+    image: redis:3.0.6
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    links:
+      - redis
+    environment:
+      - REDIS_HOSTS=redis
+    ports:
+      - "7070:8081"
+
+  cassandra:
+    image: "cassandra:3.0"
+    ports:
+      - 9042:9042
+
+  rabbitmq:
+    # build: rabbitmq
+    image: ngovanhuy0241/chatapp_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+
+  mysql:
+    # build: mysql
+    image: ngovanhuy0241/chatapp_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  adminer:
+    image: adminer
+    ports:
+      - 6060:8080
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.8.0
+    command: logstash -f /usr/share/logstash/pipeline
+    volumes:
+      - ./logstash/config:/usr/share/logstash/config:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+      - "12204:12204"
+    depends_on:
+      - elasticsearch
+    
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:7.8.0
+  #   container_name: service-filebeat
+  #   volumes:
+  #     - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+  #   ports:
+  #     - "12201:12201"
+  #   depends_on:
+  #     - elasticsearch
