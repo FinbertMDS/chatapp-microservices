@@ -60,6 +60,18 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Logback encoder for Logstash -->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>6.3</version>
+		</dependency>
+
+		<!-- Spring Cloud Sleuth -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

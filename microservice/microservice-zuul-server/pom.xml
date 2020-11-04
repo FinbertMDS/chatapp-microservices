@@ -56,19 +56,17 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- Logstash -->
+		<!-- Logback encoder for Logs	tash -->
 		<dependency>
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
-			<version>5.0</version>
-		</dependency>	
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
+			<version>6.3</version>
 		</dependency>
+
+		<!-- Spring Cloud Sleuth -->
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
 	</dependencies>
 

@@ -4,6 +4,9 @@ services:
     build: ../microservice/microservice-eureka-server
     ports:
       - "8761:8761"
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   user:
     build: ../microservice/microservice-user
@@ -15,6 +18,9 @@ services:
     links:
       - eureka
       - mysql
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   message:
     build: ../microservice/microservice-message
@@ -26,6 +32,9 @@ services:
       - redis
       - rabbitmq
       - mysql
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   group:
     build: ../microservice/microservice-group
@@ -40,6 +49,9 @@ services:
       - mysql
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   filestorage:
     build: ../microservice/microservice-file-storage
@@ -48,6 +60,9 @@ services:
       - kafka
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   zuul:
     build: ../microservice/microservice-zuul-server
@@ -55,13 +70,16 @@ services:
       - eureka
     ports:
       - "8080:8080"
+    labels:
+      collect_logs_with_filebeat: "true"
+      decode_log_event_to_json_object: "true"
 
   turbine:
     build: ../microservice/microservice-turbine-server
     links:
       - eureka
-    ports:
-      - "8989:8989"
+    # ports:
+    #   - "8989:8989"
 
   chatapp:
     build: ../client/web/chatapp
@@ -87,8 +105,8 @@ services:
 
   redis:
     image: redis:3.0.6
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
 
   redis-commander:
     image: rediscommander/redis-commander
@@ -101,8 +119,8 @@ services:
 
   cassandra:
     image: "cassandra:3.0"
-    ports:
-      - 9042:9042
+    # ports:
+    #   - 9042:9042
 
   rabbitmq:
     build: rabbitmq

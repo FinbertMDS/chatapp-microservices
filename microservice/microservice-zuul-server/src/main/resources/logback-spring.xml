@@ -1,11 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-  <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-    <destination>logstash:5000</destination>
-    <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+  <springProperty scope="context" name="application_name" source="spring.application.name"/>
+
+  <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <timeZone>UTC</timeZone>
+        </timestamp>
+        <version/>
+        <logLevel/>
+        <message/>
+        <loggerName/>
+        <threadName/>
+        <context/>
+        <pattern>
+          <omitEmptyFields>true</omitEmptyFields>
+          <pattern>
+            {
+                "trace": {
+                    "trace_id": "%mdc{X-B3-TraceId}",
+                    "span_id": "%mdc{X-B3-SpanId}",
+                    "parent_span_id": "%mdc{X-B3-ParentSpanId}",
+                    "exportable": "%mdc{X-Span-Export}"
+                }
+            }
+          </pattern>
+        </pattern>
+        <mdc>
+          <excludeMdcKeyName>traceId</excludeMdcKeyName>
+          <excludeMdcKeyName>spanId</excludeMdcKeyName>
+          <excludeMdcKeyName>parentId</excludeMdcKeyName>
+          <excludeMdcKeyName>spanExportable</excludeMdcKeyName>
+          <excludeMdcKeyName>X-B3-TraceId</excludeMdcKeyName>
+          <excludeMdcKeyName>X-B3-SpanId</excludeMdcKeyName>
+          <excludeMdcKeyName>X-B3-ParentSpanId</excludeMdcKeyName>
+          <excludeMdcKeyName>X-Span-Export</excludeMdcKeyName>
+        </mdc>
+        <stackTrace/>
+      </providers>
+    </encoder>
   </appender>
-  <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
   <root level="INFO">
-    <appender-ref ref="LOGSTASH" />
-    <appender-ref ref="CONSOLE" />
+    <appender-ref ref="jsonConsoleAppender"/>
   </root>
+
 </configuration>

@@ -58,4 +58,9 @@ logging:
   level:
     ROOT: INFO
     org.springframework.web: DEBUG
-  file: /logs/zuul-json.log
+    org:
+      springframework:
+        boot:
+          actuate:
+            trace:
+              WebRequestTraceFilter: TRACE
