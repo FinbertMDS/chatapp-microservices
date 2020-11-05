@@ -4,9 +4,6 @@ services:
     build: ../microservice/microservice-eureka-server
     ports:
       - "8761:8761"
-    labels:
-      collect_logs_with_filebeat: "true"
-      decode_log_event_to_json_object: "true"
 
   user:
     build: ../microservice/microservice-user
