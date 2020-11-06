@@ -7,7 +7,6 @@ import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoom;
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoomUser;
 import com.finbertmds.microservice.message.chatroom.domain.service.ChatRoomService;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,7 +84,7 @@ public class ChatRoomAPIController {
 
 	@PutMapping(value = "/participant/{chatRoomId}")
 	@ResponseBody
-	public ResponseEntity<ChatRoom> addUserToChatRoom(@PathVariable @NotEmpty String chatRoomId,
+	public ResponseEntity<ChatRoom> addUserToChatRoom(@PathVariable String chatRoomId,
 			@RequestBody ChatRoomUser participant) {
 		try {
 			ChatRoom chatRoom = chatRoomService.findById(chatRoomId);
@@ -100,7 +99,7 @@ public class ChatRoomAPIController {
 	}
 
 	@PatchMapping(value = "/participant/{chatRoomId}")
-	public ResponseEntity<ChatRoom> removeUserFromChatRoom(@PathVariable @NotEmpty String chatRoomId,
+	public ResponseEntity<ChatRoom> removeUserFromChatRoom(@PathVariable String chatRoomId,
 			@RequestBody ChatRoomUser participant) {
 		try {
 			ChatRoom _chatRoom = chatRoomService.leave(participant, chatRoomService.findById(chatRoomId));
