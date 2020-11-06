@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoom;
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoomUser;
-import com.finbertmds.microservice.message.chatroom.domain.model.InstantMessage;
+import com.finbertmds.microservice.message.entity.InstantMessage;
 
 public interface ChatRoomService {
 	

@@ -8,9 +8,11 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.finbertmds.microservice.message.chat.model.MessagePosting;
-import com.finbertmds.microservice.message.chatroom.domain.model.InstantMessage;
+import com.finbertmds.microservice.message.chat.model.MessageResponse;
 import com.finbertmds.microservice.message.chatroom.domain.service.ChatRoomService;
 import com.finbertmds.microservice.message.chatroom.domain.service.InstantMessageService;
+import com.finbertmds.microservice.message.entity.InstantMessage;
+import com.finbertmds.microservice.message.entity.InstantMessageKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,10 +41,12 @@ public class ChatAPIController {
   public void postNewMessage(@PathVariable @NotNull String chatRoomId,
       @NotNull @RequestBody @Valid MessagePosting messagePosting) throws JsonProcessingException {
     InstantMessage instantMessage = new InstantMessage();
-    instantMessage.setUsername(messagePosting.getFromUser());
+    InstantMessageKey instantMessageKey = new InstantMessageKey();
+    instantMessageKey.setUsername(messagePosting.getFromUser());
+    instantMessageKey.setChatRoomId(chatRoomId);
+    instantMessage.setInstantMessageKey(instantMessageKey);
     instantMessage.setToUser(messagePosting.getToUser());
     instantMessage.setFromUser(messagePosting.getFromUser());
-    instantMessage.setChatRoomId(chatRoomId);
     instantMessage.setText(messagePosting.getText());
     instantMessage.setIsNotification(false);
     if (instantMessage.isPublic()) {
@@ -53,12 +57,13 @@ public class ChatAPIController {
   }
 
   @GetMapping(value = "/{chatRoomId}")
-  public ResponseEntity<List<InstantMessage>> fetchAllMessagesForRoom(@PathVariable String chatRoomId,
+  public ResponseEntity<List<MessageResponse>> fetchAllMessagesForRoom(@PathVariable String chatRoomId,
       @RequestParam(required = true) String forUser) {
     try {
-      List<InstantMessage> messages = new ArrayList<InstantMessage>();
+      List<MessageResponse> messages = new ArrayList<MessageResponse>();
 
-      instantMessageService.findAllInstantMessagesFor(forUser, chatRoomId).forEach(messages::add);
+      instantMessageService.findAllInstantMessagesFor(forUser, chatRoomId)
+          .forEach(instantMessage -> messages.add(new MessageResponse(instantMessage)));
 
       if (messages.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

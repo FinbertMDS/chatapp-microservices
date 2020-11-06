@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -35,13 +35,13 @@ public class WebSecurityConfig {
 		@Autowired
 		private UserDetailsService userDetailsService;
 
-		@Autowired
-		public void configure(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+		@Override
+		public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+			authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 		}
-
+	
 		@Bean
-		public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		public PasswordEncoder passwordEncoder() {
 			return new BCryptPasswordEncoder();
 		}
 
@@ -83,20 +83,7 @@ public class WebSecurityConfig {
 
 	@Configuration
 	@Order(2)
-	public static class LoginFormSecurityConfig extends WebSecurityConfigurerAdapter {
-
-		@Autowired
-		private UserDetailsService userDetailsService;
-
-		@Autowired
-		public void configure(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-		}
-
-		@Bean
-		public BCryptPasswordEncoder bCryptPasswordEncoder() {
-			return new BCryptPasswordEncoder();
-		}
+	public static class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
@@ -104,35 +91,13 @@ public class WebSecurityConfig {
 			http
 				// .cors().and()
 				.csrf().disable()
-				.formLogin()
-					.loginProcessingUrl("/login")
-					.loginPage("/")
-					.defaultSuccessUrl("/chat")
-					.and()
-				.logout()
-					.logoutSuccessUrl("/")
-					.and()
 				.authorizeRequests()
-					.antMatchers("/webjars/**").permitAll()
 					.antMatchers("/ws/**").permitAll()
 					.antMatchers("/topic/**").permitAll()
 					.antMatchers("/user/queue/**").permitAll()
-					.antMatchers("/**/health/**").permitAll()
-					.antMatchers("/login", "/new-account", "/").permitAll()
-					.antMatchers(HttpMethod.POST, "/chatroom").hasRole("ADMIN")
+					.antMatchers("/actuator/**").permitAll()
 					.anyRequest().authenticated();
 			// @formatter:on
 		}
-
-		// @Bean
-		// CorsConfigurationSource corsConfigurationSource() {
-		// 	CorsConfiguration configuration = new CorsConfiguration();
-		// 	configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS"));
-		// 	configuration.addAllowedHeader("*");
-		// 	configuration.addAllowedOrigin("*");
-		// 	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		// 	source.registerCorsConfiguration("/**", configuration);
-		// 	return source;
-		// }
 	}
 }

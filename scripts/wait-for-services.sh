@@ -10,9 +10,6 @@ main() {
 	declare -a validate
 	while [[ "$done" = false ]]; do
 		healthPath="actuator/health"
-		if [[ "$serviceName" = "message" ]]; then
-			healthPath="health"
-		fi
 		urlCheck=http://${host}:${port}/${serviceName}/${healthPath}
 		if [[ "$serviceName" = "zuul" ]]; then
 			urlCheck=http://${host}:${port}/${healthPath}

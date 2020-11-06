@@ -2,10 +2,11 @@ package com.finbertmds.microservice.message.chatroom.domain.service;
 
 import java.util.List;
 
+import com.finbertmds.microservice.message.chat.model.MessageResponse;
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoom;
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoomUser;
-import com.finbertmds.microservice.message.chatroom.domain.model.InstantMessage;
 import com.finbertmds.microservice.message.chatroom.domain.repository.ChatRoomRepository;
+import com.finbertmds.microservice.message.entity.InstantMessage;
 import com.finbertmds.microservice.message.utils.Destinations;
 import com.finbertmds.microservice.message.utils.SystemMessages;
 
@@ -32,7 +33,7 @@ public class RedisChatRoomService implements ChatRoomService {
 
 	@Override
 	public ChatRoom findById(String chatRoomId) {
-		return chatRoomRepository.findOne(chatRoomId);
+		return chatRoomRepository.findById(chatRoomId).orElseThrow(() -> new RuntimeException("Error: Chat room is not found."));
 	}
 
 	@Override
@@ -59,8 +60,8 @@ public class RedisChatRoomService implements ChatRoomService {
 	@Override
 	public void sendPublicMessage(InstantMessage instantMessage) {
 		webSocketMessagingTemplate.convertAndSend(
-				Destinations.ChatRoom.publicMessages(instantMessage.getChatRoomId()),
-				instantMessage);
+				Destinations.ChatRoom.publicMessages(instantMessage.getInstantMessageKey().getChatRoomId()),
+				new MessageResponse(instantMessage));
 
 		instantMessageService.appendInstantMessageToConversations(instantMessage);
 	}
@@ -69,13 +70,13 @@ public class RedisChatRoomService implements ChatRoomService {
 	public void sendPrivateMessage(InstantMessage instantMessage) {
 		webSocketMessagingTemplate.convertAndSendToUser(
 				instantMessage.getToUser(),
-				Destinations.ChatRoom.privateMessages(instantMessage.getChatRoomId()), 
-				instantMessage);
+				Destinations.ChatRoom.privateMessages(instantMessage.getInstantMessageKey().getChatRoomId()), 
+				new MessageResponse(instantMessage));
 		
 		webSocketMessagingTemplate.convertAndSendToUser(
 				instantMessage.getFromUser(),
-				Destinations.ChatRoom.privateMessages(instantMessage.getChatRoomId()), 
-				instantMessage);
+				Destinations.ChatRoom.privateMessages(instantMessage.getInstantMessageKey().getChatRoomId()), 
+				new MessageResponse(instantMessage));
 
 		instantMessageService.appendInstantMessageToConversations(instantMessage);
 	}

@@ -1,5 +1,7 @@
 package com.finbertmds.microservice.message.chatroom.domain.model;
 
+import com.finbertmds.microservice.message.entity.InstantMessage;
+import com.finbertmds.microservice.message.entity.InstantMessageKey;
 import com.finbertmds.microservice.message.utils.SystemUsers;
 
 public class InstantMessageBuilder {
@@ -17,13 +19,17 @@ public class InstantMessageBuilder {
 	
 	public InstantMessageChatRoom newMessage() {
 		instantMessage = new InstantMessage();
+		InstantMessageKey instantMessageKey = new InstantMessageKey();
+		instantMessage.setInstantMessageKey(instantMessageKey);
 		instantMessageChatRoom = new InstantMessageChatRoom();
 		return instantMessageChatRoom;
 	}
 	
 	public class InstantMessageChatRoom {
 		public InstantMessageType withChatRoomId(String chatRoomId) {
-			instantMessage.setChatRoomId(chatRoomId);
+			InstantMessageKey instantMessageKey = instantMessage.getInstantMessageKey();
+			instantMessageKey.setChatRoomId(chatRoomId);
+			instantMessage.setInstantMessageKey(instantMessageKey);
 			instantMessageType = new InstantMessageType();
 			return instantMessageType;
 		}

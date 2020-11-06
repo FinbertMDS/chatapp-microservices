@@ -1,41 +1,70 @@
 package com.finbertmds.microservice.message.configuration;
 
 import java.util.Arrays;
+import java.util.List;
 
-import org.springframework.cassandra.core.keyspace.CreateKeyspaceSpecification;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.cassandra.config.CassandraClusterFactoryBean;
-import org.springframework.data.cassandra.config.java.AbstractCassandraConfiguration;
-import org.springframework.data.cassandra.mapping.BasicCassandraMappingContext;
-import org.springframework.data.cassandra.mapping.CassandraMappingContext;
+import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
+import org.springframework.data.cassandra.config.SchemaAction;
+import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
+import org.springframework.data.cassandra.core.cql.keyspace.KeyspaceOption;
 
 @Configuration
 public class CassandraConfiguration extends AbstractCassandraConfiguration {
 
-    @Override
-    protected String getKeyspaceName() {
-        return "db_messages";
-    }
+  @Value("${spring.data.cassandra.contact-points}")
+  private String hostList;
 
-    @Bean
-    @Override
-    public CassandraClusterFactoryBean cluster() {
-        CassandraClusterFactoryBean cluster = new CassandraClusterFactoryBean();
-        cluster.setContactPoints("cassandra");
-        cluster.setPort(9042);
-        cluster.setKeyspaceCreations(
-                Arrays.asList(new CreateKeyspaceSpecification("db_messages").ifNotExists().withSimpleReplication(1)));
-        cluster.setStartupScripts(Arrays.asList("USE db_messages",
-                "CREATE TABLE IF NOT EXISTS messages (" + "username text," + "chatRoomId text," + "date timestamp,"
-                        + "fromUser text," + "toUser text," + "text text," + "isNotification boolean,"
-                        + "PRIMARY KEY ((username, chatRoomId), date)" + ") WITH CLUSTERING ORDER BY (date ASC)"));
-        return cluster;
-    }
+  @Value("${spring.data.cassandra.local-datacenter}")
+  private String datacenter;
 
-    @Bean
-    @Override
-    public CassandraMappingContext cassandraMapping() throws ClassNotFoundException {
-        return new BasicCassandraMappingContext();
-    }
+  @Value("${spring.data.cassandra.keyspace-name}")
+  private String keyspaceName;
+
+  @Value("${spring.data.cassandra.username}")
+  private String userName;
+
+  @Value("${spring.data.cassandra.password}")
+  private String password;
+
+  @Value("${spring.data.cassandra.port}")
+  private Integer port;
+
+  @Override
+  protected String getKeyspaceName() {
+    return keyspaceName;
+  }
+
+  @Override
+  protected String getLocalDataCenter() {
+    return datacenter;
+  }
+
+  @Override
+  protected String getContactPoints() {
+    return hostList;
+  }
+
+  @Override
+  protected int getPort() {
+    return port;
+  }
+
+  @Override
+  protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
+    CreateKeyspaceSpecification specification = CreateKeyspaceSpecification.createKeyspace(keyspaceName).ifNotExists()
+        .with(KeyspaceOption.DURABLE_WRITES, true).withSimpleReplication();
+    return Arrays.asList(specification);
+  }
+
+  @Override
+  public SchemaAction getSchemaAction() {
+    return SchemaAction.CREATE_IF_NOT_EXISTS;
+  }
+
+  @Override
+  public String[] getEntityBasePackages() {
+      return new String[] { "com.finbertmds.microservice.message.entity" };
+  }
 }
