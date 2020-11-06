@@ -1,14 +1,16 @@
-import { Avatar, IconButton } from '@material-ui/core';
+import { Avatar, Button, IconButton } from '@material-ui/core';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import MicIcon from '@material-ui/icons/Mic';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import SockJsClient from "react-stomp";
 import ChatRoomAPI from '../apis/ChatRoomAPI';
 import MessageAPI from '../apis/MessageAPI';
+import useDeviceDetect from '../helpers/useDeviceDetect';
 import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
 import './Chat.css';
@@ -20,6 +22,8 @@ function Chat() {
   const [roomName, setRoomName] = useState('');
   const [messages, setMessages] = useState([]);
   const [{ user }, dispatch] = useStateValue();
+  const { isMobile } = useDeviceDetect();
+  const history = useHistory();
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
@@ -42,11 +46,15 @@ function Chat() {
     let participant = {
       "username": user.username
     };
-    ChatRoomAPI.addUserToChatRoom(roomId, participant)
-      .catch(error => alert(error.message));
-    return () => {
-      ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
+    if (roomId) {
+      ChatRoomAPI.addUserToChatRoom(roomId, participant)
         .catch(error => alert(error.message));
+    }
+    return () => {
+      if (roomId) {
+        ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
+          .catch(error => alert(error.message));
+      }
     };
   }, [roomId, user.username]);
 
@@ -120,11 +128,22 @@ function Chat() {
   return (
     <div className='chat'>
       <div className='chat__header'>
+        {
+          isMobile && (
+            <Button
+              onClick={() => history.push("/")}
+            >
+              <IconButton>
+                <ArrowBackIosIcon />
+              </IconButton>
+            </Button>
+          )
+        }
         <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
         <div className='chat__headerInfo'>
           <h3>{roomName}</h3>
           {
-            messages.length > 0 && (
+            !isMobile && messages.length > 0 && (
               <p>
                 Last seen {' '}
                 {new Date(messages[messages.length - 1]?.date).toLocaleString()}

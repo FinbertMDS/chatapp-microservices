@@ -3,6 +3,12 @@
   flex-direction: column;
   flex: 0.35;
 }
+.hidden_sidebar > .sidebar{
+  display: none;
+}
+.hidden_chat > .sidebar{
+  flex: 1;
+}
 .sidebar__header {
   display: flex;
   justify-content: space-between;

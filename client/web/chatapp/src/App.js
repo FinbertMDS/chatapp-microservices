@@ -5,12 +5,15 @@ import Chat from "./Components/Chat";
 import Notification from "./Components/Notification";
 import Sidebar from "./Components/Sidebar";
 import SignIn from "./Components/SignIn";
+import useDeviceDetect from "./helpers/useDeviceDetect";
 import { actionTypes } from "./reducer";
 import { useStateValue } from "./StateProvider";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
-  const [messages, /* setMessages */] = useState([]);
+  const [messages] = useState([]);
+  const { isMobile } = useDeviceDetect();
+  const [{ currentRoomId }] = useStateValue();
 
   useEffect(() => {
     let userInfo = localStorage.getItem("userInfo");
@@ -28,6 +31,17 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getHiddenState = () => {
+    if (isMobile) {
+      if (currentRoomId) {
+        return 'hidden_sidebar';
+      } else {
+        return 'hidden_chat';
+      }
+    }
+    return '';
+  }
 
   useEffect(() => {
     // axios.get("./messages/sync").then((response) => {
@@ -54,18 +68,15 @@ function App() {
 
   // console.log(messages);
   return (
-    <div className="app">
+    <div className={`app ${isMobile ? 'mobile' : ''}`}>
       {!user ? (
         <SignIn />
       ) : (
-          <div className="app__body">
+          <div className={`app__body ${getHiddenState()}`}>
             <Router>
               <Sidebar />
               <Switch>
                 <Route path="/rooms/:roomId">
-                  <Chat />
-                </Route>
-                <Route path="/app">
                   <Chat />
                 </Route>
               </Switch>

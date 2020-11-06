@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import React, { useState } from 'react';
 import SecurityAPI from '../apis/SecurityAPI';
-import AsyncLocalStorage from '../helpers/AsyncLocalStorage';
 import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
 import SignUp from "./SignUp";
@@ -107,18 +106,16 @@ function SignIn() {
     };
     SecurityAPI.signIn(signInData)
       .then(result => {
-        AsyncLocalStorage.setItem("userInfo", JSON.stringify(result))
-          .then(() => {
-            let loginMessage = {"message": "User login successfully!"}
-            dispatch({
-              type: actionTypes.SET_NOTIFICATION,
-              notification: loginMessage
-            });
-            dispatch({
-              type: actionTypes.SET_USER,
-              user: result
-            });
-          });
+        localStorage.setItem("userInfo", JSON.stringify(result));
+        let loginMessage = {"message": "User login successfully!"};
+        dispatch({
+          type: actionTypes.SET_NOTIFICATION,
+          notification: loginMessage
+        });
+        dispatch({
+          type: actionTypes.SET_USER,
+          user: result
+        });
       })
       .catch(error => {
         dispatch({

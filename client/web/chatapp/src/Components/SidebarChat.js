@@ -7,8 +7,8 @@ import './SidebarChat.css';
 
 function SidebarChat({ addNewChat, id, name }) {
   const [seed, setSeed] = useState('');
-  const [messages, /* setMessages */] = useState('')
-  const [{ currentRoomId /* user */ },] = useStateValue();
+  const [messages] = useState('')
+  const [{ currentRoomId }] = useStateValue();
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));

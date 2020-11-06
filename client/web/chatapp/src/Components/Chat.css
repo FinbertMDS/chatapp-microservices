@@ -3,6 +3,12 @@
   display: flex;
   flex-direction: column;
 }
+.hidden_chat > .chat{
+  display: none;
+}
+.hidden_sidebar > .chat{
+  flex: 1;
+}
 .chat__header{
   padding: 20px;
   display: flex;
