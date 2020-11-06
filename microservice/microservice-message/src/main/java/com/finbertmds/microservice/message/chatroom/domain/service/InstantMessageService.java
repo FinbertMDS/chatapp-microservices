@@ -2,7 +2,7 @@ package com.finbertmds.microservice.message.chatroom.domain.service;
 
 import java.util.List;
 
-import com.finbertmds.microservice.message.chatroom.domain.model.InstantMessage;
+import com.finbertmds.microservice.message.entity.InstantMessage;
 
 public interface InstantMessageService {
 	

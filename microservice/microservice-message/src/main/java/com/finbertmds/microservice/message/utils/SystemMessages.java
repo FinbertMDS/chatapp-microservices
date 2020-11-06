@@ -1,7 +1,7 @@
 package com.finbertmds.microservice.message.utils;
 
-import com.finbertmds.microservice.message.chatroom.domain.model.InstantMessage;
 import com.finbertmds.microservice.message.chatroom.domain.model.InstantMessageBuilder;
+import com.finbertmds.microservice.message.entity.InstantMessage;
 
 public class SystemMessages {
 	

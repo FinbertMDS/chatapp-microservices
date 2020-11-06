@@ -70,8 +70,6 @@ buildAndStartDocker() {
   done
   eval $dockerBuildCommand
   
-  docker-compose up -d mysql
-  docker-compose up -d eureka zuul turbine
   eval $dockerUpCommand
 
   for index in "${!servicesWillBeRebuild[@]}"; do

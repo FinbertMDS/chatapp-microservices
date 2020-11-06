@@ -54,15 +54,16 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
   data:
-    redis:
-      repositories:
-        enabled: true
     cassandra:
       contact-points: cassandra
       keyspace-name: db_messages
       username: cassandra
       password: cassandra
       port: 9042
+      local-datacenter: datacenter1
+    redis:
+      repositories:
+        enabled: true
   session:
     store-type: redis  
   messages:
