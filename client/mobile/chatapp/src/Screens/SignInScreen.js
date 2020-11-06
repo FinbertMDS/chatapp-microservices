@@ -38,14 +38,14 @@ const SignInScreen = () => {
       .then(async (result) => {
         await AsyncStorage.setItem("userInfo", JSON.stringify(result));
         // let loginMessage = {"message": "User login successfully!"}
-        // Alert.alert(loginMessage.message);
+        // Alert.alert("Login", loginMessage.message);
         dispatch({
           type: actionTypes.SET_USER,
           user: result
         });
       })
       .catch(error => {
-        Alert.alert(JSON.stringify(error))
+        Alert.alert("Error", JSON.stringify(error))
       });
   }
 

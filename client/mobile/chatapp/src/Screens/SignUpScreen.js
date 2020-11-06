@@ -42,11 +42,11 @@ const SignUpScreen = () => {
     SecurityAPI.signUp(signUpData)
       .then(result => {
         let loginMessage = {"message": "User registered successfully!"}
-        Alert.alert(loginMessage.message);
+        Alert.alert("Signup", loginMessage.message);
         navigation.navigate(StackScreenName.SignIn);
       })
       .catch(error => {
-        Alert.alert("User registered failure", error.message ? error.message : JSON.stringify(error))
+        Alert.alert("User registered failure", JSON.stringify(error))
       });
   };
 

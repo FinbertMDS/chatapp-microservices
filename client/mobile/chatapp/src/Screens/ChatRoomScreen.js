@@ -1,5 +1,5 @@
 import { useRoute } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert, FlatList, ImageBackground } from 'react-native';
 import SockJsClient from "react-stomp";
 import { useStateValue } from '../../StateProvider';
@@ -10,15 +10,13 @@ import ChatMessage from "../components/ChatMessage";
 import InputBox from "../components/InputBox";
 
 const updateMessagesData = (messages) => {
-  return messages.filter((message) => !message.isNotification)
-    .sort(function (a, b) { return - a.date + b.date });
+  return messages.filter((message) => !message.isNotification);
 }
 
 const ChatRoomScreen = () => {
 
   const [messages, setMessages] = useState([]);
   const [{ user }] = useStateValue();
-
   const route = useRoute();
 
   const fetchMessages = () => {
@@ -48,10 +46,10 @@ const ChatRoomScreen = () => {
       "username": user.username
     };
     ChatRoomAPI.addUserToChatRoom(route.params.id, participant)
-      .catch(error => Alert.alert(error.message));
+      .catch(error => Alert.alert("Error", JSON.stringify(error)));
     return () => {
       ChatRoomAPI.removeUserFromChatRoom(route.params.id, participant)
-        .catch(error => Alert.alert(error.message));
+        .catch(error => Alert.alert("Error", JSON.stringify(error)));
     };
   }, [route.params.id, user.username]);
 
@@ -62,9 +60,9 @@ const ChatRoomScreen = () => {
   const onMessageReceive = (msg, topic) => {
     if (!msg.isNotification) {
       setMessages([
-        msg,
         ...messages,
-      ])
+        msg,
+      ]);
     }
   }
   const updateChatRoomLastMessage = async (messageId) => {
@@ -94,9 +92,18 @@ const ChatRoomScreen = () => {
 
       // await updateChatRoomLastMessage(newMessageData.data.createMessage.id)
     } catch (e) {
-      Alert.alert(error.message);
+      Alert.alert("Error", JSON.stringify(error));
     }
   }
+  
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollToEnd();
+    }
+  }
+  useEffect(scrollToBottom, [messages]);
 
   return (
     <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
@@ -104,9 +111,10 @@ const ChatRoomScreen = () => {
         data={messages}
         renderItem={({ item }) => <ChatMessage user={user} message={item} />}
         keyExtractor={(item) => item.date.toString()}
-        inverted
+        ref={messagesEndRef}
+      // inverted
       />
-      <InputBox chatRoomID={route.params.id} onSendPress={handleSendPress}/>
+      <InputBox chatRoomID={route.params.id} onSendPress={handleSendPress} />
       <SockJsClient
         url={MessageAPI.wsSourceUrl}
         topics={[publicTopicStr]}

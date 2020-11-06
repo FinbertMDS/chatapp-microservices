@@ -1,8 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, ImageBackground } from 'react-native';
+import { Alert, FlatList } from 'react-native';
 import ChatRoomAPI from '../apis/ChatRoomAPI';
-import BG from '../assets/images/BG.png';
 import ChatListItem from "../components/ChatListItem";
 import NewMessageButton from "../components/NewMessageButton";
 import StackScreenName from "../constants/StackScreenName";
@@ -16,7 +15,7 @@ export default function ChatsScreen() {
       .then(result => {
         setChatRooms(result);
       })
-      .catch(error => Alert.alert(error.message));
+      .catch(error => Alert.alert("Error", JSON.stringify(error)));
   }
 
   useEffect(() => {
@@ -42,14 +41,16 @@ export default function ChatsScreen() {
   }, [navigation]);
 
   return (
-    <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
-      <FlatList
-        style={{ width: '100%' }}
-        data={chatRooms}
-        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
-        keyExtractor={(item) => item.id}
-      />
-      <NewMessageButton onPress={handlePress} />
-    </ImageBackground>
+    <>
+      {/* <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}> */}
+        <FlatList
+          style={{ width: '100%' }}
+          data={chatRooms}
+          renderItem={({ item }) => <ChatListItem chatRoom={item} />}
+          keyExtractor={(item) => item.id}
+        />
+        <NewMessageButton onPress={handlePress} />
+      {/* </ImageBackground> */}
+    </>
   );
 }
