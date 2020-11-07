@@ -21,9 +21,7 @@
 		<module>microservice-user</module>
 		<module>microservice-security</module>
 		<module>microservice-message</module>
-		<module>microservice-group</module>
-		<module>microservice-file-management</module>
-		<module>microservice-file-storage</module>
+		<module>microservice-storage</module>
 		<module>microservice-zuul-server</module>
 	</modules>
 

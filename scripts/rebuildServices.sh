@@ -1,6 +1,6 @@
 #!/bin/sh
-services=("file-management" "file-storage" "group" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server" "chatapp")
-servicesNeedWaitWhenStart=("filemanagement" "filestorage" "group" "message" "security" "user", "zuul")
+services=("storage" "group" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server" "chatapp")
+servicesNeedWaitWhenStart=("storage" "group" "message" "security" "user", "zuul")
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 declare -a servicesWillBeRebuild
@@ -71,6 +71,8 @@ buildAndStartDocker() {
   eval $dockerBuildCommand
   
   eval $dockerUpCommand
+
+  docker-compose up -d zuul
 
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"

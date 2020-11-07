@@ -32,22 +32,13 @@ services:
     links:
       - eureka
 
-  filemanagement:
-    build: ../microservice/microservice-file-management
+  storage:
+    build: ../microservice/microservice-storage
     links:
       - eureka
-      - kafka
       - mysql
-    environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-
-  filestorage:
-    build: ../microservice/microservice-file-storage
-    links:
-      - eureka
-      - kafka
-    environment:
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    # environment:
+    #   SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   zuul:
     build: ../microservice/microservice-zuul-server

@@ -4,11 +4,13 @@
 - Implement microservice-file-storage @done
   - Basic: Upload file, upload multiple files, download file @done
   - When upload file, send event to service filemanagement to save info to DB @done
+  - Merge 2 services: file-management and file-storage to 1 service storage @done
 - Implement microservice-file-management @done
-- Implement microservice-group
+- Implement microservice-contact
 - Implement microservice-message
   - Add rabbitmq to send notify to client when chat @done
   - Update use security from microservice-security @done
+  - Add contact, create group chat or private chat for people in contact
 - Add client ui use react
   - SignIn @done
   - SignUp: add message alert success / failure @done
@@ -19,7 +21,9 @@
     - attach file to send message
   - Security API with Token @done
   - Add docker @done
-- Add client mobile app use react-native @done
+- Add client mobile app use react-native
   - SignIn, SignUp, Create room, Send and receive message @done
-- Add logback to all services
+  - Build app release android @done
+  - Build app release ios
+- Add logback to all services to ELK stack at branch elk @done
 - Build mechanism like aws-amplify Auth.currentAuthenticatedUser() to get current logined at client
