@@ -1,6 +1,6 @@
 #!/bin/sh
-services=("storage" "group" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server" "chatapp")
-servicesNeedWaitWhenStart=("storage" "group" "message" "security" "user", "zuul")
+services=("storage" "contact" "message" "security" "user" "eureka-server" "turbine-server" "zuul-server" "chatapp")
+servicesNeedWaitWhenStart=("storage" "contact" "message" "security" "user", "zuul")
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 declare -a servicesWillBeRebuild

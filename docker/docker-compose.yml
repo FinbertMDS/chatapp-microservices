@@ -15,6 +15,7 @@ services:
     links:
       - eureka
       - mysql
+      - kafka
 
   message:
     build: ../microservice/microservice-message
@@ -27,18 +28,18 @@ services:
       - rabbitmq
       - mysql
 
-  group:
-    build: ../microservice/microservice-group
+  contact:
+    build: ../microservice/microservice-contact
     links:
       - eureka
+      - mysql
+      - kafka
 
   storage:
     build: ../microservice/microservice-storage
     links:
       - eureka
       - mysql
-    # environment:
-    #   SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
 
   zuul:
     build: ../microservice/microservice-zuul-server
@@ -74,7 +75,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "file:5:1"
+      KAFKA_CREATE_TOPICS: "user:3:1"
 
   redis:
     image: redis:3.0.6

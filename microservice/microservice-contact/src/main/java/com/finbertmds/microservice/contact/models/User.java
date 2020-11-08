@@ -1,12 +1,11 @@
-package com.finbertmds.microservice.security.models;
+package com.finbertmds.microservice.contact.models;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -29,7 +28,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 		})
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotBlank
@@ -41,23 +39,36 @@ public class User {
 	@Email
 	private String email;
 
-	@NotBlank
-	@Size(max = 120)
-	private String password;
+	private String firstName;
+
+	private String lastName;
+  
+  private String phone;
+  
+  private Date createdAt;
+  
+  private Date updatedAt;
 
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(	name = "user_roles", 
+	@JoinTable(	name = "user_contact", 
 				joinColumns = @JoinColumn(name = "user_id"), 
-				inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>();
+				inverseJoinColumns = @JoinColumn(name = "contact_id"))
+	private Set<Contact> contacts = new HashSet<>();
 
 	public User() {
+
 	}
 
-	public User(String username, String email, String password) {
+	public User(Long id, String username, String email, String firstName, String lastName, String phone, Date createdAt, Date updatedAt, Set<Contact> contacts) {
+		this.id = id;
 		this.username = username;
 		this.email = email;
-		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phone = phone;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.contacts = contacts;
 	}
 
 	public Long getId() {
@@ -84,20 +95,56 @@ public class User {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getFirstName() {
+		return this.firstName;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public Set<Role> getRoles() {
-		return roles;
+	public String getLastName() {
+		return this.lastName;
 	}
 
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
+	public String getDisplayName() {
+		return this.firstName + " " + this.lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public Set<Contact> getContacts() {
+		return this.contacts;
+	}
+
+	public void setContacts(Set<Contact> contacts) {
+		this.contacts = contacts;
+	}
+
+	public String getPhone() {
+		return this.phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public Date getCreatedAt() {
+		return this.createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getUpdatedAt() {
+		return this.updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 	
 	@Override
@@ -114,4 +161,5 @@ public class User {
 	public boolean equals(Object obj) {
 		return EqualsBuilder.reflectionEquals(this, obj);
 	}
+
 }

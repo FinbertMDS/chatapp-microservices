@@ -19,6 +19,7 @@
 		<module>microservice-eureka-server</module>
 		<module>microservice-turbine-server</module>
 		<module>microservice-user</module>
+		<module>microservice-contact</module>
 		<module>microservice-security</module>
 		<module>microservice-message</module>
 		<module>microservice-storage</module>

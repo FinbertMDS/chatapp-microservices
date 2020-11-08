@@ -7,6 +7,8 @@
   - Merge 2 services: file-management and file-storage to 1 service storage @done
 - Implement microservice-file-management @done
 - Implement microservice-contact
+  - When signup at service security, then auto create data of user and contact at service contact @done
+  - Add API: get all contacts,search contact , get contacts of user, add contact for user @done
 - Implement microservice-message
   - Add rabbitmq to send notify to client when chat @done
   - Update use security from microservice-security @done
@@ -27,3 +29,4 @@
   - Build app release ios
 - Add logback to all services to ELK stack at branch elk @done
 - Build mechanism like aws-amplify Auth.currentAuthenticatedUser() to get current logined at client
+- Add swagger to all microservices

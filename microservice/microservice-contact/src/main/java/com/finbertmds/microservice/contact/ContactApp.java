@@ -1,4 +1,4 @@
-package com.finbertmds.microservice.group;
+package com.finbertmds.microservice.contact;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @EnableAutoConfiguration
 @EnableDiscoveryClient
 @Component
-public class GroupApp {
+public class ContactApp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GroupApp.class, args);
+		SpringApplication.run(ContactApp.class, args);
 	}
 
 }
