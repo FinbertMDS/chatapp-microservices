@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -39,7 +40,7 @@ public class WebSecurityConfig {
 		public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 			authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 		}
-	
+
 		@Bean
 		public PasswordEncoder passwordEncoder() {
 			return new BCryptPasswordEncoder();
@@ -84,6 +85,21 @@ public class WebSecurityConfig {
 	@Configuration
 	@Order(2)
 	public static class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
+
+		private static final String[] AUTH_WHITELIST = { 
+			// @formatter:off
+			"/swagger-resources/**",
+			"/swagger-ui/**",
+			"/swagger-ui.html",
+			"/v2/api-docs/**",
+			"/v3/api-docs/**"
+			// @formatter:on	
+		};
+
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			web.ignoring().antMatchers(AUTH_WHITELIST);
+		}
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
