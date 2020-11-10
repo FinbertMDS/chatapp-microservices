@@ -25,7 +25,7 @@ This is a step-by-step guide how to run the example:
   it separately. See https://docs.docker.com/compose/install/ .
 
 ## Build
-
+### Services
 Change to the directory `microservice` and run `./mvnw clean
 package` or `./mvnw.cmd clean package` (Windows). This will take a while:
 
@@ -51,6 +51,13 @@ server runs in the background.
   in your home directory. Note that this means all dependencies will
   be downloaded again.
 
+### Client
+```sh
+# build client web
+cd client/web/chatapp && yarn && yarn build
+# build client mobile
+cd client/mobile/chatapp && yarn && cd android && gradlew assembleRelease
+```
 ## Run the containers
 
 First you need to build the Docker images. Change to the directory
@@ -98,10 +105,27 @@ If you need to do more trouble shooting open a shell in the container
 using e.g. `docker exec -it chatapp_security_1 /bin/sh` or execute
 command using `docker exec chatapp_security_1 /bin/ls`.
 
+If you want to run one or multiple service, you can use bash scripts in folder `scripts`. 
+Following instruction to execute. Input service index need to build (example `0 1 2 3`) 
+and `y` to rebuild service and one more times `y` to build, start docker.
+When build service by this way, auto call `scripts/wait-for-services.sh` 
+to wait service start successfully.
+```sh
+cd scripts && ./rebuildServices.sh
+```
+
 You can access:
 
 * The application through Zuul at http://localhost:8080/
 * The Eureka dashboard at http://localhost:8761/
 * The Hystrix dashboard at http://localhost:8989/
+* The Chat App client web at http://localhost:8000/
+* Swagger UI at http://localhost:8080/security/swagger-ui/
+
+Mange resources:
+
+* Adminer for Mysql data at http://localhost:6060/
+* Redis commander at http://localhost:7070/
+* RabbitMQ Management at http://localhost:15672/
 
 You can terminate all containers using `docker-compose down`.
