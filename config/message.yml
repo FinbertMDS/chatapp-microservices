@@ -38,9 +38,6 @@ server:
 spring:
   application:
     name: message
-  cloud:
-    refresh:
-      refreshable: none
   datasource:
     url: jdbc:mysql://mysql/db_security?useSSL=false
     username: root
