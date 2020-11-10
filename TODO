@@ -29,4 +29,5 @@
   - Build app release ios
 - Add logback to all services to ELK stack at branch elk @done
 - Build mechanism like aws-amplify Auth.currentAuthenticatedUser() to get current logined at client
-- Add swagger to all microservices
+- Add swagger to all microservices @done
+- Add config server and use config external configuration file at github @done

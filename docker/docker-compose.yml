@@ -5,6 +5,11 @@ services:
     ports:
       - "8761:8761"
 
+  config:
+    build: ../microservice/microservice-config-server
+    links:
+      - eureka
+
   user:
     build: ../microservice/microservice-user
     links:
@@ -39,6 +44,7 @@ services:
     build: ../microservice/microservice-storage
     links:
       - eureka
+      - config
       - mysql
 
   zuul:

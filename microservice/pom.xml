@@ -16,6 +16,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>microservice-config-server</module>
 		<module>microservice-eureka-server</module>
 		<module>microservice-turbine-server</module>
 		<module>microservice-user</module>
