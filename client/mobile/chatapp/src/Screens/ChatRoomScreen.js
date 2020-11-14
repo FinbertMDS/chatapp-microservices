@@ -15,25 +15,47 @@ const updateMessagesData = (messages) => {
 
 const ChatRoomScreen = () => {
 
+  const [roomDetail, setRoomDetail] = useState(null);
   const [messages, setMessages] = useState([]);
   const [{ user }] = useStateValue();
   const route = useRoute();
 
+  useEffect(() => {
+    if (route.params.id) {
+      ChatRoomAPI.getDetail(route.params.id)
+        .then(result => {
+          setRoomDetail(result);
+        })
+        .catch(error => Alert.alert("Error", JSON.stringify(error)));
+    }
+  }, [route.params.id, user.username]);
+
+  useEffect(() => {
+    if (route.params.id && roomDetail) {
+      if (route.params.id !== roomDetail.id) {
+        return;
+      }
+      if (roomDetail.connectedUsers && roomDetail.connectedUsers.length > 0) {
+        if (roomDetail.connectedUsers.filter(e => e.username === user.username).length <= 0) {
+          let participant = {
+            "username": user.username
+          };
+          ChatRoomAPI.addUserToChatRoom(route.params.id, participant)
+            .catch(error => Alert.alert("Error", JSON.stringify(error)));
+        }
+      }
+    }
+  }, [roomDetail, route.params.id, user.username]);
+
   const fetchMessages = () => {
     if (route.params.id) {
-      // ChatRoomAPI.getDetail(route.params.id)
-      //   .then(result => {
-      //     setRoomName(result.name);
-      //   })
-      //   .catch(error => alert(error.message));
-
       MessageAPI.getAllMessageInRoom(route.params.id, user.username)
         .then(result => {
           if (result && result.length > 0) {
             setMessages(updateMessagesData(result));
           }
         })
-        .catch(error => alert(error.message));
+        .catch(error => Alert.alert("Error", JSON.stringify(error)));
     }
   }
 
@@ -41,17 +63,17 @@ const ChatRoomScreen = () => {
     fetchMessages();
   }, [route.params.id, user.username])
 
-  useEffect(() => {
-    let participant = {
-      "username": user.username
-    };
-    ChatRoomAPI.addUserToChatRoom(route.params.id, participant)
-      .catch(error => Alert.alert("Error", JSON.stringify(error)));
-    return () => {
-      ChatRoomAPI.removeUserFromChatRoom(route.params.id, participant)
-        .catch(error => Alert.alert("Error", JSON.stringify(error)));
-    };
-  }, [route.params.id, user.username]);
+  // useEffect(() => {
+  //   let participant = {
+  //     "username": user.username
+  //   };
+  //   ChatRoomAPI.addUserToChatRoom(route.params.id, participant)
+  //     .catch(error => Alert.alert("Error", JSON.stringify(error)));
+  //   return () => {
+  //     ChatRoomAPI.removeUserFromChatRoom(route.params.id, participant)
+  //       .catch(error => Alert.alert("Error", JSON.stringify(error)));
+  //   };
+  // }, [route.params.id, user.username]);
 
   const publicTopicStr = MessageAPI.getPublicMessageTopicUrl(route.params.id);
   // const privateTopicStr = MessageAPI.getPrivateMessageTopicUrl(route.params.id);

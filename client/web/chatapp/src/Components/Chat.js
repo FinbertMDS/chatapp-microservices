@@ -20,6 +20,7 @@ function Chat() {
   const [input, setInput] = useState('');
   const { roomId } = useParams();
   const [roomName, setRoomName] = useState('');
+  const [roomDetail, setRoomDetail] = useState(null);
   const [messages, setMessages] = useState([]);
   const [{ user }, dispatch] = useStateValue();
   const { isMobile } = useDeviceDetect();
@@ -31,6 +32,7 @@ function Chat() {
       ChatRoomAPI.getDetail(roomId)
         .then(result => {
           setRoomName(result.name);
+          setRoomDetail(result);
         })
         .catch(error => alert(error.message));
 
@@ -43,20 +45,37 @@ function Chat() {
   }, [roomId, user.username]);
 
   useEffect(() => {
-    let participant = {
-      "username": user.username
-    };
-    if (roomId) {
-      ChatRoomAPI.addUserToChatRoom(roomId, participant)
-        .catch(error => alert(error.message));
-    }
-    return () => {
-      if (roomId) {
-        ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
-          .catch(error => alert(error.message));
+    if (roomId && roomDetail) {
+      if (roomId !== roomDetail.id) {
+        return;
       }
-    };
-  }, [roomId, user.username]);
+      if (roomDetail.connectedUsers && roomDetail.connectedUsers.length > 0) {
+        if (roomDetail.connectedUsers.filter(e => e.username === user.username).length <= 0) {
+          let participant = {
+            "username": user.username
+          };
+          ChatRoomAPI.addUserToChatRoom(roomId, participant)
+            .catch(error => alert(error.message));
+        }
+      }
+    }
+  }, [roomDetail, roomId, user.username]);
+
+  // useEffect(() => {
+  //   let participant = {
+  //     "username": user.username
+  //   };
+  //   if (roomId) {
+  //     ChatRoomAPI.addUserToChatRoom(roomId, participant)
+  //       .catch(error => alert(error.message));
+  //   }
+  //   return () => {
+  //     if (roomId) {
+  //       ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
+  //         .catch(error => alert(error.message));
+  //     }
+  //   };
+  // }, [roomId, user.username]);
 
   useEffect(() => {
     dispatch({
