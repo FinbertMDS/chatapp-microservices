@@ -120,21 +120,21 @@ function Chat() {
     ])
   }
 
-  useEffect(() => {
-    const onbeforeunloadFn = () => {
-      let participant = {
-        "username": user.username
-      };
-      ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
-        .catch(error => alert(error.message));
-    }
+  // useEffect(() => {
+  //   const onbeforeunloadFn = () => {
+  //     let participant = {
+  //       "username": user.username
+  //     };
+  //     ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
+  //       .catch(error => alert(error.message));
+  //   }
 
-    window.addEventListener('beforeunload', onbeforeunloadFn);
-    return () => {
-      window.removeEventListener('beforeunload', onbeforeunloadFn);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  //   window.addEventListener('beforeunload', onbeforeunloadFn);
+  //   return () => {
+  //     window.removeEventListener('beforeunload', onbeforeunloadFn);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
 
   // const handleDisconnect = () => {
   //   let participant = {
