@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList } from 'react-native';
+import { Alert, AppState, FlatList } from 'react-native';
 import PushNotification from "react-native-push-notification";
 import SockJsClient from "react-stomp";
 import { useStateValue } from "../../StateProvider";
@@ -52,6 +52,9 @@ export default function ChatsScreen() {
   };
   const replyUserStr = MessageAPI.getReplyMessageTopicUrl();
   const onReplyReceive = (message, topic) => {
+    if (AppState.currentState.match(/inactive|background/)) {
+      return;
+    }
     ObjectHelper.clean(message);
     if (currentRoomId && currentRoomId === message.chatRoomId) {
       return;
@@ -71,19 +74,19 @@ export default function ChatsScreen() {
   return (
     <>
       {/* <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}> */}
-        <FlatList
-          style={{ width: '100%' }}
-          data={chatRooms}
-          renderItem={({ item }) => <ChatListItem chatRoom={item} />}
-          keyExtractor={(item) => item.id}
-        />
-        <NewMessageButton onPress={handlePress} />
-        <SockJsClient
-          url={MessageAPI.wsSourceUrl}
-          topics={[replyUserStr]}
-          headers={customHeaders}
-          onMessage={onReplyReceive}
-          debug={false} />
+      <FlatList
+        style={{ width: '100%' }}
+        data={chatRooms}
+        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
+        keyExtractor={(item) => item.id}
+      />
+      <NewMessageButton onPress={handlePress} />
+      <SockJsClient
+        url={MessageAPI.wsSourceUrl}
+        topics={[replyUserStr]}
+        headers={customHeaders}
+        onMessage={onReplyReceive}
+        debug={false} />
       {/* </ImageBackground> */}
     </>
   );

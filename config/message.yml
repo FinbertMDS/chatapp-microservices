@@ -8,7 +8,6 @@ finbertmds:
     jwtSecret: finbertmdsSecretKey
     firebaseNotificationTopic: chatapp
     firebaseServerKey: AAAAWIYGAfA:APA91bEKr8LipSv9XG9T8yE0Dfadjf9o8175N25KXKUoBXfioMxep1j0IJBUKkY6SnKExN_DJFepCIxac3oAqbJ_62qMCSHZDfHCA0rAA5aggazhxIdVkLVSG7ukMo6kS3EzlFnzJDUh
-    firebase-configuration-file: fcm/config.json  
 eureka:
   client:
     serviceUrl:

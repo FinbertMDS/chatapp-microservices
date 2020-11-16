@@ -1,14 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { AppState, View } from 'react-native';
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 import { actionTypes } from '../../reducer';
 import { useStateValue } from '../../StateProvider';
+import MessageAPI from '../apis/MessageAPI';
 import { Text } from '../components/Themed';
 import Colors from "../constants/Colors";
 import StackScreenName from '../constants/StackScreenName';
@@ -52,6 +54,11 @@ function RootNavigator() {
       try {
         userInfo = await AsyncStorage.getItem('userInfo');
         userInfo = JSON.parse(userInfo);
+        if (userInfo && userInfo.username) {
+          let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
+          messaging().unsubscribeFromTopic(topic)
+            .then(() => console.log('Unsubscribed from topic!', topic));
+        }
         dispatch({
           type: actionTypes.SET_USER,
           user: userInfo
@@ -67,6 +74,44 @@ function RootNavigator() {
 
     bootstrapAsync();
   }, []);
+
+
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  useEffect(() => {
+    AppState.addEventListener("change", _handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+    };
+  }, []);
+
+  const _handleAppStateChange = async (nextAppState) => {
+    let userInfo = await AsyncStorage.getItem('userInfo');
+    userInfo = JSON.parse(userInfo);
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("App has come to the foreground!");
+      if (userInfo && userInfo.username) {
+        let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
+        messaging().unsubscribeFromTopic(topic)
+          .then(() => console.log('Unsubscribed from topic!', topic));
+      }
+    } else {
+      console.log("App has come to the background!");
+      if (userInfo && userInfo.username) {
+        let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
+        messaging().subscribeToTopic(topic)
+          .then(() => console.log('Subscribed to topic!', topic));
+      }
+    }
+
+    appState.current = nextAppState;
+    setAppStateVisible(appState.current);
+  };
 
   return (
     <Stack.Navigator screenOptions={{
@@ -84,7 +129,7 @@ function RootNavigator() {
     }}>
       {
         isLoading ? (
-          <Stack.Screen name={StackScreenName.Splash} component={SplashScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name={StackScreenName.Splash} component={SplashScreen} options={{ headerShown: false }} />
         ) : user === null ? (
           <>
             <Stack.Screen

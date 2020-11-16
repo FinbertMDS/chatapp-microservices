@@ -13,6 +13,8 @@
     "@react-native-async-storage/async-storage": "^1.13.2",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/push-notification-ios": "^1.7.3",
+    "@react-native-firebase/app": "^9.0.0",
+    "@react-native-firebase/messaging": "^8.0.1",
     "@react-navigation/material-top-tabs": "^5.3.2",
     "@react-navigation/native": "^5.8.2",
     "@react-navigation/stack": "^5.11.1",

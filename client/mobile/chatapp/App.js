@@ -1,4 +1,5 @@
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import messaging from '@react-native-firebase/messaging';
 import React, { useEffect } from "react";
 import { Platform, StatusBar, useColorScheme } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
@@ -8,6 +9,7 @@ import reducer, { initialState } from "./reducer";
 import Config from "./src/constants/Config";
 import StackScreenName from "./src/constants/StackScreenName";
 import { theme } from "./src/core/theme";
+import ObjectHelper from "./src/helpers/ObjectHelper";
 import useCachedResources from "./src/hooks/useCachedResources";
 import Navigation from "./src/navigation";
 import RootNavigation from "./src/navigation/RootNavigation";
@@ -25,12 +27,24 @@ PushNotification.configure({
     console.log("NOTIFICATION:", notification);
 
     // process the notification
-    let chatRoom = notification.data;
-    if (chatRoom.chatRoomId) {
-      RootNavigation.navigate(StackScreenName.ChatRoom, {
-        id: chatRoom.chatRoomId,
-        name: chatRoom.chatRoomName,
-      });
+    let message = notification.data;
+    ObjectHelper.clean(message);
+    if (notification.userInteraction) {
+      if (message.chatRoomId) {
+        new Promise(resolve => setTimeout(resolve, 2000)).then(() => {
+          RootNavigation.navigate(StackScreenName.ChatRoom, {
+            id: message.chatRoomId,
+            name: message.chatRoomName,
+          });
+        });
+      }
+    } else {
+      // PushNotification.localNotification({
+      //   channelId: Config.ANDROID_CHANNEL_ID, // (required for Android)
+      //   title: `[${message.chatRoomName}] ${message.fromUser}`, // (optional)
+      //   message: message.text, // (required)
+      //   userInfo: message,
+      // });
     }
 
     // (required) Called when a remote is received or opened, or local notification is opened
@@ -46,7 +60,7 @@ PushNotification.configure({
   },
 
   // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
-  onRegistrationError: function(err) {
+  onRegistrationError: function (err) {
     console.error(err.message, err);
   },
 
@@ -85,9 +99,27 @@ if (Platform.OS === 'android') {
   );
 }
 
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
+
 function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      requestUserPermission();
+    }
+  }, [])
+
   useEffect(() => {
     const fetchUser = async () => {
       // const userInfo = await Auth.currentAuthenticatedUser({ bypassCache: true });

@@ -19,6 +19,10 @@ const MessageAPI = {
     return "/user/queue/reply"
   },
 
+  getReplyMessageFCMTopicUrl: function (username) {
+    return `chatapp_${username}_reply`
+  },
+
   getAllMessageInRoom: function (roomId, forUser) {
     let url = getAllMessageInRoomUrl + "/" + roomId + "?forUser=" + forUser;
     return axios.get(url)
