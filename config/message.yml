@@ -5,7 +5,8 @@ chatapp:
 finbertmds:
   app:
     jwtExpirationMs: 86400000
-    jwtSecret: finbertmdsSecretKey    
+    jwtSecret: finbertmdsSecretKey
+    firebaseServerKey: AAAAWIYGAfA:APA91bG9kLeeF6uXHHO3IiyNG68kIQnugleUwl7DxDzD-OUXQfWG7pFLfJ7TurH6kLLJBSkLvATOJ1RK4J9n1wWcVFLia1-IUBXKFfasQZlqa-EhiR9bIEN5UC9ca5MnjWRF24qI4lOF  
 eureka:
   client:
     serviceUrl:
