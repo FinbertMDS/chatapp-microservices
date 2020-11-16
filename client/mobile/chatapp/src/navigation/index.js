@@ -22,6 +22,7 @@ import SignUpScreen from '../screens/SignUpScreen';
 import SplashScreen from '../screens/SplashScreen';
 import LinkingConfiguration from './LinkingConfiguration';
 import MainTabNavigator from './MainTabNavigator';
+import { navigationRef } from './RootNavigation';
 
 
 // If you are not familiar with React Navigation, we recommend going through the
@@ -29,6 +30,7 @@ import MainTabNavigator from './MainTabNavigator';
 export default function Navigation({ colorScheme }) {
   return (
     <NavigationContainer
+      ref={navigationRef}
       linking={LinkingConfiguration}
       theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <RootNavigator />
@@ -82,7 +84,7 @@ function RootNavigator() {
     }}>
       {
         isLoading ? (
-          <Stack.Screen name={StackScreenName.Splash} component={SplashScreen} />
+          <Stack.Screen name={StackScreenName.Splash} component={SplashScreen} options={{ headerShown: false }}/>
         ) : user === null ? (
           <>
             <Stack.Screen

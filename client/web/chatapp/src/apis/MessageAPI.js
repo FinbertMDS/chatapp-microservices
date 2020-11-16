@@ -14,6 +14,10 @@ const MessageAPI = {
     return "/user/queue/" + roomId + ".private.messages"
   },
 
+  getReplyMessageTopicUrl: function () {
+    return "/user/queue/reply"
+  },
+
   getAllMessageInRoom: function (roomId, forUser) {
     let url = getAllMessageInRoomUrl + "/" + roomId + "?forUser=" + forUser;
     return axios.get(url)

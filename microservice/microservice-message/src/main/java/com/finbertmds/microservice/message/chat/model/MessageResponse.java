@@ -9,6 +9,7 @@ import com.finbertmds.microservice.message.entity.InstantMessage;
 public class MessageResponse {
 
   private String chatRoomId;
+  private String chatRoomName;
 	private Date date;
   private String fromUser;
   private String toUser;
@@ -66,6 +67,14 @@ public class MessageResponse {
 
   public void setChatRoomId(String chatRoomId) {
     this.chatRoomId = chatRoomId;
+  }
+
+  public String getChatRoomName() {
+    return this.chatRoomName;
+  }
+
+  public void setChatRoomName(String chatRoomName) {
+    this.chatRoomName = chatRoomName;
   }
 
   public Date getDate() {

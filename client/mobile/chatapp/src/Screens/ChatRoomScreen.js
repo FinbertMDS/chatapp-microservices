@@ -1,7 +1,8 @@
-import { useRoute } from '@react-navigation/native';
-import React, { useEffect, useRef, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import { Alert, FlatList, ImageBackground } from 'react-native';
 import SockJsClient from "react-stomp";
+import { actionTypes } from '../../reducer';
 import { useStateValue } from '../../StateProvider';
 import ChatRoomAPI from '../apis/ChatRoomAPI';
 import MessageAPI from '../apis/MessageAPI';
@@ -10,21 +11,37 @@ import ChatMessage from "../components/ChatMessage";
 import InputBox from "../components/InputBox";
 
 const updateMessagesData = (messages) => {
-  return messages.filter((message) => !message.isNotification);
+  return messages.filter((message) => !message.isNotification).reverse();
 }
 
 const ChatRoomScreen = () => {
 
   const [roomDetail, setRoomDetail] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [{ user }] = useStateValue();
+  const [{ user }, dispatch] = useStateValue();
   const route = useRoute();
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    dispatch({
+      type: actionTypes.SET_CURRENT_ROOM_ID,
+      currentRoomId: route.params.id
+    });
+    return () => {
+      dispatch({
+        type: actionTypes.SET_CURRENT_ROOM_ID,
+        currentRoomId: null
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.params.id]);
 
   useEffect(() => {
     if (route.params.id) {
       ChatRoomAPI.getDetail(route.params.id)
         .then(result => {
           setRoomDetail(result);
+          navigation.setOptions({ title: result.name })
         })
         .catch(error => Alert.alert("Error", JSON.stringify(error)));
     }
@@ -82,8 +99,8 @@ const ChatRoomScreen = () => {
   const onMessageReceive = (msg, topic) => {
     if (!msg.isNotification) {
       setMessages([
-        ...messages,
         msg,
+        ...messages,
       ]);
     }
   }
@@ -117,15 +134,11 @@ const ChatRoomScreen = () => {
       Alert.alert("Error", JSON.stringify(error));
     }
   }
-  
-  const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollToEnd();
-    }
-  }
-  useEffect(scrollToBottom, [messages]);
+  const customHeaders = {
+    Authorization: "Bearer " + user.accessToken,
+    chatRoomId: route.params.id
+  };
 
   return (
     <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
@@ -133,14 +146,13 @@ const ChatRoomScreen = () => {
         data={messages}
         renderItem={({ item }) => <ChatMessage user={user} message={item} />}
         keyExtractor={(item) => item.date.toString()}
-        ref={messagesEndRef}
-      // inverted
+        inverted
       />
       <InputBox chatRoomID={route.params.id} onSendPress={handleSendPress} />
       <SockJsClient
         url={MessageAPI.wsSourceUrl}
         topics={[publicTopicStr]}
-        header={{ "chatRoomId": route.params.id }}
+        headers={customHeaders}
         onMessage={onMessageReceive} ref={(client) => { setClientRef(client) }}
         onConnect={() => { setClientConnected(true) }}
         onDisconnect={() => { setClientConnected(false) }}

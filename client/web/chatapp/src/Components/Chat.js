@@ -109,8 +109,11 @@ function Chat() {
   }
   useEffect(scrollToBottom, [messages]);
 
+  const customHeaders = {
+    Authorization: "Bearer " + user.accessToken
+  };
   const publicTopicStr = MessageAPI.getPublicMessageTopicUrl(roomId);
-  // const privateTopicStr = MessageAPI.getPrivateMessageTopicUrl(roomId);
+  // const replyUserStr = MessageAPI.getReplyMessageTopicUrl();
   const [/* clientRef */, setClientRef] = useState(null);
   const [/* clientConnected */, setClientConnected] = useState(false);
   const onMessageReceive = (msg, topic) => {
@@ -119,6 +122,9 @@ function Chat() {
       msg
     ])
   }
+  // const onReplyReceive = (msg, topic) => {
+  //   console.log(msg);
+  // }
 
   // useEffect(() => {
   //   const onbeforeunloadFn = () => {
@@ -218,18 +224,16 @@ function Chat() {
       <SockJsClient
         url={MessageAPI.wsSourceUrl}
         topics={[publicTopicStr]}
-        header={{ "chatRoomId": roomId }}
+        headers={customHeaders}
         onMessage={onMessageReceive} ref={(client) => { setClientRef(client) }}
         onConnect={() => { setClientConnected(true) }}
         onDisconnect={() => { setClientConnected(false) }}
         debug={false} />
       {/* <SockJsClient
         url={MessageAPI.wsSourceUrl}
-        topics={[privateTopicStr]}
-        header={{ "chatRoomId": roomId }}
-        onMessage={onMessageReceive} ref={(client) => { setClientRef(client) }}
-        onConnect={() => { setClientConnected(true) }}
-        onDisconnect={() => { setClientConnected(false) }}
+        topics={[replyUserStr]}
+        headers={customHeaders}
+        onMessage={onReplyReceive}
         debug={false} /> */}
     </div>
   )

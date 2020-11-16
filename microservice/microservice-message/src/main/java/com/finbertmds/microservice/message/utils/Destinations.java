@@ -12,6 +12,10 @@ public class Destinations {
 			return "/queue/" + chatRoomId + ".private.messages";
 		}
 		
+		public static String replyMessages() {
+			return "/queue/reply";
+		}
+		
 		public static String connectedUsers(String chatRoomId) {
 			return "/topic/" + chatRoomId + ".connected.users";
 		}
