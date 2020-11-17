@@ -28,12 +28,12 @@ const InputBox = (props) => {
   }
 
   const onPress = async () => {
+    setMessage('');
     if (!message) {
       onMicrophonePress();
     } else {
       await props.onSendPress(message);
     }
-    setMessage('');
   }
 
   return (

@@ -12,8 +12,10 @@
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
 
+#if DEBUG
 #import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
+#endif
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -25,7 +27,7 @@ static void InitializeFlipper(UIApplication *application) {
   [client start];
 }
 #endif
-
+@import Firebase;
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -50,7 +52,7 @@ static void InitializeFlipper(UIApplication *application) {
   // Define UNUserNotificationCenter
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-  
+  [FIRApp configure];
   return YES;
 }
 
@@ -62,7 +64,7 @@ static void InitializeFlipper(UIApplication *application) {
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
-
+#if DEBUG
 // Required for the register event.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
@@ -86,6 +88,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 {
   [RNCPushNotificationIOS didReceiveNotificationResponse:response];
 }
+#endif
 
 //Called when a notification is delivered to a foreground app.
 -(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler

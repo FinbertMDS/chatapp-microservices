@@ -93,12 +93,12 @@ function Chat() {
 
   const sendMessage = (e) => {
     e.preventDefault();
+    setInput('');
     let messageData = {
       "fromUser": user.username,
       "text": input
     };
     MessageAPI.sendPublicMessage(roomId, messageData)
-      .then(setInput(''))
       .catch(error => alert(error.message));
   }
 
