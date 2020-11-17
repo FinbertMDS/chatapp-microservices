@@ -23,6 +23,7 @@
     - attach file to send message
   - Security API with Token @done
   - Add docker @done
+  - Dark mode
 - Add client mobile app use react-native
   - SignIn, SignUp, Create room, Send and receive message @done
   - Build app release android @done
