@@ -41,7 +41,7 @@ The demo can be run with Docker Compose.
 ## Use ELK Stack
 Demo use ELK Stack for logging in microservices at branch [elk](https://github.com/FinbertMDS/chatapp-microservices/tree/elk)
 
-## Thanks you
+## Thanks
 This demo get inspired from
 1. [ewolff/microservice](https://github.com/ewolff/microservice)
 2. [bezkoder/spring-boot-spring-security-jwt-authentication](https://github.com/bezkoder/spring-boot-spring-security-jwt-authentication)
