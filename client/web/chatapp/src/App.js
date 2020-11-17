@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
-import Chat from "./Components/Chat";
-import Notification from "./Components/Notification";
-import Sidebar from "./Components/Sidebar";
-import SignIn from "./Components/SignIn";
+import Chat from "./components/Chat";
+import Notification from "./components/Notification";
+import Sidebar from "./components/Sidebar";
+import SignIn from "./components/SignIn";
 import useDeviceDetect from "./helpers/useDeviceDetect";
 import { actionTypes } from "./reducer";
 import { useStateValue } from "./StateProvider";
