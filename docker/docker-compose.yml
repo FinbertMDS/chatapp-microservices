@@ -9,7 +9,8 @@ services:
     build: ../microservice/microservice-config-server
     links:
       - eureka
-
+    volumes:
+      - ../config/:/root/config
   user:
     build: ../microservice/microservice-user
     links:
@@ -32,6 +33,7 @@ services:
       - redis
       - rabbitmq
       - mysql
+    restart: on-failure
 
   contact:
     build: ../microservice/microservice-contact

@@ -49,7 +49,7 @@ function Chat() {
       if (roomId !== roomDetail.id) {
         return;
       }
-      if (roomDetail.connectedUsers && roomDetail.connectedUsers.length > 0) {
+      if (roomDetail.connectedUsers) {
         if (roomDetail.connectedUsers.filter(e => e.username === user.username).length <= 0) {
           let participant = {
             "username": user.username
