@@ -6,6 +6,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 declare -a servicesWillBeRebuild
 
 main() {
+  initGitAtFolderConfig
   printListService
   getInputFromUser
   read -p "Do you wish to rebuild services? y/n: " ynService
@@ -19,6 +20,15 @@ main() {
   case $ynDocker in
     [Yy]* ) buildAndStartDocker;;
   esac
+}
+
+initGitAtFolderConfig() {
+  if [ ! -d "${DIR}/../config/.git" ]; then
+    cd ../config
+    git init
+    git commit -m "init"
+    cd $DIR
+  fi
 }
 
 printListService() {

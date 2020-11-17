@@ -58,6 +58,14 @@ cd client/web/chatapp && yarn && yarn build
 # build client mobile
 cd client/mobile/chatapp && yarn && cd android && gradlew assembleRelease
 ```
+## Prepare config folder
+If you want to run configuration server with local folder `config`. 
+You must init git in folder `config` by below commands:
+```sh
+cd config
+git init
+git commit -m "init"
+```
 ## Run the containers
 
 First you need to build the Docker images. Change to the directory
