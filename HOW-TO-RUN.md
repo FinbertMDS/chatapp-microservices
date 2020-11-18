@@ -52,6 +52,14 @@ server runs in the background.
   be downloaded again.
 
 ### Client
+Create file config firebase to build mobile app.
+1. Generating Android credentials
+Download the `google-services.json` file and place it inside of your project 
+at the following location: `client/mobile/chatapp/android/app/google-services.json`.
+2. Generating iOS credentials
+Download the `GoogleService-Info.plist` file and place it inside of your project
+at the following location: `client/mobile/chatapp/ios/GoogleService-Info.plist`
+
 ```sh
 # build client web
 cd client/web/chatapp && yarn && yarn build
