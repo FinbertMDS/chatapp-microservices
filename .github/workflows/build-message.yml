@@ -8,7 +8,7 @@ on:
 jobs:
   push_to_registry:
     name: message
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2

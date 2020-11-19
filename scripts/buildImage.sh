@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 docker tag chatapp_chatapp ngovanhuy0241/chatapp_chatapp
 docker tag chatapp_contact ngovanhuy0241/chatapp_contact
 docker tag chatapp_eureka ngovanhuy0241/chatapp_eureka
