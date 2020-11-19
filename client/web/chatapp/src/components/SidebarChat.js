@@ -13,13 +13,13 @@ function SidebarChat({ addNewChat, id, name }) {
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
 
-    if (id) {
-      // MessageAPI.getAllMessageInRoom(id, user.username)
-      //   .then(result => {
-      //     setMessages(result);
-      //   })
-      //   .catch(error => alert(error.message));
-    }
+    // if (id) {
+    //   MessageAPI.getAllMessageInRoom(id, user.username)
+    //     .then(result => {
+    //       setMessages(result);
+    //     })
+    //     .catch(error => alert(error.message));
+    // }
   }, [id]);
 
   const createChat = () => {
