@@ -211,7 +211,7 @@ function Chat() {
         <IconButton>
           <InsertEmoticonIcon />
         </IconButton>
-        <form>
+        <form noValidate onSubmit={sendMessage}>
           <input
             placeholder='Type a message'
             type='text'
