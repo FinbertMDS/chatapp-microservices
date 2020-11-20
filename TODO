@@ -22,11 +22,10 @@
     - attach file to send message
   - Security API with Token @done
   - Add docker @done
-  - Dark mode
 - Add client mobile app use react-native
   - SignIn, SignUp, Create room, Send and receive message @done
   - Build app release android @done
-  - Build app release ios
+  - Build app release ios @done
 - Add logback to all services to ELK stack at branch elk @done
 - Build mechanism like aws-amplify Auth.currentAuthenticatedUser() to get current logined at client
 - Add swagger to all microservices @done
