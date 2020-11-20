@@ -141,7 +141,7 @@ function App() {
       //     id: userInfo.attributes.sub,
       //     name: userInfo.username,
       //     imageUri: getRandomImage(),
-      //     status: 'Hey, I am using WhatsApp',
+      //     status: 'Hey, I am using ChatApp',
       //   }
 
       //   await API.graphql(

@@ -153,7 +153,7 @@ function RootNavigator() {
                   name={StackScreenName.Root}
                   component={MainTabNavigator}
                   options={{
-                    title: "WhatsApp",
+                    title: "ChatApp",
                     headerLeft: () => (
                       <Text>test</Text>
                     ),
