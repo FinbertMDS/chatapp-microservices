@@ -31,11 +31,9 @@ PushNotification.configure({
     ObjectHelper.clean(message);
     if (notification.userInteraction) {
       if (message.chatRoomId) {
-        new Promise(resolve => setTimeout(resolve, 2000)).then(() => {
-          RootNavigation.navigate(StackScreenName.ChatRoom, {
-            id: message.chatRoomId,
-            name: message.chatRoomName,
-          });
+        RootNavigation.navigate(StackScreenName.ChatRoom, {
+          id: message.chatRoomId,
+          name: message.chatRoomName,
         });
       }
     } else {
@@ -118,6 +116,19 @@ function App() {
     if (Platform.OS === 'ios') {
       requestUserPermission();
     }
+    PushNotification.popInitialNotification((notification) => {
+      console.log('Initial Notification', notification);
+      let message = notification.data;
+      ObjectHelper.clean(message);
+        if (message.chatRoomId) {
+          new Promise(resolve => setTimeout(resolve, 1000)).then(() => {
+            RootNavigation.navigate(StackScreenName.ChatRoom, {
+              id: message.chatRoomId,
+              name: message.chatRoomName,
+            });
+          });
+        }
+    });
   }, [])
 
   useEffect(() => {

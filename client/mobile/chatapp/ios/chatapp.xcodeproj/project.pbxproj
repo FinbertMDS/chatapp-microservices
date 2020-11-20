@@ -93,6 +93,7 @@
 		91758EBE254DC14C00CB7DD6 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		91758EBF254DC14C00CB7DD6 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
 		91B0B5FE25612066002C9338 /* chatapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = chatapp.entitlements; path = chatapp/chatapp.entitlements; sourceTree = "<group>"; };
+		91B500832567D55B006865C5 /* chatappDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = chatappDebug.entitlements; path = chatapp/chatappDebug.entitlements; sourceTree = "<group>"; };
 		91E61CAB25641E1F0016AD02 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		B5904D47E04703527BCFE4C2 /* Pods-chatapp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chatapp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-chatapp-tvOSTests/Pods-chatapp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C76887B9FA348470560B553C /* Pods-chatapp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chatapp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-chatapp-tvOS/Pods-chatapp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -160,6 +161,7 @@
 		13B07FAE1A68108700A75B9A /* chatapp */ = {
 			isa = PBXGroup;
 			children = (
+				91B500832567D55B006865C5 /* chatappDebug.entitlements */,
 				91E61CAB25641E1F0016AD02 /* GoogleService-Info.plist */,
 				91B0B5FE25612066002C9338 /* chatapp.entitlements */,
 				91758EAF254DC14C00CB7DD6 /* Fonts */,
@@ -356,8 +358,8 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 7UJG573Q5X;
 						LastSwiftMigration = 1120;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -745,9 +747,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = chatapp/chatapp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = chatapp/chatappDebug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7UJG573Q5X;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -766,8 +770,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.finbertmds.chatapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.chatapp;
 				PRODUCT_NAME = chatapp;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
