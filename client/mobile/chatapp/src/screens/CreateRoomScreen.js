@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useLayoutEffect, useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, ImageBackground, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { TextInput } from 'react-native-paper';
 import ChatRoomAPI from '../apis/ChatRoomAPI';
+import BG from '../assets/images/BG.png';
 import { Text } from '../components/Themed';
 import StackScreenName from '../constants/StackScreenName';
 
@@ -18,7 +19,7 @@ export default function CreateRoomScreen() {
           marginRight: 10,
         }}>
           <TouchableWithoutFeedback disabled={roomName === ""} onPress={createRoom}>
-            <Text style={{color: roomName === "" ? "#609D9E" : "white" }}>Create</Text>
+            <Text style={{ color: roomName === "" ? "#609D9E" : "white" }}>Create</Text>
           </TouchableWithoutFeedback>
         </View>
       )
@@ -39,13 +40,15 @@ export default function CreateRoomScreen() {
   }
   return (
     <>
-      <TextInput
-        label="Room name"
-        returnKeyType="next"
-        value={roomName}
-        onChangeText={text => setRoomName(text)}
-        autoCapitalize="none"
-      />
+      <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
+        <TextInput
+          label="Room name"
+          returnKeyType="next"
+          value={roomName}
+          onChangeText={text => setRoomName(text)}
+          autoCapitalize="none"
+        />
+      </ImageBackground>
     </>
   );
 }

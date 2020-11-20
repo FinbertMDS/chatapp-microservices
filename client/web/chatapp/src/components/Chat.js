@@ -109,9 +109,12 @@ function Chat() {
   }
   useEffect(scrollToBottom, [messages]);
 
-  const customHeaders = {
-    Authorization: "Bearer " + user.accessToken
-  };
+  let customHeaders = {};
+  if (user && user.accessToken) {
+    customHeaders = {
+      Authorization: "Bearer " + user.accessToken
+    };
+  }
   const publicTopicStr = MessageAPI.getPublicMessageTopicUrl(roomId);
   // const replyUserStr = MessageAPI.getReplyMessageTopicUrl();
   const [/* clientRef */, setClientRef] = useState(null);

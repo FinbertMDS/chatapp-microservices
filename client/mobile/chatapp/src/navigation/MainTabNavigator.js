@@ -23,7 +23,7 @@ export default function MainTabNavigator() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <View style={{ marginLeft: 20 }}>
+        <View style={{ marginLeft: 20, borderRadius: 15 }}>
           <TouchableWithoutFeedback onPress={() => navigation.navigate(StackScreenName.Setting)}>
             <Avatar.Image size={24} source={require('../assets/logo.png')} />
           </TouchableWithoutFeedback>
