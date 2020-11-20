@@ -46,7 +46,7 @@ const SignUpScreen = () => {
         navigation.navigate(StackScreenName.SignIn);
       })
       .catch(error => {
-        Alert.alert("User registered failure", JSON.stringify(error))
+        Alert.alert("User registered failure", error.message)
       });
   };
 

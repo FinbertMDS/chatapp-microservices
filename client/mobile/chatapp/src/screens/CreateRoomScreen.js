@@ -35,7 +35,7 @@ export default function CreateRoomScreen() {
         .then(() => {
           navigation.navigate(StackScreenName.Chats);
         })
-        .catch(error => Alert.alert("Error", JSON.stringify(error)));
+        .catch(error => Alert.alert("Error", error.message));
     }
   }
   return (

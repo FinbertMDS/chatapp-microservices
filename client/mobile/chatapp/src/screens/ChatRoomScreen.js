@@ -43,7 +43,7 @@ const ChatRoomScreen = () => {
           setRoomDetail(result);
           navigation.setOptions({ title: result.name })
         })
-        .catch(error => Alert.alert("Error", JSON.stringify(error)));
+        .catch(error => Alert.alert("Error", error.message));
     }
   }, [route.params.id, user.username]);
 
@@ -58,7 +58,7 @@ const ChatRoomScreen = () => {
             "username": user.username
           };
           ChatRoomAPI.addUserToChatRoom(route.params.id, participant)
-            .catch(error => Alert.alert("Error", JSON.stringify(error)));
+            .catch(error => Alert.alert("Error", error.message));
         }
       }
     }
@@ -72,7 +72,7 @@ const ChatRoomScreen = () => {
             setMessages(updateMessagesData(result));
           }
         })
-        .catch(error => Alert.alert("Error", JSON.stringify(error)));
+        .catch(error => Alert.alert("Error", error.message));
     }
   }
 
@@ -85,10 +85,10 @@ const ChatRoomScreen = () => {
   //     "username": user.username
   //   };
   //   ChatRoomAPI.addUserToChatRoom(route.params.id, participant)
-  //     .catch(error => Alert.alert("Error", JSON.stringify(error)));
+  //     .catch(error => Alert.alert("Error", error.message));
   //   return () => {
   //     ChatRoomAPI.removeUserFromChatRoom(route.params.id, participant)
-  //       .catch(error => Alert.alert("Error", JSON.stringify(error)));
+  //       .catch(error => Alert.alert("Error", error.message));
   //   };
   // }, [route.params.id, user.username]);
 
@@ -131,7 +131,7 @@ const ChatRoomScreen = () => {
 
       // await updateChatRoomLastMessage(newMessageData.data.createMessage.id)
     } catch (e) {
-      Alert.alert("Error", JSON.stringify(error));
+      Alert.alert("Error", error.message);
     }
   }
 
