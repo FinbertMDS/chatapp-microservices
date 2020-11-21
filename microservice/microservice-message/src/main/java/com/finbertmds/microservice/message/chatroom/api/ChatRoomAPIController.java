@@ -7,6 +7,8 @@ import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoom;
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoomUser;
 import com.finbertmds.microservice.message.chatroom.domain.service.ChatRoomService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/chatroom")
 public class ChatRoomAPIController {
+	private static final Logger logger = LoggerFactory.getLogger(ChatRoomAPIController.class);
 
 	@Autowired
 	private ChatRoomService chatRoomService;
@@ -41,6 +44,7 @@ public class ChatRoomAPIController {
 
 			return new ResponseEntity<>(chatRooms, HttpStatus.OK);
 		} catch (Exception e) {
+      logger.error("An exception occurred!", e);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -78,6 +82,7 @@ public class ChatRoomAPIController {
 			ChatRoom _chatRoom = chatRoomService.save(chatRoom);
 			return new ResponseEntity<>(_chatRoom, HttpStatus.CREATED);
 		} catch (Exception e) {
+      logger.error("An exception occurred!", e);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -94,6 +99,7 @@ public class ChatRoomAPIController {
 			}
 			return new ResponseEntity<>(chatRoom, HttpStatus.OK);
 		} catch (Exception e) {
+      logger.error("An exception occurred!", e);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -105,6 +111,7 @@ public class ChatRoomAPIController {
 			ChatRoom _chatRoom = chatRoomService.leave(participant, chatRoomService.findById(chatRoomId));
 			return new ResponseEntity<>(_chatRoom, HttpStatus.OK);
 		} catch (Exception e) {
+      logger.error("An exception occurred!", e);
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

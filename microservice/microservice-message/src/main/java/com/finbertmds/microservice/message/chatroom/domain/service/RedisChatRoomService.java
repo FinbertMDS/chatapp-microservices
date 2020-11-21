@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import com.finbertmds.microservice.message.chat.model.MessageResponse;
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoom;
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoomUser;
+import com.finbertmds.microservice.message.chatroom.domain.model.LastMessage;
 import com.finbertmds.microservice.message.chatroom.domain.repository.ChatRoomRepository;
 import com.finbertmds.microservice.message.entity.InstantMessage;
 import com.finbertmds.microservice.message.services.AndroidPushNotificationsService;
@@ -84,6 +85,10 @@ public class RedisChatRoomService implements ChatRoomService {
 
 	private void sendPublicMessageToAllUser(InstantMessage instantMessage) {
 		ChatRoom chatRoom = findById(instantMessage.getInstantMessageKey().getChatRoomId());
+		LastMessage lastMessage = new LastMessage(instantMessage.getFromUser(), instantMessage.getText(),
+				instantMessage.getInstantMessageKey().getDate());
+		chatRoom.setLastMessage(lastMessage);
+		save(chatRoom);
 		if (!chatRoom.getConnectedUsers().isEmpty()) {
 			for (ChatRoomUser chatRoomUser : chatRoom.getConnectedUsers()) {
 				if (!instantMessage.getFromUser().equals(chatRoomUser.getUsername())) {

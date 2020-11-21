@@ -18,6 +18,7 @@ public class ChatRoom {
 	private String id;
 	private String name;
 	private String description;
+	private LastMessage lastMessage;
 	private List<ChatRoomUser> connectedUsers = new ArrayList<>();
 	
 	public ChatRoom() {
@@ -25,10 +26,11 @@ public class ChatRoom {
 	}
 	
 	@VisibleForTesting
-	public ChatRoom(String id, String name, String description) {
+	public ChatRoom(String id, String name, String description, LastMessage lastMessage) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
+		this.lastMessage = lastMessage;
 	}
 
 	public String getId() {
@@ -60,6 +62,14 @@ public class ChatRoom {
 	}
 	public int getNumberOfConnectedUsers(){
 		return this.connectedUsers.size();
+	}
+
+	public LastMessage getLastMessage() {
+		return this.lastMessage;
+	}
+
+	public void setLastMessage(LastMessage lastMessage) {
+		this.lastMessage = lastMessage;
 	}
 
 	@Override

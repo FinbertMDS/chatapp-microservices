@@ -14,7 +14,13 @@ import com.finbertmds.microservice.message.chatroom.domain.service.InstantMessag
 import com.finbertmds.microservice.message.entity.InstantMessage;
 import com.finbertmds.microservice.message.entity.InstantMessageKey;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.core.query.CassandraPageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/messages")
 public class ChatAPIController {
+  private static final Logger logger = LoggerFactory.getLogger(ChatAPIController.class);
 
   @Autowired
   private ChatRoomService chatRoomService;
@@ -57,13 +64,28 @@ public class ChatAPIController {
   }
 
   @GetMapping(value = "/{chatRoomId}")
-  public ResponseEntity<List<MessageResponse>> fetchAllMessagesForRoom(@PathVariable String chatRoomId,
-      @RequestParam(required = true) String forUser) {
+  public ResponseEntity<List<MessageResponse>> fetchMessagesForRoom(@PathVariable String chatRoomId,
+      @RequestParam(required = true) String forUser, @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size) {
     try {
       List<MessageResponse> messages = new ArrayList<MessageResponse>();
-
-      instantMessageService.findAllInstantMessagesFor(forUser, chatRoomId)
-          .forEach(instantMessage -> messages.add(new MessageResponse(instantMessage)));
+      Pageable paging = CassandraPageRequest.of(0, size, Sort.by("date").descending());
+      Slice<InstantMessage> instantMessagesPage = instantMessageService.findInstantMessagesFor(forUser, chatRoomId,
+          paging);
+      int currentIndex = 0;
+      if (page > 0) {
+        while (instantMessagesPage.hasNext()) {
+          currentIndex++;
+          instantMessagesPage = instantMessageService.findInstantMessagesFor(forUser, chatRoomId,
+              instantMessagesPage.nextPageable());
+          if (currentIndex == page) {
+            break;
+          }
+        }
+      }
+      if (currentIndex == page) {
+        instantMessagesPage.forEach(instantMessage -> messages.add(new MessageResponse(instantMessage)));
+      }
 
       if (messages.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -71,6 +93,7 @@ public class ChatAPIController {
 
       return new ResponseEntity<>(messages, HttpStatus.OK);
     } catch (Exception e) {
+      logger.error("An exception occurred!", e);
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
