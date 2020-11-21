@@ -5,7 +5,9 @@ import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import MicIcon from '@material-ui/icons/Mic';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
-import React, { useEffect, useRef, useState } from 'react';
+import moment from "moment";
+import React, { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { useHistory, useParams } from 'react-router-dom';
 import SockJsClient from "react-stomp";
 import ChatRoomAPI from '../apis/ChatRoomAPI';
@@ -14,6 +16,10 @@ import useDeviceDetect from '../helpers/useDeviceDetect';
 import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
 import './Chat.css';
+
+const updateMessagesData = (messages) => {
+  return messages.filter((message) => !message.isNotification);
+}
 
 function Chat() {
   const [seed, setSeed] = useState('');
@@ -25,10 +31,16 @@ function Chat() {
   const [{ user }, dispatch] = useStateValue();
   const { isMobile } = useDeviceDetect();
   const history = useHistory();
+  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
     if (roomId) {
+      setMessages([]);
+      setHasMore(true);
+      setCurrentPage(0);
+
       ChatRoomAPI.getDetail(roomId)
         .then(result => {
           setRoomName(result.name);
@@ -36,13 +48,38 @@ function Chat() {
         })
         .catch(error => alert(error.message));
 
-      MessageAPI.getAllMessageInRoom(roomId, user.username)
+      MessageAPI.getMessageInRoom(roomId, user.username)
         .then(result => {
-          setMessages(result);
+          if (result && result.length > 0) {
+            setMessages(updateMessagesData(result));
+          }
         })
         .catch(error => alert(error.message));
     }
   }, [roomId, user.username]);
+
+  const fetchMoreData = () => {
+    if (roomId) {
+      MessageAPI.getMessageInRoom(roomId, user.username, currentPage + 1)
+        .then(result => {
+          if (!result) {
+            setHasMore(false);
+            return;
+          }
+          result = updateMessagesData(result);
+          if (result.length <= 0) {
+            setHasMore(false);
+            return;
+          }
+          setCurrentPage(currentPage + 1);
+          setMessages([
+            ...messages,
+            ...result,
+          ]);
+        })
+        .catch(error => alert(error.message));
+    }
+  }
 
   useEffect(() => {
     if (roomId && roomDetail) {
@@ -102,13 +139,6 @@ function Chat() {
       .catch(error => alert(error.message));
   }
 
-  const messagesEndRef = useRef(null)
-
-  const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView();
-  }
-  useEffect(scrollToBottom, [messages]);
-
   let customHeaders = {};
   if (user && user.accessToken) {
     customHeaders = {
@@ -119,11 +149,12 @@ function Chat() {
   // const replyUserStr = MessageAPI.getReplyMessageTopicUrl();
   const [/* clientRef */, setClientRef] = useState(null);
   const [/* clientConnected */, setClientConnected] = useState(false);
-  const onMessageReceive = (msg, topic) => {
+  const onMessageReceive = (message, topic) => {
+    // scrollToBottom();
     setMessages([
+      message,
       ...messages,
-      msg
-    ])
+    ]);
   }
   // const onReplyReceive = (msg, topic) => {
   //   console.log(msg);
@@ -152,6 +183,18 @@ function Chat() {
   //   ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
   //     .catch(error => alert(error.message));
   // }  
+
+  const endMessageDisplay = (
+    <p style={{ textAlign: "center", marginBottom: 20, marginTop: 20 }}>
+      <b>Yay! You have seen it all</b>
+    </p>
+  )
+
+  const loadMoreDisplay = (
+    <p style={{ textAlign: "center", marginBottom: 20, marginTop: 20 }}>
+      <b>Loading...</b>
+    </p>
+  );
 
   return (
     <div className='chat'>
@@ -191,21 +234,43 @@ function Chat() {
           </IconButton>
         </div>
       </div>
-      <div className='chat__body'>
-        {messages && messages.map(message => {
-          if (!message.isNotification) {
-            return (
-              <p className={`chat__message ${message.fromUser === user.username && "chat__reciever"}`} key={message.date}>
-                <span className='chat__name'>{message.fromUser}</span>
-                {message.text}
-                <span className='chat__timestamp'>{new Date(message.date).toLocaleString()}</span>
-              </p>
-            );
-          } else {
-            return "";
-          }
-        })}
-        <div ref={messagesEndRef} />
+      <div className='chat__body'
+        id="scrollableDiv"
+        style={{
+          display: 'flex',
+          flexDirection: 'column-reverse',
+        }}>
+        {
+          messages && messages.length > 0 && (
+            <>
+              {/*Put the scroll bar always on the bottom*/}
+              <InfiniteScroll
+                dataLength={messages.length}
+                next={fetchMoreData}
+                style={{ display: 'flex', flexDirection: 'column-reverse' }} //To put endMessage and loader to the top.
+                inverse={true} //
+                hasMore={hasMore}
+                endMessage={endMessageDisplay}
+                loader={loadMoreDisplay}
+                scrollableTarget="scrollableDiv"
+              >
+                {messages.map(message => {
+                  // if (!message.isNotification) {
+                    return (
+                      <p className={`chat__message ${message.fromUser === user.username ? 'chat__reciever' : 'chat__sender'}`} key={message.date}>
+                        <span className='chat__name'>{message.fromUser}</span>
+                        {message.text}
+                        <span className='chat__timestamp'>{moment(message.date).fromNow()}</span>
+                      </p>
+                    );
+                  // } else {
+                  //   return "";
+                  // }
+                })}
+              </InfiniteScroll>
+            </>
+          )
+        }
       </div>
       <div className='chat__footer'>
         <IconButton>

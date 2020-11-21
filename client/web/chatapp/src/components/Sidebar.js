@@ -98,6 +98,21 @@ function Sidebar() {
     setInput('')
   }
 
+  const handleCreateChat = (roomName) => {
+    let roomData = {
+      "name": roomName
+    };
+    ChatRoomAPI.createRoom(roomData)
+      .then(result => {
+        setRooms([
+          ...rooms,
+          result,
+        ]);
+        // console.log(result);
+      })
+      .catch(error => alert(error.message));
+  }
+
   const classes = useStyles();
 
   return (
@@ -144,12 +159,11 @@ function Sidebar() {
         </div>
       </div>
       <div className='sidebar__chats'>
-        <SidebarChat addNewChat />
+        <SidebarChat addNewChat onCreateChat={handleCreateChat}/>
         {rooms && rooms.map(room => room && (
           <SidebarChat
             key={room.id}
-            id={room.id}
-            name={room.name}
+            roomInfo={room}
           />
         ))}
 

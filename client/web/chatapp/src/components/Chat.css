@@ -35,7 +35,7 @@
 .chat__body{
   background-repeat: repeat;
   background-position: center;
-  padding: 30px;
+  padding: 0 30px;
   flex:1;
   overflow-x: hidden;
   overflow-y: auto;
@@ -48,7 +48,7 @@
   border-radius: 10px;
   width: fit-content;
   background-color: white;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 .chat__body .chat__message:last-of-type {
   margin-bottom: 0;
@@ -63,9 +63,19 @@
   margin-left: 10px;
   font-size: xx-small;
 }
+.chat__sender {
+  border-top-left-radius: 0;
+}
+.chat__sender .chat__name {
+  left: 0;
+}
 .chat__reciever {
+  border-top-right-radius: 0;
   margin-left: auto;
   background-color: #dcf8c6;
+}
+.chat__reciever .chat__name {
+  right: 0;
 }
 .chat__footer{
   display: flex;
