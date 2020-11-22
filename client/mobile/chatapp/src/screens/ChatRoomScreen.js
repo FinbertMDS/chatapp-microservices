@@ -118,11 +118,6 @@ const ChatRoomScreen = () => {
     }
   }, [route.params.id, user.username])
 
-  useEffect(() => {
-    console.log(messages);
-  }, [messages])
-
-
   // useEffect(() => {
   //   let participant = {
   //     "username": user.username
