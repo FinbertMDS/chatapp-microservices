@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, ImageBackground } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, ImageBackground, View } from 'react-native';
 import SockJsClient from "react-stomp";
 import { actionTypes } from '../../reducer';
 import { useStateValue } from '../../StateProvider';
@@ -11,7 +11,7 @@ import ChatMessage from "../components/ChatMessage";
 import InputBox from "../components/InputBox";
 
 const updateMessagesData = (messages) => {
-  return messages.filter((message) => !message.isNotification).reverse();
+  return messages.filter((message) => !message.isNotification);
 }
 
 const ChatRoomScreen = () => {
@@ -21,6 +21,9 @@ const ChatRoomScreen = () => {
   const [{ user }, dispatch] = useStateValue();
   const route = useRoute();
   const navigation = useNavigation();
+  const [isFetching, setIsFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     dispatch({
@@ -65,20 +68,60 @@ const ChatRoomScreen = () => {
   }, [roomDetail, route.params.id, user.username]);
 
   const fetchMessages = () => {
+    MessageAPI.getMessageInRoom(route.params.id, user.username)
+      .then(result => {
+        if (result && result.length > 0) {
+          setMessages(updateMessagesData(result));
+        }
+      })
+      .catch(error => Alert.alert("Error", error.message));
+  }
+
+  const fetchMoreData = () => {
     if (route.params.id) {
-      MessageAPI.getAllMessageInRoom(route.params.id, user.username)
+      if (isFetching) {
+        return;
+      }
+      if (!hasMore) {
+        return;
+      }
+      setIsFetching(true);
+      MessageAPI.getMessageInRoom(route.params.id, user.username, currentPage + 1)
         .then(result => {
-          if (result && result.length > 0) {
-            setMessages(updateMessagesData(result));
+          setIsFetching(false);
+          if (!result) {
+            setHasMore(false);
+            return;
           }
+          result = updateMessagesData(result);
+          if (result.length <= 0) {
+            setHasMore(false);
+            return;
+          }
+          setCurrentPage(currentPage + 1);
+          setMessages([
+            ...messages,
+            ...result,
+          ]);
         })
-        .catch(error => Alert.alert("Error", error.message));
+        .catch(error => alert(error.message));
     }
   }
 
   useEffect(() => {
-    fetchMessages();
+    if (route.params.id) {
+      setMessages([]);
+      setHasMore(true);
+      setCurrentPage(0);
+
+      fetchMessages();
+    }
   }, [route.params.id, user.username])
+
+  useEffect(() => {
+    console.log(messages);
+  }, [messages])
+
 
   // useEffect(() => {
   //   let participant = {
@@ -140,13 +183,24 @@ const ChatRoomScreen = () => {
     chatRoomId: route.params.id
   };
 
+  const renderFetching = (
+    <View style={{ marginTop: 15, marginBottom: 15 }}>
+      <ActivityIndicator />
+    </View>
+  )
+
   return (
     <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
+      {
+        isFetching && renderFetching
+      }
       <FlatList
         data={messages}
         renderItem={({ item }) => <ChatMessage user={user} message={item} />}
         keyExtractor={(item) => item.date.toString()}
         inverted
+        onEndReachedThreshold={0}
+        onEndReached={fetchMoreData}
       />
       <InputBox chatRoomID={route.params.id} onSendPress={handleSendPress} />
       <SockJsClient
