@@ -97,10 +97,10 @@ public class RedisChatRoomService implements ChatRoomService {
 					webSocketMessagingTemplate.convertAndSendToUser(chatRoomUser.getUsername(),
 							Destinations.ChatRoom.replyMessages(), messageResponseWS);
 
-					MessageResponse messageResponseFCM = new MessageResponse(instantMessage);
-					messageResponseFCM.setChatRoomName(chatRoom.getName());
-					messageResponseFCM.setToUser(chatRoomUser.getUsername());
-					pushNotificationToAndroid(messageResponseFCM);
+					// MessageResponse messageResponseFCM = new MessageResponse(instantMessage);
+					// messageResponseFCM.setChatRoomName(chatRoom.getName());
+					// messageResponseFCM.setToUser(chatRoomUser.getUsername());
+					// pushNotificationToAndroid(messageResponseFCM);
 				}
 			}
 		}
