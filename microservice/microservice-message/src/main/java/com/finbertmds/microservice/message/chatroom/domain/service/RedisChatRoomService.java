@@ -1,5 +1,6 @@
 package com.finbertmds.microservice.message.chatroom.domain.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -85,9 +86,12 @@ public class RedisChatRoomService implements ChatRoomService {
 
 	private void sendPublicMessageToAllUser(InstantMessage instantMessage) {
 		ChatRoom chatRoom = findById(instantMessage.getInstantMessageKey().getChatRoomId());
-		LastMessage lastMessage = new LastMessage(instantMessage.getFromUser(), instantMessage.getText(),
-				instantMessage.getInstantMessageKey().getDate());
-		chatRoom.setLastMessage(lastMessage);
+		if (!instantMessage.isIsNotification()) {
+			LastMessage lastMessage = new LastMessage(instantMessage.getFromUser(), instantMessage.getText(),
+					instantMessage.getInstantMessageKey().getDate());
+			chatRoom.setLastMessage(lastMessage);
+			chatRoom.setUpdatedAt(new Date());
+		}
 		save(chatRoom);
 		if (!chatRoom.getConnectedUsers().isEmpty()) {
 			for (ChatRoomUser chatRoomUser : chatRoom.getConnectedUsers()) {
@@ -159,5 +163,10 @@ public class RedisChatRoomService implements ChatRoomService {
 	private void updateConnectedUsersViaWebSocket(ChatRoom chatRoom) {
 		webSocketMessagingTemplate.convertAndSend(Destinations.ChatRoom.connectedUsers(chatRoom.getId()),
 				chatRoom.getConnectedUsers());
+	}
+
+	@Override
+	public List<ChatRoom> findRoomForUser(String username) {
+		return (List<ChatRoom>) chatRoomRepository.findByConnectedUsersUsername(username);
 	}
 }

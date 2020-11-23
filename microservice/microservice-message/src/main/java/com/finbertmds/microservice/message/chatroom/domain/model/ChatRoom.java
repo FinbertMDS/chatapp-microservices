@@ -1,6 +1,7 @@
 package com.finbertmds.microservice.message.chatroom.domain.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -19,18 +20,21 @@ public class ChatRoom {
 	private String name;
 	private String description;
 	private LastMessage lastMessage;
+	private Date updatedAt;
 	private List<ChatRoomUser> connectedUsers = new ArrayList<>();
 	
 	public ChatRoom() {
-	
+		this.updatedAt = new Date();
 	}
 	
 	@VisibleForTesting
-	public ChatRoom(String id, String name, String description, LastMessage lastMessage) {
+	public ChatRoom(String id, String name, String description, LastMessage lastMessage, Date updatedAt, List<ChatRoomUser> connectedUsers) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.lastMessage = lastMessage;
+		this.updatedAt = updatedAt;
+		this.connectedUsers = connectedUsers;
 	}
 
 	public String getId() {
@@ -70,6 +74,14 @@ public class ChatRoom {
 
 	public void setLastMessage(LastMessage lastMessage) {
 		this.lastMessage = lastMessage;
+	}
+
+	public Date getUpdatedAt() {
+		return this.updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	@Override
