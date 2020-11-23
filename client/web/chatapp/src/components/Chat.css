@@ -49,6 +49,7 @@
   width: fit-content;
   background-color: white;
   margin-bottom: 25px;
+  max-width: 75%;
 }
 .chat__body .chat__message:last-of-type {
   margin-bottom: 0;
