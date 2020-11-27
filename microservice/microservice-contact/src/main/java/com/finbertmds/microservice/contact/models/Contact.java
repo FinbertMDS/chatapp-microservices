@@ -50,7 +50,7 @@ public class Contact {
     this.createdAt = createdAt;
   }
 
-  public Contact(User user) {
+  public Contact(ContactUser user) {
     this.id = user.getId();
     this.username = user.getUsername();
     this.email = user.getEmail();

@@ -26,7 +26,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 			@UniqueConstraint(columnNames = "username"),
 			@UniqueConstraint(columnNames = "email") 
 		})
-public class User {
+public class ContactUser {
 	@Id
 	private Long id;
 
@@ -55,11 +55,11 @@ public class User {
 				inverseJoinColumns = @JoinColumn(name = "contact_id"))
 	private Set<Contact> contacts = new HashSet<>();
 
-	public User() {
+	public ContactUser() {
 
 	}
 
-	public User(Long id, String username, String email, String firstName, String lastName, String phone, Date createdAt, Date updatedAt, Set<Contact> contacts) {
+	public ContactUser(Long id, String username, String email, String firstName, String lastName, String phone, Date createdAt, Date updatedAt, Set<Contact> contacts) {
 		this.id = id;
 		this.username = username;
 		this.email = email;

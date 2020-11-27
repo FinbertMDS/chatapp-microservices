@@ -3,7 +3,7 @@ package com.finbertmds.microservice.contact.configuration;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.finbertmds.microservice.contact.models.User;
+import com.finbertmds.microservice.contact.models.ContactUser;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -24,7 +24,7 @@ public class KafkaConsumerConfig {
 	@Value("${spring.kafka.consumer.group-id}")
   private String groupId;
   
-  public ConsumerFactory<String, User> userConsumerFactory() {
+  public ConsumerFactory<String, ContactUser> userConsumerFactory() {
     Map<String, Object> props = new HashMap<>();
     props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -32,12 +32,12 @@ public class KafkaConsumerConfig {
     return new DefaultKafkaConsumerFactory<>(
       props,
       new StringDeserializer(),
-      new JsonDeserializer<>(User.class));
+      new JsonDeserializer<>(ContactUser.class));
   }
 
   @Bean
-  public ConcurrentKafkaListenerContainerFactory<String, User> userKafkaListenerContainerFactory() {
-    ConcurrentKafkaListenerContainerFactory<String, User> factory =
+  public ConcurrentKafkaListenerContainerFactory<String, ContactUser> userKafkaListenerContainerFactory() {
+    ConcurrentKafkaListenerContainerFactory<String, ContactUser> factory =
       new ConcurrentKafkaListenerContainerFactory<>();
     factory.setConsumerFactory(userConsumerFactory());
     return factory;

@@ -6,11 +6,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.finbertmds.microservice.contact.models.Contact;
-import com.finbertmds.microservice.contact.models.User;
-import com.finbertmds.microservice.contact.payload.request.AddUserContactRequest;
+import com.finbertmds.microservice.contact.models.ContactUser;
+import com.finbertmds.microservice.contact.payload.request.AddRemoveUserContactRequest;
 import com.finbertmds.microservice.contact.payload.response.MessageResponse;
 import com.finbertmds.microservice.contact.services.ContactService;
-import com.finbertmds.microservice.contact.services.UserService;
+import com.finbertmds.microservice.contact.services.ContactUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ContactController {
 
   @Autowired
-  private UserService userService;
+  private ContactUserService userService;
 
   @Autowired
   private ContactService contactService;
@@ -101,10 +102,10 @@ public class ContactController {
   // }
   // }
 
-  @GetMapping("/users/{userId}/contacts")
-  public ResponseEntity<List<Contact>> getContactsOfUser(@PathVariable("userId") Long userId) {
+  @GetMapping("/users/{username}/contacts")
+  public ResponseEntity<List<Contact>> getContactsOfUser(@PathVariable("username") String username) {
     try {
-      Optional<User> userData = userService.findById(userId);
+      Optional<ContactUser> userData = userService.findByUsername(username);
       if (userData.isEmpty()) {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
       }
@@ -119,15 +120,15 @@ public class ContactController {
     }
   }
 
-  @PostMapping("/users/{userId}/contacts")
-  public ResponseEntity<?> createContactForUser(@PathVariable("userId") Long userId,
-      @RequestBody AddUserContactRequest addUserContactRequest) {
+  @PostMapping("/users/{username}/contacts")
+  public ResponseEntity<?> createContactForUser(@PathVariable("username") String username,
+      @RequestBody AddRemoveUserContactRequest addUserContactRequest) {
     if (StringUtils.isEmpty(addUserContactRequest.getEmail())
         && StringUtils.isEmpty(addUserContactRequest.getUsername())) {
       return ResponseEntity.badRequest().body(new MessageResponse("Error: Username or Email are required!"));
     }
     try {
-      Optional<User> userData = userService.findById(userId);
+      Optional<ContactUser> userData = userService.findByUsername(username);
       if (userData.isEmpty()) {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
       }
@@ -135,6 +136,11 @@ public class ContactController {
       Contact contact = null;
       if (contactService.existsByEmail(addUserContactRequest.getEmail())) {
         contact = contactService.findByEmail(addUserContactRequest.getEmail()).get();
+        if (!StringUtils.isEmpty(addUserContactRequest.getUsername())) {
+          if (!contact.getUsername().equals(addUserContactRequest.getUsername())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Contact is not found!"));
+          }
+        }
       } else {
         if (contactService.existsByUsername(addUserContactRequest.getUsername())) {
           contact = contactService.findByUsername(addUserContactRequest.getUsername()).get();
@@ -143,15 +149,58 @@ public class ContactController {
         }
       }
 
-      User user = userData.get();
+      ContactUser user = userData.get();
       Set<Contact> contacts = user.getContacts();
       if (contacts.contains(contact)) {
         return ResponseEntity.badRequest().body(new MessageResponse("Error: Contact is exist in User!"));
       }
       contacts.add(contact);
       user.setContacts(contacts);
-      userService.save(user);
-      return ResponseEntity.ok(new MessageResponse("Add user contact successfully!"));
+      ContactUser result = userService.save(user);
+      return new ResponseEntity<>(result.getContacts(), HttpStatus.OK);
+    } catch (Exception e) {
+      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @DeleteMapping("/users/{username}/contacts")
+  public ResponseEntity<?> removeContactForUser(@PathVariable("username") String username,
+      @RequestBody AddRemoveUserContactRequest removeUserContactRequest) {
+    if (StringUtils.isEmpty(removeUserContactRequest.getEmail())
+        && StringUtils.isEmpty(removeUserContactRequest.getUsername())) {
+      return ResponseEntity.badRequest().body(new MessageResponse("Error: Username or Email are required!"));
+    }
+    try {
+      Optional<ContactUser> userData = userService.findByUsername(username);
+      if (userData.isEmpty()) {
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+      }
+
+      Contact contact = null;
+      if (contactService.existsByEmail(removeUserContactRequest.getEmail())) {
+        contact = contactService.findByEmail(removeUserContactRequest.getEmail()).get();
+        if (!StringUtils.isEmpty(removeUserContactRequest.getUsername())) {
+          if (!contact.getUsername().equals(removeUserContactRequest.getUsername())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Contact is not found!"));
+          }
+        }
+      } else {
+        if (contactService.existsByUsername(removeUserContactRequest.getUsername())) {
+          contact = contactService.findByUsername(removeUserContactRequest.getUsername()).get();
+        } else {
+          return ResponseEntity.badRequest().body(new MessageResponse("Error: Contact is not found!"));
+        }
+      }
+
+      ContactUser user = userData.get();
+      Set<Contact> contacts = user.getContacts();
+      if (!contacts.contains(contact)) {
+        return ResponseEntity.badRequest().body(new MessageResponse("Error: Contact is not exist in User!"));
+      }
+      contacts.remove(contact);
+      user.setContacts(contacts);
+      ContactUser result = userService.save(user);
+      return new ResponseEntity<>(result.getContacts(), HttpStatus.OK);
     } catch (Exception e) {
       return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
