@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RedisChatRoomService implements ChatRoomService {
-	private final Logger log = LoggerFactory.getLogger(RedisChatRoomService.class);
+	private final Logger logger = LoggerFactory.getLogger(RedisChatRoomService.class);
 
 	@Autowired
 	private SimpMessagingTemplate webSocketMessagingTemplate;
@@ -134,11 +134,11 @@ public class RedisChatRoomService implements ChatRoomService {
 		CompletableFuture.allOf(pushNotification).join();
 		try {
 			String firebaseResponse = pushNotification.get();
-			log.info("Sent message to firebase {}", firebaseResponse);
+			logger.info("Sent message to firebase {}", firebaseResponse);
 		} catch (InterruptedException e) {
-			log.error("Error: Sent message to firebase {}", e.getMessage());
+			logger.error("Error: Sent message to firebase {}", e.getMessage());
 		} catch (ExecutionException e) {
-			log.error("Error: Sent message to firebase {}", e.getMessage());
+			logger.error("Error: Sent message to firebase {}", e.getMessage());
 		}
 	}
 

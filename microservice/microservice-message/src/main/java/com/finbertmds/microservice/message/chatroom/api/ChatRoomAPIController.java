@@ -1,6 +1,8 @@
 package com.finbertmds.microservice.message.chatroom.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.finbertmds.microservice.message.chatroom.domain.model.ChatRoom;
@@ -46,6 +48,13 @@ public class ChatRoomAPIController {
 			if (chatRooms.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
+			Collections.sort(chatRooms, new Comparator<ChatRoom>() {
+				public int compare(ChatRoom o1, ChatRoom o2) {
+						if (o1.getUpdatedAt() == null || o2.getUpdatedAt() == null)
+							return 0;
+						return o2.getUpdatedAt().compareTo(o1.getUpdatedAt());
+				}
+			});
 
 			return new ResponseEntity<>(chatRooms, HttpStatus.OK);
 		} catch (Exception e) {
