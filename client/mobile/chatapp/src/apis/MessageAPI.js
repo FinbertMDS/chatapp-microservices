@@ -30,7 +30,7 @@ const MessageAPI = {
       .then(response => response.data);
   },
 
-  getMessageInRoom: function (roomId, forUser, page = 0, size = Config.DEFAULT_PAGE_SIZE) {
+  getMessageInRoom: function (roomId, forUser, page = 0, size = Config.DEFAULT_PAGE_SIZE_MESSAGE) {
     let url = `${getAllMessageInRoomUrl}/${roomId}?forUser=${forUser}&page=${page}&size=${size}`;
     return axios.get(url)
       .then(response => response.data);

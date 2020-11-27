@@ -75,12 +75,12 @@ public class ChatRoomAPIController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<ChatRoom> updateChatRoom(@PathVariable("id") String id, @RequestBody ChatRoom tutorial) {
+	public ResponseEntity<ChatRoom> updateChatRoom(@PathVariable("id") String id, @RequestBody ChatRoom chatRoom) {
 		ChatRoom chatRoomData = chatRoomService.findById(id);
 
 		if (chatRoomData != null) {
-			chatRoomData.setName(tutorial.getName());
-			chatRoomData.setDescription(tutorial.getDescription());
+			chatRoomData.setName(chatRoom.getName());
+			chatRoomData.setDescription(chatRoom.getDescription());
 			return new ResponseEntity<>(chatRoomService.save(chatRoomData), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

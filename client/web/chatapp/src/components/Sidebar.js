@@ -151,6 +151,7 @@ function Sidebar() {
         })
         .catch(error => alert(error.message));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.username]);
   const [allContacts, setAllContacts] = useState([]);
   useEffect(() => {

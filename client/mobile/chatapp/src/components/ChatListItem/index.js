@@ -42,11 +42,15 @@ const ChatListItem = (props) => {
     return '';
   }
 
+  const getAvatarText = (text) => {
+    return String(text).charAt(0).toUpperCase();
+  }
+
   return (
     <TouchableWithoutFeedback onPress={onClick}>
       <View style={styles.container}>
         <View style={styles.lefContainer}>
-          <Avatar.Text size={24} label={chatRoom.name} style={styles.avatar}/>
+          <Avatar.Text size={36} label={getAvatarText(chatRoom.name)} style={styles.avatar}/>
           <View style={styles.midContainer}>
             <Text style={styles.username}>{chatRoom.name}</Text>
             <Text

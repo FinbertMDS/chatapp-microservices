@@ -1,6 +1,9 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, ImageBackground, View } from 'react-native';
+import {
+  ActivityIndicator, Alert, FlatList, ImageBackground,
+  Platform, StyleSheet, TouchableWithoutFeedback, View
+} from 'react-native';
 import SockJsClient from "react-stomp";
 import { actionTypes } from '../../reducer';
 import { useStateValue } from '../../StateProvider';
@@ -9,6 +12,8 @@ import MessageAPI from '../apis/MessageAPI';
 import BG from '../assets/images/BG.png';
 import ChatMessage from "../components/ChatMessage";
 import InputBox from "../components/InputBox";
+import { Text } from '../components/Themed';
+import StackScreenName from '../constants/StackScreenName';
 
 const updateMessagesData = (messages) => {
   return messages.filter((message) => !message.isNotification);
@@ -24,6 +29,24 @@ const ChatRoomScreen = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    if (roomDetail) {
+      navigation.setOptions({
+        headerTitle: () => (
+          <TouchableWithoutFeedback onPress={handleOpenChatRoomSetting}>
+            <Text style={[styles.title]}>{roomDetail.name}</Text>
+          </TouchableWithoutFeedback>
+        ),
+      })
+    }
+  }, [roomDetail])
+
+  const handleOpenChatRoomSetting = () => {
+    navigation.navigate(StackScreenName.ChatRoomSetting, {
+      roomDetail: roomDetail
+    })
+  };
 
   useEffect(() => {
     dispatch({
@@ -142,22 +165,6 @@ const ChatRoomScreen = () => {
       ]);
     }
   }
-  const updateChatRoomLastMessage = async (messageId) => {
-    try {
-      // await API.graphql(
-      //   graphqlOperation(
-      //     updateChatRoom, {
-      //       input: {
-      //         id: chatRoomID,
-      //         lastMessageID: messageId,
-      //       }
-      //     }
-      //   )
-      // );
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
   const handleSendPress = async (input) => {
     try {
@@ -209,5 +216,24 @@ const ChatRoomScreen = () => {
     </ImageBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  title: Platform.select({
+    ios: {
+      fontSize: 17,
+      fontWeight: '600',
+    },
+    android: {
+      fontSize: 20,
+      fontFamily: 'sans-serif-medium',
+      fontWeight: 'normal',
+    },
+    default: {
+      fontSize: 18,
+      fontWeight: '500',
+    },
+  }),
+});
+
 
 export default ChatRoomScreen;

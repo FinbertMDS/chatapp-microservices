@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import messaging from '@react-native-firebase/messaging';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useRef, useState } from 'react';
@@ -10,18 +9,18 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Octicons from "react-native-vector-icons/Octicons";
 import { actionTypes } from '../../reducer';
 import { useStateValue } from '../../StateProvider';
-import MessageAPI from '../apis/MessageAPI';
-import { Text } from '../components/Themed';
 import Colors from "../constants/Colors";
 import StackScreenName from '../constants/StackScreenName';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
-import ContactsScreen from "../screens/ContactsScreen";
+import ChatRoomSettingScreen from '../screens/ChatRoomSettingScreen';
+import ContactSettingScreen from '../screens/ContactSettingScreen';
 import CreateRoomScreen from "../screens/CreateRoomScreen";
 import NotFoundScreen from '../screens/NotFoundScreen';
 import SettingScreen from '../screens/SettingScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import SplashScreen from '../screens/SplashScreen';
+import UserListScreen from '../screens/UserListScreen';
 import LinkingConfiguration from './LinkingConfiguration';
 import MainTabNavigator from './MainTabNavigator';
 import { navigationRef } from './RootNavigation';
@@ -54,11 +53,11 @@ function RootNavigator() {
       try {
         userInfo = await AsyncStorage.getItem('userInfo');
         userInfo = JSON.parse(userInfo);
-        if (userInfo && userInfo.username) {
-          let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
-          messaging().unsubscribeFromTopic(topic)
-            .then(() => console.log('Unsubscribed from topic!', topic));
-        }
+        // if (userInfo && userInfo.username) {
+        //   let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
+        //   messaging().unsubscribeFromTopic(topic)
+        //     .then(() => console.log('Unsubscribed from topic!', topic));
+        // }
         dispatch({
           type: actionTypes.SET_USER,
           user: userInfo
@@ -95,18 +94,18 @@ function RootNavigator() {
       nextAppState === "active"
     ) {
       console.log("App has come to the foreground!");
-      if (userInfo && userInfo.username) {
-        let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
-        messaging().unsubscribeFromTopic(topic)
-          .then(() => console.log('Unsubscribed from topic!', topic));
-      }
+      // if (userInfo && userInfo.username) {
+      //   let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
+      //   messaging().unsubscribeFromTopic(topic)
+      //     .then(() => console.log('Unsubscribed from topic!', topic));
+      // }
     } else {
       console.log("App has come to the background!");
-      if (userInfo && userInfo.username) {
-        let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
-        messaging().subscribeToTopic(topic)
-          .then(() => console.log('Subscribed to topic!', topic));
-      }
+      // if (userInfo && userInfo.username) {
+      //   let topic = MessageAPI.getReplyMessageFCMTopicUrl(userInfo.username)
+      //   messaging().subscribeToTopic(topic)
+      //     .then(() => console.log('Subscribed to topic!', topic));
+      // }
     }
 
     appState.current = nextAppState;
@@ -154,9 +153,6 @@ function RootNavigator() {
                   component={MainTabNavigator}
                   options={{
                     title: "ChatApp",
-                    headerLeft: () => (
-                      <Text>test</Text>
-                    ),
                     headerRight: () => (
                       <View style={{
                         flexDirection: 'row',
@@ -190,8 +186,22 @@ function RootNavigator() {
                   })}
                 />
                 <Stack.Screen
-                  name={StackScreenName.Contacts}
-                  component={ContactsScreen}
+                  name={StackScreenName.ContactSetting}
+                  component={ContactSettingScreen}
+                  options={{
+                    title: "Contact Info",
+                  }}
+                />
+                <Stack.Screen
+                  name={StackScreenName.ChatRoomSetting}
+                  component={ChatRoomSettingScreen}
+                  options={{
+                    title: "Chat Room Info",
+                  }}
+                />
+                <Stack.Screen
+                  name={StackScreenName.UserList}
+                  component={UserListScreen}
                 />
                 <Stack.Screen
                   name={StackScreenName.CreateRoom}

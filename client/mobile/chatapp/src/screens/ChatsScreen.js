@@ -19,7 +19,7 @@ export default function ChatsScreen() {
   const [{ user, currentRoomId }] = useStateValue();
 
   const fetchChatRooms = async () => {
-    ChatRoomAPI.getAll()
+    ChatRoomAPI.getRoomForUser(user.username)
       .then(result => {
         setChatRooms(result);
       })
@@ -56,6 +56,9 @@ export default function ChatsScreen() {
   }
   const replyUserStr = MessageAPI.getReplyMessageTopicUrl();
   const onReplyReceive = (message, topic) => {
+    if (message.isNotification) {
+      return;
+    }
     if (AppState.currentState.match(/inactive|background/)) {
       return;
     }

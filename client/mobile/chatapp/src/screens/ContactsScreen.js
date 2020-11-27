@@ -1,42 +1,101 @@
-// import { API, graphqlOperation } from 'aws-amplify';
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { Alert, FlatList, ImageBackground, StyleSheet } from 'react-native';
+import { actionTypes } from '../../reducer';
+import { useStateValue } from '../../StateProvider';
+import ContactAPI from '../apis/ContactAPI';
+import BG from '../assets/images/BG.png';
 import ContactListItem from '../components/ContactListItem';
-import { View } from '../components/Themed';
-// import { listUsers } from '../src/graphql/queries';
-import usersData from '../data/Users';
+import NewContactButton from '../components/NewContactButton';
+import Const from '../constants/Const';
+import StackScreenName from '../constants/StackScreenName';
 
 
 export default function ContactsScreen() {
-
-  const [users, setUsers] = useState([]);
+  const [{ user, contacts }, dispatch] = useStateValue();
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // const fetchUsers = async () => {
-    //   try {
-    //     const usersData = await API.graphql(
-    //       graphqlOperation(
-    //         listUsers
-    //       )
-    //     )
-    //     setUsers(usersData.data.listUsers.items);
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // }
-    // fetchUsers();
-    setUsers(usersData);
-  }, [])
+    ContactAPI.getContactForUser(user.username)
+      .then(result => {
+        dispatch({
+          type: actionTypes.SET_CONTACTS,
+          contacts: result
+        });
+      })
+      .catch(error => Alert.alert("Error", error.message));
+  }, [user.username])
+
+  const [allContacts, setAllContacts] = useState([]);
+  useEffect(() => {
+    ContactAPI.getAll()
+      .then(result => {
+        setAllContacts(result);
+      })
+      .catch(error => alert(error.message));
+  }, []);
+
+  useEffect(() => {
+    ContactAPI.getContactForUser(user.username)
+      .then(result => {
+        dispatch({
+          type: actionTypes.SET_CONTACTS,
+          contacts: result
+        });
+      })
+      .catch(error => Alert.alert("Error", error.message));
+  }, [user.username])
+  
+
+  const handleAddContact = async (userList, checked) => {
+    if (checked.length > 0) {
+      for (const index of checked) {
+        let addUserContactRequest = {
+          "username": userList[index].username
+        };
+        try {
+          const result = await ContactAPI.createContactForUser(user.username, addUserContactRequest);
+          dispatch({
+            type: actionTypes.SET_CONTACTS,
+            contacts: result
+          });
+          navigation.navigate(StackScreenName.Contacts);
+        } catch (error) {
+          Alert.alert("Error", error.message)
+        }
+      }
+    } else {
+      navigation.navigate(StackScreenName.Contacts);
+    }
+  };
+
+  const handlePressAddContact = () => {
+    navigation.navigate(StackScreenName.UserList, {
+      data: allContacts,
+      regList: [{ username: user.username }, ...contacts],
+      type: Const.USERLIST_TYPE.ADD_CONTACT.key,
+      onSave: handleAddContact
+    })
+  }
+
+  const handleEnterContactSetting = (index) => {
+    navigation.navigate(StackScreenName.ContactSetting, {
+      contactInfo: contacts[index],
+    })
+  }
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        style={{width: '100%'}}
-        data={users}
-        renderItem={({ item }) => <ContactListItem user={item} />}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    <>
+      <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
+        <FlatList
+          style={{ width: '100%' }}
+          data={contacts}
+          renderItem={({ item, index }) => <ContactListItem user={item} onClickItem={()=> handleEnterContactSetting(index)}/>}
+          keyExtractor={(item) => item.username}
+        />
+        <NewContactButton onPress={handlePressAddContact} />
+      </ImageBackground>
+    </>
   );
 }
 

@@ -11,6 +11,7 @@ import Colors from '../constants/Colors';
 import StackScreenName from '../constants/StackScreenName';
 import useColorScheme from '../hooks/useColorScheme';
 import ChatsScreen from '../screens/ChatsScreen';
+import ContactsScreen from '../screens/ContactsScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 
 
@@ -62,8 +63,8 @@ export default function MainTabNavigator() {
         component={ChatsScreen}
       />
       <MainTab.Screen
-        name={StackScreenName.Status}
-        component={TabTwoNavigator}
+        name={StackScreenName.Contacts}
+        component={ContactsScreen}
       />
       <MainTab.Screen
         name={StackScreenName.Calls}

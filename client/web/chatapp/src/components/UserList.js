@@ -31,6 +31,7 @@ function UserList({ data = [], regList = [], type, onCancel, onSave }) {
 
   useEffect(() => {
     updateUserListData(userList, regList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updateUserListData = (data, regList) => {
