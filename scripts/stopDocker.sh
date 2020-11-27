@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 read -p "Do you wish to stop or remove services? s/r: " yn
 case $yn in

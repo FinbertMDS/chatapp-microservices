@@ -26,4 +26,18 @@ export const addAuthTokenToHeader = () => {
 
 addAuthTokenToHeader();
 
+const handleRequest = () => {
+  instance.interceptors.response.use(function (response) {
+    return response;
+  }, function (error) {
+    if (error && error.response && error.response.status === 401) {
+      localStorage.removeItem('userInfo');
+      window.location = '/';
+    }
+    return Promise.reject(error)
+  });
+}
+
+handleRequest();
+
 export default instance;

@@ -1,47 +1,62 @@
 import { Avatar } from '@material-ui/core';
+import moment from "moment";
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import ChatRoomAPI from '../apis/ChatRoomAPI';
 import { useStateValue } from '../StateProvider';
 import './SidebarChat.css';
 
-function SidebarChat({ addNewChat, id, name }) {
+function SidebarChat({ addNewChat, onCreateChat, roomInfo }) {
   const [seed, setSeed] = useState('');
-  const [messages] = useState('')
-  const [{ currentRoomId }] = useStateValue();
+  const [{ user, currentRoomId }] = useStateValue();
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
-
-    if (id) {
-      // MessageAPI.getAllMessageInRoom(id, user.username)
-      //   .then(result => {
-      //     setMessages(result);
-      //   })
-      //   .catch(error => alert(error.message));
-    }
-  }, [id]);
+  }, []);
 
   const createChat = () => {
     const roomName = prompt('please enter name for the chat room');
     if (roomName) {
-      let roomData = {
-        "name": roomName
-      };
-      ChatRoomAPI.createRoom(roomData)
-        .then(result => {
-          console.log(result);
-        })
-        .catch(error => alert(error.message));
+      onCreateChat(roomName);
     }
   }
+
+  const displayLastMessageDate = (date) => {
+    if (date) {
+      if (moment(date).isSame(moment(), 'day')) {
+        return moment(date).format('HH:mm');
+      } else {
+        return moment(date).format('dddd');
+      }
+    }
+    return '';
+  }
+
+  const displayLastMessageFromUser = (fromUser) => {
+    if (fromUser && user) {
+      if (fromUser === user.username) {
+        return 'You';
+      } else {
+        return fromUser;
+      }
+    }
+    return '';
+  }
+
   return !addNewChat ? (
-    <Link to={`/rooms/${id}`}>
-      <div className={`sidebarChat ${id === currentRoomId && "current"}`}>
+    <Link to={`/rooms/${roomInfo.id}`}>
+      <div className={`sidebarChat ${roomInfo.id === currentRoomId && "current"}`}>
         <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
         <div className='sidebarChat__info'>
-          <h2>{name}</h2>
-          <p>{messages[0]?.text}</p>
+          <h2>{roomInfo.name}</h2>
+          {
+            roomInfo.lastMessage && (
+              <div className='sidebarChat__info__lastmessage'>
+                <div className="text">{displayLastMessageFromUser(roomInfo.lastMessage?.fromUser)}: <span>{roomInfo.lastMessage?.text} </span></div>
+                &nbsp;<span aria-hidden="true">·</span>&nbsp;
+                {`${displayLastMessageDate(roomInfo.lastMessage?.createdAt)}`}
+              </div>
+            )
+          }
         </div>
       </div>
     </Link>

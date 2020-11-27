@@ -1,0 +1,46 @@
+.modal__header {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.modal__header__content {
+  margin: 0 auto;
+  max-width: 50%;
+  padding: 7px 0;
+}
+.user__search{
+  display: flex;
+  align-items: center;
+  background-color: #f6f6f6;
+  height: 39px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.user__searchContainer{
+  display: flex;
+  align-items: center;
+  background-color: white;
+  width: 100%;
+  height: 35px;
+  border-radius: 20px;
+}
+.user__searchContainer > form {
+  display: flex;
+  flex: 1;
+}
+.user__searchContainer > form > input {
+  flex: 1;
+  border-radius: 30px;
+  padding: 10px;
+  border: none;
+}
+.user__searchContainer > form > input:focus {
+  outline: none;
+}
+.user__searchContainer > form > button {
+  display: none;
+}
+.user__searchContainer > .MuiSvgIcon-root {
+  padding: 10px;
+  color: gray;
+}

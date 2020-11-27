@@ -29,7 +29,6 @@ public class AndroidPushNotificationsService {
     https://fcm.googleapis.com/fcm/send
     Content-Type:application/json
     Authorization:key=FIREBASE_SERVER_KEY*/
-    log.info("FIREBASE_SERVER_KEY {}", FIREBASE_SERVER_KEY);
  
     ArrayList<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
     interceptors.add(new HeaderRequestInterceptor("Authorization", "key=" + FIREBASE_SERVER_KEY));

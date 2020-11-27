@@ -15,4 +15,5 @@ public interface ChatRoomService {
 	void sendPublicMessage(InstantMessage instantMessage);
 	void sendPrivateMessage(InstantMessage instantMessage);
 	List<ChatRoom> findAll();
+	List<ChatRoom> findRoomForUser(String username);
 }

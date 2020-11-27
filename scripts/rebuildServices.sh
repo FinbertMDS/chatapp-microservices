@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 services=("storage" "contact" "message" "security" "user" "config-server" "eureka-server" "turbine-server" "zuul-server" "chatapp")
 servicesNeedWaitWhenStart=("storage" "contact" "message" "security" "user" "config" "zuul")
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -24,7 +24,7 @@ main() {
 
 initGitAtFolderConfig() {
   if [ ! -d "${DIR}/../config/.git" ]; then
-    cd ../config
+    cd ${DIR}/../config
     git init
     git commit -m "init"
     cd $DIR
@@ -48,7 +48,7 @@ getInputFromUser() {
 }
 
 buildService() {
-  cd ../microservice
+  cd ${DIR}/../microservice
   local executeCommand="./mvnw -am clean package -Dmaven.test.skip=true "
   local needBuildServiceJava=0
   for index in "${!servicesWillBeRebuild[@]}"; do
@@ -68,7 +68,7 @@ buildService() {
 }
 
 buildAndStartDocker() {
-  cd ../docker
+  cd ${DIR}/../docker
   local dockerBuildCommand="docker-compose build "
   local dockerUpCommand="docker-compose up -d "
   for index in "${!servicesWillBeRebuild[@]}"; do

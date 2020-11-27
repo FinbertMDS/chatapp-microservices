@@ -15,18 +15,17 @@
 - Add client ui use react
   - SignIn @done
   - SignUp: add message alert success / failure @done
-  - Side bar: Improve api to get last message in rooms. (add lastMessage to room info)
+  - Side bar: Improve api to get last message in rooms. (add lastMessage to room info) @done
   - Chat: 
     - post message @done
-    - scroll then load more message (need add api), default load 20 message first
+    - scroll then load more message (need add api), default load 20 message first @done
     - attach file to send message
   - Security API with Token @done
   - Add docker @done
-  - Dark mode
 - Add client mobile app use react-native
   - SignIn, SignUp, Create room, Send and receive message @done
   - Build app release android @done
-  - Build app release ios
+  - Build app release ios @done
 - Add logback to all services to ELK stack at branch elk @done
 - Build mechanism like aws-amplify Auth.currentAuthenticatedUser() to get current logined at client
 - Add swagger to all microservices @done

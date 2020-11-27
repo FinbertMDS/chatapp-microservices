@@ -69,6 +69,7 @@ services:
       - zuul
       - security
       - message
+      - contact
     ports:
       - "8000:80"
 

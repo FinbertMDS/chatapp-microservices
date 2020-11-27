@@ -4,9 +4,10 @@ import java.util.Date;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.redis.core.index.Indexed;
 
 public class ChatRoomUser implements Comparable<ChatRoomUser> {
-	
+	@Indexed
 	private String username;
 	private Date joinedAt = new Date();
 	
@@ -39,11 +40,11 @@ public class ChatRoomUser implements Comparable<ChatRoomUser> {
 
 	@Override
 	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
+		return HashCodeBuilder.reflectionHashCode(this, "joinedAt");
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
+		return EqualsBuilder.reflectionEquals(this, obj, "joinedAt");
 	}
 }

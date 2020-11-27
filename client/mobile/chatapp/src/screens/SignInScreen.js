@@ -45,7 +45,7 @@ const SignInScreen = () => {
         });
       })
       .catch(error => {
-        Alert.alert("Error", JSON.stringify(error))
+        Alert.alert("Error", error.message)
       });
   }
 

@@ -1,11 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Alert, AppState, FlatList } from 'react-native';
+import { Alert, AppState, FlatList, ImageBackground } from 'react-native';
 import PushNotification from "react-native-push-notification";
 import SockJsClient from "react-stomp";
 import { useStateValue } from "../../StateProvider";
 import ChatRoomAPI from '../apis/ChatRoomAPI';
 import MessageAPI from "../apis/MessageAPI";
+import BG from '../assets/images/BG.png';
 import ChatListItem from "../components/ChatListItem";
 import NewMessageButton from "../components/NewMessageButton";
 import Config from "../constants/Config";
@@ -18,11 +19,11 @@ export default function ChatsScreen() {
   const [{ user, currentRoomId }] = useStateValue();
 
   const fetchChatRooms = async () => {
-    ChatRoomAPI.getAll()
+    ChatRoomAPI.getRoomForUser(user.username)
       .then(result => {
         setChatRooms(result);
       })
-      .catch(error => Alert.alert("Error", JSON.stringify(error)));
+      .catch(error => Alert.alert("Error", error.message));
   }
 
   useEffect(() => {
@@ -47,11 +48,17 @@ export default function ChatsScreen() {
     };
   }, [navigation]);
 
-  const customHeaders = {
-    Authorization: "Bearer " + user.accessToken
-  };
+  let customHeaders = {};
+  if (user && user.accessToken) {
+    customHeaders = {
+      Authorization: "Bearer " + user.accessToken
+    };
+  }
   const replyUserStr = MessageAPI.getReplyMessageTopicUrl();
   const onReplyReceive = (message, topic) => {
+    if (message.isNotification) {
+      return;
+    }
     if (AppState.currentState.match(/inactive|background/)) {
       return;
     }
@@ -68,26 +75,26 @@ export default function ChatsScreen() {
   };
 
   const getTitleNotification = (message) => {
-    return `[${message.chatRoomName}] ${message.fromUser}`
+    return `Local: [${message.chatRoomName}] ${message.fromUser}`
   }
 
   return (
     <>
-      {/* <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}> */}
-      <FlatList
-        style={{ width: '100%' }}
-        data={chatRooms}
-        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
-        keyExtractor={(item) => item.id}
-      />
-      <NewMessageButton onPress={handlePress} />
-      <SockJsClient
-        url={MessageAPI.wsSourceUrl}
-        topics={[replyUserStr]}
-        headers={customHeaders}
-        onMessage={onReplyReceive}
-        debug={false} />
-      {/* </ImageBackground> */}
+      <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
+        <FlatList
+          style={{ width: '100%' }}
+          data={chatRooms}
+          renderItem={({ item }) => <ChatListItem chatRoom={item} />}
+          keyExtractor={(item) => item.id}
+        />
+        <NewMessageButton onPress={handlePress} />
+        <SockJsClient
+          url={MessageAPI.wsSourceUrl}
+          topics={[replyUserStr]}
+          headers={customHeaders}
+          onMessage={onReplyReceive}
+          debug={false} />
+      </ImageBackground>
     </>
   );
 }

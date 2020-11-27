@@ -1,6 +1,6 @@
 package com.finbertmds.microservice.contact.payload.request;
 
-public class AddUserContactRequest {
+public class AddRemoveUserContactRequest {
 	private String username;
 
   private String email;

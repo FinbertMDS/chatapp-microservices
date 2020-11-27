@@ -1,7 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
+import moment from "moment";
 import React from 'react';
 import { Text, TouchableWithoutFeedback, View } from 'react-native';
 import { Avatar } from "react-native-paper";
+import { useStateValue } from "../../../StateProvider";
 import StackScreenName from "../../constants/StackScreenName";
 import styles from './style';
 
@@ -9,6 +11,7 @@ import styles from './style';
 const ChatListItem = (props) => {
   const { chatRoom } = props;
   const navigation = useNavigation();
+  const [{ user }] = useStateValue();
 
   const onClick = () => {
     navigation.navigate(StackScreenName.ChatRoom, {
@@ -17,27 +20,53 @@ const ChatListItem = (props) => {
     })
   }
 
+  const displayLastMessageDate = (date) => {
+    if (date) {
+      if (moment(date).isSame(moment(), 'day')) {
+        return moment(date).format('HH:mm');
+      } else {
+        return moment(date).format('dddd');
+      }
+    }
+    return '';
+  }
+
+  const displayLastMessageFromUser = (fromUser) => {
+    if (fromUser && user) {
+      if (fromUser === user.username) {
+        return 'You';
+      } else {
+        return fromUser;
+      }
+    }
+    return '';
+  }
+
+  const getAvatarText = (text) => {
+    return String(text).charAt(0).toUpperCase();
+  }
+
   return (
     <TouchableWithoutFeedback onPress={onClick}>
       <View style={styles.container}>
         <View style={styles.lefContainer}>
-          <Avatar.Text size={24} label={chatRoom.name} style={styles.avatar}/>
+          <Avatar.Text size={36} label={getAvatarText(chatRoom.name)} style={styles.avatar}/>
           <View style={styles.midContainer}>
             <Text style={styles.username}>{chatRoom.name}</Text>
-            {/* <Text
+            <Text
               numberOfLines={2}
               style={styles.lastMessage}>
-              {chatRoom.lastMessage && chatRoom.lastMessage.user
-                ? `${chatRoom.lastMessage.user.name}: ${chatRoom.lastMessage.content}`
+              {chatRoom.lastMessage
+                ? `${displayLastMessageFromUser(chatRoom.lastMessage?.fromUser)}: ${chatRoom.lastMessage?.text}`
                 : ""}
-            </Text> */}
+            </Text>
           </View>
 
         </View>
 
-        {/* <Text style={styles.time}>
-          {chatRoom.lastMessage && moment(chatRoom.lastMessage.createdAt).format("DD/MM/YYYY")}
-        </Text> */}
+        <Text style={styles.time}>
+          {displayLastMessageDate(chatRoom.lastMessage?.createdAt)}
+        </Text>
       </View>
     </TouchableWithoutFeedback>
   )

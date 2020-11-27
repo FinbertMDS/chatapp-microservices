@@ -5,6 +5,7 @@ import { Platform, StatusBar, useColorScheme } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
 import PushNotification from "react-native-push-notification";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import reducer, { initialState } from "./reducer";
 import Config from "./src/constants/Config";
 import StackScreenName from "./src/constants/StackScreenName";
@@ -24,6 +25,9 @@ PushNotification.configure({
 
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
+    if (!notification) {
+      return;
+    }
     console.log("NOTIFICATION:", notification);
 
     // process the notification
@@ -31,11 +35,9 @@ PushNotification.configure({
     ObjectHelper.clean(message);
     if (notification.userInteraction) {
       if (message.chatRoomId) {
-        new Promise(resolve => setTimeout(resolve, 2000)).then(() => {
-          RootNavigation.navigate(StackScreenName.ChatRoom, {
-            id: message.chatRoomId,
-            name: message.chatRoomName,
-          });
+        RootNavigation.navigate(StackScreenName.ChatRoom, {
+          id: message.chatRoomId,
+          name: message.chatRoomName,
         });
       }
     } else {
@@ -115,9 +117,25 @@ function App() {
   const colorScheme = useColorScheme();
 
   useEffect(() => {
-    if (Platform.OS === 'ios') {
-      requestUserPermission();
-    }
+    // if (Platform.OS === 'ios') {
+    //   requestUserPermission();
+    // }
+    PushNotification.popInitialNotification((notification) => {
+      if (!notification) {
+        return;
+      }
+      console.log('Initial Notification', notification);
+      let message = notification.data;
+      ObjectHelper.clean(message);
+      if (message.chatRoomId) {
+        new Promise(resolve => setTimeout(resolve, 1000)).then(() => {
+          RootNavigation.navigate(StackScreenName.ChatRoom, {
+            id: message.chatRoomId,
+            name: message.chatRoomName,
+          });
+        });
+      }
+    });
   }, [])
 
   useEffect(() => {
@@ -141,7 +159,7 @@ function App() {
       //     id: userInfo.attributes.sub,
       //     name: userInfo.username,
       //     imageUri: getRandomImage(),
-      //     status: 'Hey, I am using WhatsApp',
+      //     status: 'Hey, I am using ChatApp',
       //   }
 
       //   await API.graphql(
@@ -159,7 +177,11 @@ function App() {
   return (
     <SafeAreaProvider>
       <StateProvider initialState={initialState} reducer={reducer}>
-        <PaperProvider theme={theme}>
+        <PaperProvider
+          settings={{
+            icon: props => <MaterialIcons {...props} />,
+          }}
+          theme={theme}>
           <Navigation colorScheme={colorScheme} />
           <StatusBar />
         </PaperProvider>

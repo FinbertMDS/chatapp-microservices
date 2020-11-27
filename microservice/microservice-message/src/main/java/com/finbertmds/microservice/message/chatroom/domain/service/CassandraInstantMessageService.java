@@ -8,6 +8,8 @@ import com.finbertmds.microservice.message.entity.InstantMessage;
 import com.finbertmds.microservice.message.entity.InstantMessageKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,15 +17,15 @@ public class CassandraInstantMessageService implements InstantMessageService {
 
 	@Autowired
 	private InstantMessageRepository instantMessageRepository;
-	
+
 	@Autowired
 	private ChatRoomService chatRoomService;
-	
+
 	@Override
 	public void appendInstantMessageToConversations(InstantMessage instantMessage) {
 		if (instantMessage.isFromAdmin() || instantMessage.isPublic()) {
 			ChatRoom chatRoom = chatRoomService.findById(instantMessage.getInstantMessageKey().getChatRoomId());
-			
+
 			chatRoom.getConnectedUsers().forEach(connectedUser -> {
 				InstantMessageKey instantMessageKey = instantMessage.getInstantMessageKey();
 				instantMessageKey.setUsername(connectedUser.getUsername());
@@ -35,7 +37,7 @@ public class CassandraInstantMessageService implements InstantMessageService {
 			instantMessageKey.setUsername(instantMessage.getFromUser());
 			instantMessage.setInstantMessageKey(instantMessageKey);
 			instantMessageRepository.save(instantMessage);
-			
+
 			instantMessageKey.setUsername(instantMessage.getToUser());
 			instantMessage.setInstantMessageKey(instantMessageKey);
 			instantMessageRepository.save(instantMessage);
@@ -45,5 +47,11 @@ public class CassandraInstantMessageService implements InstantMessageService {
 	@Override
 	public List<InstantMessage> findAllInstantMessagesFor(String username, String chatRoomId) {
 		return instantMessageRepository.findByInstantMessageKeyUsernameAndInstantMessageKeyChatRoomId(username, chatRoomId);
+	}
+
+	@Override
+	public Slice<InstantMessage> findInstantMessagesFor(String username, String chatRoomId, Pageable pageable) {
+		return instantMessageRepository.findByInstantMessageKeyUsernameAndInstantMessageKeyChatRoomId(username, chatRoomId,
+				pageable);
 	}
 }

@@ -1,6 +1,9 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, ImageBackground } from 'react-native';
+import {
+  ActivityIndicator, Alert, FlatList, ImageBackground,
+  Platform, StyleSheet, TouchableWithoutFeedback, View
+} from 'react-native';
 import SockJsClient from "react-stomp";
 import { actionTypes } from '../../reducer';
 import { useStateValue } from '../../StateProvider';
@@ -9,9 +12,11 @@ import MessageAPI from '../apis/MessageAPI';
 import BG from '../assets/images/BG.png';
 import ChatMessage from "../components/ChatMessage";
 import InputBox from "../components/InputBox";
+import { Text } from '../components/Themed';
+import StackScreenName from '../constants/StackScreenName';
 
 const updateMessagesData = (messages) => {
-  return messages.filter((message) => !message.isNotification).reverse();
+  return messages.filter((message) => !message.isNotification);
 }
 
 const ChatRoomScreen = () => {
@@ -21,6 +26,27 @@ const ChatRoomScreen = () => {
   const [{ user }, dispatch] = useStateValue();
   const route = useRoute();
   const navigation = useNavigation();
+  const [isFetching, setIsFetching] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  useEffect(() => {
+    if (roomDetail) {
+      navigation.setOptions({
+        headerTitle: () => (
+          <TouchableWithoutFeedback onPress={handleOpenChatRoomSetting}>
+            <Text style={[styles.title]}>{roomDetail.name}</Text>
+          </TouchableWithoutFeedback>
+        ),
+      })
+    }
+  }, [roomDetail])
+
+  const handleOpenChatRoomSetting = () => {
+    navigation.navigate(StackScreenName.ChatRoomSetting, {
+      roomDetail: roomDetail
+    })
+  };
 
   useEffect(() => {
     dispatch({
@@ -43,7 +69,7 @@ const ChatRoomScreen = () => {
           setRoomDetail(result);
           navigation.setOptions({ title: result.name })
         })
-        .catch(error => Alert.alert("Error", JSON.stringify(error)));
+        .catch(error => Alert.alert("Error", error.message));
     }
   }, [route.params.id, user.username]);
 
@@ -58,26 +84,61 @@ const ChatRoomScreen = () => {
             "username": user.username
           };
           ChatRoomAPI.addUserToChatRoom(route.params.id, participant)
-            .catch(error => Alert.alert("Error", JSON.stringify(error)));
+            .catch(error => Alert.alert("Error", error.message));
         }
       }
     }
   }, [roomDetail, route.params.id, user.username]);
 
   const fetchMessages = () => {
+    MessageAPI.getMessageInRoom(route.params.id, user.username)
+      .then(result => {
+        if (result && result.length > 0) {
+          setMessages(updateMessagesData(result));
+        }
+      })
+      .catch(error => Alert.alert("Error", error.message));
+  }
+
+  const fetchMoreData = () => {
     if (route.params.id) {
-      MessageAPI.getAllMessageInRoom(route.params.id, user.username)
+      if (isFetching) {
+        return;
+      }
+      if (!hasMore) {
+        return;
+      }
+      setIsFetching(true);
+      MessageAPI.getMessageInRoom(route.params.id, user.username, currentPage + 1)
         .then(result => {
-          if (result && result.length > 0) {
-            setMessages(updateMessagesData(result));
+          setIsFetching(false);
+          if (!result) {
+            setHasMore(false);
+            return;
           }
+          result = updateMessagesData(result);
+          if (result.length <= 0) {
+            setHasMore(false);
+            return;
+          }
+          setCurrentPage(currentPage + 1);
+          setMessages([
+            ...messages,
+            ...result,
+          ]);
         })
-        .catch(error => Alert.alert("Error", JSON.stringify(error)));
+        .catch(error => alert(error.message));
     }
   }
 
   useEffect(() => {
-    fetchMessages();
+    if (route.params.id) {
+      setMessages([]);
+      setHasMore(true);
+      setCurrentPage(0);
+
+      fetchMessages();
+    }
   }, [route.params.id, user.username])
 
   // useEffect(() => {
@@ -85,10 +146,10 @@ const ChatRoomScreen = () => {
   //     "username": user.username
   //   };
   //   ChatRoomAPI.addUserToChatRoom(route.params.id, participant)
-  //     .catch(error => Alert.alert("Error", JSON.stringify(error)));
+  //     .catch(error => Alert.alert("Error", error.message));
   //   return () => {
   //     ChatRoomAPI.removeUserFromChatRoom(route.params.id, participant)
-  //       .catch(error => Alert.alert("Error", JSON.stringify(error)));
+  //       .catch(error => Alert.alert("Error", error.message));
   //   };
   // }, [route.params.id, user.username]);
 
@@ -104,22 +165,6 @@ const ChatRoomScreen = () => {
       ]);
     }
   }
-  const updateChatRoomLastMessage = async (messageId) => {
-    try {
-      // await API.graphql(
-      //   graphqlOperation(
-      //     updateChatRoom, {
-      //       input: {
-      //         id: chatRoomID,
-      //         lastMessageID: messageId,
-      //       }
-      //     }
-      //   )
-      // );
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
   const handleSendPress = async (input) => {
     try {
@@ -131,7 +176,7 @@ const ChatRoomScreen = () => {
 
       // await updateChatRoomLastMessage(newMessageData.data.createMessage.id)
     } catch (e) {
-      Alert.alert("Error", JSON.stringify(error));
+      Alert.alert("Error", error.message);
     }
   }
 
@@ -140,13 +185,24 @@ const ChatRoomScreen = () => {
     chatRoomId: route.params.id
   };
 
+  const renderFetching = (
+    <View style={{ marginTop: 15, marginBottom: 15 }}>
+      <ActivityIndicator />
+    </View>
+  )
+
   return (
     <ImageBackground style={{ width: '100%', height: '100%' }} source={BG}>
+      {
+        isFetching && renderFetching
+      }
       <FlatList
         data={messages}
         renderItem={({ item }) => <ChatMessage user={user} message={item} />}
         keyExtractor={(item) => item.date.toString()}
         inverted
+        onEndReachedThreshold={0}
+        onEndReached={fetchMoreData}
       />
       <InputBox chatRoomID={route.params.id} onSendPress={handleSendPress} />
       <SockJsClient
@@ -160,5 +216,24 @@ const ChatRoomScreen = () => {
     </ImageBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  title: Platform.select({
+    ios: {
+      fontSize: 17,
+      fontWeight: '600',
+    },
+    android: {
+      fontSize: 20,
+      fontFamily: 'sans-serif-medium',
+      fontWeight: 'normal',
+    },
+    default: {
+      fontSize: 18,
+      fontWeight: '500',
+    },
+  }),
+});
+
 
 export default ChatRoomScreen;

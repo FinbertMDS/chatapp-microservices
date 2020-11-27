@@ -13,6 +13,9 @@ const styles = StyleSheet.create({
   midContainer: {
     justifyContent: 'space-around'
   },
+  rightContainer: {
+    alignItems: 'flex-end'
+  },
   avatar: {
     width: 60,
     height: 60,

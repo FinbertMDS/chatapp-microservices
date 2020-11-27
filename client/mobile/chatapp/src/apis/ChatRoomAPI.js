@@ -12,6 +12,12 @@ const ChatRoomAPI = {
     return axios.get(getAllUrl)
       .then(response => response.data);
   },
+  getRoomForUser: function (username) {
+    addAuthTokenToHeader();
+    let url = `${getAllUrl}?forUser=${username}`
+    return axios.get(url)
+      .then(response => response.data);
+  },
   createRoom: function (data) {
     return axios.post(createRoomUrl, data)
       .then(response => response.data);

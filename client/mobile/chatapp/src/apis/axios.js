@@ -1,6 +1,9 @@
 import { API_BASE_URL } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import StackScreenName from "../constants/StackScreenName";
 import { AppData } from "../core/appData";
+import RootNavigation from "../navigation/RootNavigation";
 
 const instance = axios.create({
   baseURL: API_BASE_URL,
@@ -26,5 +29,22 @@ export const addAuthTokenToHeader = () => {
 }
 
 addAuthTokenToHeader();
+
+const handleRequest = () => {
+  instance.interceptors.response.use(function (response) {
+    return response;
+  }, function (error) {
+    if (error && error.response && error.response.status === 401) {
+      AppData.user = null;
+      AsyncStorage.removeItem('userInfo')
+        .then(RootNavigation.navigate(StackScreenName.Setting, {
+          signOut: true
+        }));
+    }
+    return Promise.reject(error)
+  });
+}
+
+handleRequest();
 
 export default instance;
