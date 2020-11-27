@@ -34,7 +34,7 @@ const ChatListItem = (props) => {
   const displayLastMessageFromUser = (fromUser) => {
     if (fromUser && user) {
       if (fromUser === user.username) {
-        return 'Me';
+        return 'You';
       } else {
         return fromUser;
       }
