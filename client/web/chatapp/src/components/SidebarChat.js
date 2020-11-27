@@ -7,7 +7,6 @@ import './SidebarChat.css';
 
 function SidebarChat({ addNewChat, onCreateChat, roomInfo }) {
   const [seed, setSeed] = useState('');
-  const [messages] = useState('')
   const [{ user, currentRoomId }] = useStateValue();
 
   useEffect(() => {
@@ -52,7 +51,7 @@ function SidebarChat({ addNewChat, onCreateChat, roomInfo }) {
           {
             roomInfo.lastMessage && (
               <div className='sidebarChat__info__lastmessage'>
-                <div class="text">{displayLastMessageFromUser(roomInfo.lastMessage?.fromUser)}: <span>{roomInfo.lastMessage?.text} </span></div>
+                <div className="text">{displayLastMessageFromUser(roomInfo.lastMessage?.fromUser)}: <span>{roomInfo.lastMessage?.text} </span></div>
                 &nbsp;<span aria-hidden="true">·</span>&nbsp;
                 {`${displayLastMessageDate(roomInfo.lastMessage?.createdAt)}`}
               </div>

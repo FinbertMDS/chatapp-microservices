@@ -1,4 +1,4 @@
-import { Avatar, Button, IconButton } from '@material-ui/core';
+import { Avatar, Button, IconButton, makeStyles, Menu, MenuItem, Modal, withStyles } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
@@ -6,19 +6,85 @@ import MicIcon from '@material-ui/icons/Mic';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import moment from "moment";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useHistory, useParams } from 'react-router-dom';
 import SockJsClient from "react-stomp";
 import ChatRoomAPI from '../apis/ChatRoomAPI';
 import MessageAPI from '../apis/MessageAPI';
+import Const from '../constants/Const';
 import useDeviceDetect from '../helpers/useDeviceDetect';
 import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
 import './Chat.css';
+import UserList from './UserList';
 
 const updateMessagesData = (messages) => {
   return messages.filter((message) => !message.isNotification);
+}
+
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5',
+  },
+})((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
+
+const useStyles = makeStyles((theme) => ({
+  triangleBottom: {
+    position: "relative",
+    "&::before,&::after": {
+      content: "''",
+      position: "absolute",
+      bottom: 0,
+      top: '32px',
+      borderColor: "transparent",
+      borderStyle: "solid"
+    },
+    "&::before": {
+      borderWidth: "8px",
+      // borderLeftColor: "#000000",
+      borderBottomColor: "#000000"
+    },
+    "&::after": {
+      borderRadius: "3px",
+      borderWidth: "5px",
+      borderLeftColor: "#fffff" /* color of the triangle */,
+      borderBottomColor: "#fffff" /* color of the triangle */
+    }
+  },
+  paperModal: {
+    position: 'absolute',
+    width: '30%',
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
 }
 
 function Chat() {
@@ -28,11 +94,12 @@ function Chat() {
   const [roomName, setRoomName] = useState('');
   const [roomDetail, setRoomDetail] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user, contacts }, dispatch] = useStateValue();
   const { isMobile } = useDeviceDetect();
   const history = useHistory();
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
+  const classes = useStyles();
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));
@@ -151,6 +218,9 @@ function Chat() {
   const [/* clientConnected */, setClientConnected] = useState(false);
   const onMessageReceive = (message, topic) => {
     // scrollToBottom();
+    if (message.isNotification) {
+      return;
+    }
     setMessages([
       message,
       ...messages,
@@ -160,29 +230,96 @@ function Chat() {
   //   console.log(msg);
   // }
 
-  // useEffect(() => {
-  //   const onbeforeunloadFn = () => {
-  //     let participant = {
-  //       "username": user.username
-  //     };
-  //     ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
-  //       .catch(error => alert(error.message));
-  //   }
+  const [modalStyle] = useState(getModalStyle);
+  const [isAddMember, setIsAddMember] = useState(false);
+  const handleOpenModalAddMember = () => {
+    setIsAddMember(true);
+    handleCloseMoreButton();
+  };
 
-  //   window.addEventListener('beforeunload', onbeforeunloadFn);
-  //   return () => {
-  //     window.removeEventListener('beforeunload', onbeforeunloadFn);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
+  const [isRemoveMember, setIsRemoveMember] = useState(false);
+  const handleOpenModalRemoveMember = () => {
+    setIsRemoveMember(true);
+    handleCloseMoreButton();
+  };
 
-  // const handleDisconnect = () => {
-  //   let participant = {
-  //     "username": user.username
-  //   };
-  //   ChatRoomAPI.removeUserFromChatRoom(roomId, participant)
-  //     .catch(error => alert(error.message));
-  // }  
+  const [isListMember, setIsListMember] = useState(false);
+  const handleOpenModalListMember = () => {
+    setIsListMember(true);
+    handleCloseMoreButton();
+  };
+
+  const handleCloseModal = () => {
+    handleCloseMoreButton();
+    setIsAddMember(false);
+    setIsRemoveMember(false);
+    setIsListMember(false);
+  };
+
+  const handleAddUserToRoom = async (userList, checked) => {
+    if (checked.length > 0) {
+      for (const index of checked) {
+        let participant = {
+          "username": userList[index].username
+        };
+        try {
+          const result = await ChatRoomAPI.addUserToChatRoom(roomId, participant);
+          setRoomDetail(result);
+        } catch (error) {
+          alert(error.message)
+        }
+      }
+    }
+    handleCloseModal();
+  };
+
+  const handleRemoveUserFromRoom = async (userList, checked) => {
+    if (checked.length > 0) {
+      for (const index of checked) {
+        let participant = {
+          "username": userList[index].username
+        };
+        try {
+          const result = await ChatRoomAPI.removeUserFromChatRoom(roomId, participant);
+          setRoomDetail(result);
+        } catch (error) {
+          alert(error.message)
+        }
+      }
+    }
+    handleCloseModal();
+  };
+
+  const bodyModalAddMember = (
+    <div style={modalStyle} className={classes.paperModal}>
+      <UserList data={contacts}
+        regList={roomDetail ? roomDetail.connectedUsers : []}
+        type={Const.USERLIST_TYPE.ADD_MEMBER.key}
+        onCancel={handleCloseModal}
+        onSave={handleAddUserToRoom}
+      />
+    </div>
+  );
+
+  const bodyModalRemoveMember = (
+    <div style={modalStyle} className={classes.paperModal}>
+      <UserList data={roomDetail ? roomDetail.connectedUsers : []}
+        regList={[{username: user.username}]}
+        type={Const.USERLIST_TYPE.REMOVE_MEMBER.key}
+        onCancel={handleCloseModal}
+        onSave={handleRemoveUserFromRoom}
+      />
+    </div>
+  );
+
+  const bodyModalListMember = (
+    <div style={modalStyle} className={classes.paperModal}>
+      <UserList data={roomDetail ? roomDetail.connectedUsers : []}
+        type={Const.USERLIST_TYPE.LIST_MEMBER.key}
+        onCancel={handleCloseModal}
+      />
+    </div>
+  );
 
   const endMessageDisplay = (
     <p style={{ textAlign: "center", marginBottom: 20, marginTop: 20 }}>
@@ -195,6 +332,27 @@ function Chat() {
       <b>Loading...</b>
     </p>
   );
+
+  const displayLastMessageDate = (date) => {
+    if (date) {
+      if (moment(date).isSame(moment(), 'day')) {
+        return moment(date).format('HH:mm');
+      } else {
+        return moment(date).format('dddd');
+      }
+    }
+    return '';
+  }
+
+  const [isOpenMoreButton, setIsOpenMoreButton] = useState(false);
+  const moreButtonRef = useRef(null)
+  const handleClickOpenMoreButton = (event) => {
+    setIsOpenMoreButton(true);
+  };
+
+  const handleCloseMoreButton = () => {
+    setIsOpenMoreButton(false);
+  };
 
   return (
     <div className='chat'>
@@ -214,10 +372,10 @@ function Chat() {
         <div className='chat__headerInfo'>
           <h3>{roomName}</h3>
           {
-            !isMobile && messages.length > 0 && (
+            !isMobile && roomDetail && roomDetail.lastMessage && (
               <p>
                 Last seen {' '}
-                {new Date(messages[messages.length - 1]?.date).toLocaleString()}
+                {displayLastMessageDate(roomDetail.lastMessage?.createdAt)}
               </p>
             )
           }
@@ -229,10 +387,21 @@ function Chat() {
           <IconButton>
             <AttachFileIcon />
           </IconButton>
-          <IconButton>
+          <IconButton ref={moreButtonRef} onClick={handleClickOpenMoreButton} className={isOpenMoreButton ? classes.triangleBottom : ""}>
             <MoreVertIcon />
           </IconButton>
         </div>
+        <StyledMenu
+          id="simple-menu"
+          anchorEl={moreButtonRef.current}
+          keepMounted
+          open={isOpenMoreButton}
+          onClose={handleCloseMoreButton}
+        >
+          <MenuItem onClick={handleOpenModalAddMember}>Add member</MenuItem>
+          <MenuItem onClick={handleOpenModalRemoveMember}>Remove member</MenuItem>
+          <MenuItem onClick={handleOpenModalListMember}>List member</MenuItem>
+        </StyledMenu>
       </div>
       <div className='chat__body'
         id="scrollableDiv"
@@ -256,13 +425,13 @@ function Chat() {
               >
                 {messages.map(message => {
                   // if (!message.isNotification) {
-                    return (
-                      <p className={`chat__message ${message.fromUser === user.username ? 'chat__reciever' : 'chat__sender'}`} key={message.date}>
-                        <span className='chat__name'>{message.fromUser}</span>
-                        {message.text}
-                        <span className='chat__timestamp'>{moment(message.date).fromNow()}</span>
-                      </p>
-                    );
+                  return (
+                    <p className={`chat__message ${message.fromUser === user.username ? 'chat__reciever' : 'chat__sender'}`} key={message.date}>
+                      <span className='chat__name'>{message.fromUser}</span>
+                      {message.text}
+                      <span className='chat__timestamp'>{moment(message.date).fromNow()}</span>
+                    </p>
+                  );
                   // } else {
                   //   return "";
                   // }
@@ -289,6 +458,18 @@ function Chat() {
           <MicIcon />
         </IconButton>
       </div>
+      <Modal
+        open={isAddMember || isRemoveMember || isListMember}
+        onClose={handleCloseModal}
+        aria-labelledby="member"
+        aria-describedby="member"
+      >
+        {
+          isAddMember ? bodyModalAddMember : (
+            isRemoveMember ? bodyModalRemoveMember : bodyModalListMember
+          )
+        }
+      </Modal>
       <SockJsClient
         url={MessageAPI.wsSourceUrl}
         topics={[publicTopicStr]}

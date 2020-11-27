@@ -30,7 +30,7 @@ const handleRequest = () => {
   instance.interceptors.response.use(function (response) {
     return response;
   }, function (error) {
-    if (401 === error.response.status) {
+    if (error && error.response && error.response.status === 401) {
       localStorage.removeItem('userInfo');
       window.location = '/';
     }

@@ -47,7 +47,8 @@ function SignUp(props) {
     setState({ ...state, [event.target.name]: event.target.value });
   };
 
-  const signUp = () => {
+  const signUp = (event) => {
+    event.preventDefault();
     const signUpData = {
       "username": state.username,
       "email": state.email,
@@ -81,7 +82,7 @@ function SignUp(props) {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={signUp}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -121,7 +122,7 @@ function SignUp(props) {
             autoComplete="current-password"
           />
           <Button
-            // type="submit"
+            type="submit"
             onClick={signUp}
             fullWidth
             variant="contained"

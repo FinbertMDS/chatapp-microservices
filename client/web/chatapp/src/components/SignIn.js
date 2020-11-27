@@ -107,7 +107,7 @@ function SignIn() {
     SecurityAPI.signIn(signInData)
       .then(result => {
         localStorage.setItem("userInfo", JSON.stringify(result));
-        let loginMessage = {"message": "User login successfully!"};
+        let loginMessage = { "message": "User login successfully!" };
         dispatch({
           type: actionTypes.SET_NOTIFICATION,
           notification: loginMessage
@@ -184,16 +184,16 @@ function SignIn() {
               </Link>
             </Grid>
           </Grid>
-          <Modal
-            open={isSignUp}
-            onClose={handleClose}
-            aria-labelledby="signup"
-            aria-describedby="signup"
-          >
-            {body}
-          </Modal>
         </form>
       </div>
+      <Modal
+        open={isSignUp}
+        onClose={handleClose}
+        aria-labelledby="signup"
+        aria-describedby="signup"
+      >
+        {body}
+      </Modal>
       <Box mt={8}>
         <Copyright />
       </Box>

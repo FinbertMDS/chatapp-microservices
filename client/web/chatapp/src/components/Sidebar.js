@@ -1,4 +1,4 @@
-import { Avatar, IconButton, makeStyles, Menu, MenuItem, withStyles } from '@material-ui/core';
+import { Avatar, IconButton, makeStyles, Menu, MenuItem, Modal, withStyles } from '@material-ui/core';
 import ChatIcon from '@material-ui/icons/Chat';
 import DonutLargeIcon from '@material-ui/icons/DonutLarge';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -6,10 +6,13 @@ import SearchIcon from '@material-ui/icons/Search';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import ChatRoomAPI from '../apis/ChatRoomAPI';
+import ContactAPI from '../apis/ContactAPI';
+import Const from '../constants/Const';
 import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
 import './Sidebar.css';
 import SidebarChat from './SidebarChat';
+import UserList from './UserList';
 
 const StyledMenu = withStyles({
   paper: {
@@ -53,20 +56,40 @@ const useStyles = makeStyles((theme) => ({
       borderLeftColor: "#fffff" /* color of the triangle */,
       borderBottomColor: "#fffff" /* color of the triangle */
     }
-  }
+  },
+  paperModal: {
+    position: 'absolute',
+    width: '30%',
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }));
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 function Sidebar() {
   const [rooms, setRooms] = useState([]);
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user, contacts }, dispatch] = useStateValue();
+  const classes = useStyles();
 
   useEffect(() => {
-    ChatRoomAPI.getAll()
+    ChatRoomAPI.getRoomForUser(user.username)
       .then(result => {
         setRooms(result);
       })
       .catch(error => alert(error.message));
-  }, []);
+  }, [user.username]);
 
   const [isOpenMoreButton, setIsOpenMoreButton] = useState(false);
   const moreButtonRef = useRef(null)
@@ -74,7 +97,7 @@ function Sidebar() {
     setIsOpenMoreButton(true);
   };
 
-  const handleClose = () => {
+  const handleCloseMoreButton = () => {
     setIsOpenMoreButton(false);
   };
 
@@ -98,22 +121,142 @@ function Sidebar() {
     setInput('')
   }
 
-  const handleCreateChat = (roomName) => {
-    let roomData = {
-      "name": roomName
-    };
-    ChatRoomAPI.createRoom(roomData)
-      .then(result => {
-        setRooms([
-          ...rooms,
-          result,
-        ]);
-        // console.log(result);
-      })
-      .catch(error => alert(error.message));
+  const handleCreateChat = async (roomName) => {
+    try {
+      let roomData = {
+        "name": roomName
+      };
+      const roomInfo = await ChatRoomAPI.createRoom(roomData);
+      let participant = {
+        "username": user.username
+      };
+      await ChatRoomAPI.addUserToChatRoom(roomInfo.id, participant);
+      setRooms([
+        ...rooms,
+        roomInfo,
+      ]);
+    } catch (error) {
+      alert(error.message)
+    }
   }
 
-  const classes = useStyles();
+  useEffect(() => {
+    if (user.username) {
+      ContactAPI.getContactForUser(user.username)
+        .then(result => {
+          dispatch({
+            type: actionTypes.SET_CONTACTS,
+            contacts: result
+          });
+        })
+        .catch(error => alert(error.message));
+    }
+  }, [user.username]);
+  const [allContacts, setAllContacts] = useState([]);
+  useEffect(() => {
+    ContactAPI.getAll()
+      .then(result => {
+        setAllContacts(result);
+      })
+      .catch(error => alert(error.message));
+  }, []);
+
+  const [modalStyle] = useState(getModalStyle);
+  const [isAddMember, setIsAddMember] = useState(false);
+  const handleOpenModalAddMember = () => {
+    setIsAddMember(true);
+    handleCloseMoreButton();
+  };
+
+  const [isRemoveMember, setIsRemoveMember] = useState(false);
+  const handleOpenModalRemoveMember = () => {
+    setIsRemoveMember(true);
+    handleCloseMoreButton();
+  };
+
+  const [isListMember, setIsListMember] = useState(false);
+  const handleOpenModalListMember = () => {
+    setIsListMember(true);
+    handleCloseMoreButton();
+  };
+
+  const handleCloseModal = () => {
+    handleCloseMoreButton();
+    setIsAddMember(false);
+    setIsRemoveMember(false);
+    setIsListMember(false);
+  };
+
+  const handleAddContact = async (userList, checked) => {
+    if (checked.length > 0) {
+      for (const index of checked) {
+        let addUserContactRequest = {
+          "username": userList[index].username
+        };
+        try {
+          const result = await ContactAPI.createContactForUser(user.username, addUserContactRequest);
+          dispatch({
+            type: actionTypes.SET_CONTACTS,
+            contacts: result
+          })
+        } catch (error) {
+          alert(error.message)
+        }
+      }
+    }
+    handleCloseModal();
+  };
+
+  const handleRemoveContact = async (userList, checked) => {
+    if (checked.length > 0) {
+      for (const index of checked) {
+        let addUserContactRequest = {
+          "username": userList[index].username
+        };
+        try {
+          const result = await ContactAPI.removeContactForUser(user.username, addUserContactRequest);
+          dispatch({
+            type: actionTypes.SET_CONTACTS,
+            contacts: result
+          })
+        } catch (error) {
+          alert(error.message)
+        }
+      }
+    }
+    handleCloseModal();
+  };
+
+  const bodyModalAddMember = (
+    <div style={modalStyle} className={classes.paperModal}>
+      <UserList data={allContacts}
+        regList={[{ username: user.username }, ...contacts]}
+        type={Const.USERLIST_TYPE.ADD_CONTACT.key}
+        onCancel={handleCloseModal}
+        onSave={handleAddContact}
+      />
+    </div>
+  );
+
+  const bodyModalRemoveMember = (
+    <div style={modalStyle} className={classes.paperModal}>
+      <UserList data={contacts}
+        regList={[{ username: user.username }]}
+        type={Const.USERLIST_TYPE.REMOVE_CONTACT.key}
+        onCancel={handleCloseModal}
+        onSave={handleRemoveContact}
+      />
+    </div>
+  );
+
+  const bodyModalListMember = (
+    <div style={modalStyle} className={classes.paperModal}>
+      <UserList data={contacts}
+        type={Const.USERLIST_TYPE.LIST_CONTACT.key}
+        onCancel={handleCloseModal}
+      />
+    </div>
+  );
 
   return (
     <div className='sidebar'>
@@ -137,11 +280,26 @@ function Sidebar() {
           anchorEl={moreButtonRef.current}
           keepMounted
           open={isOpenMoreButton}
-          onClose={handleClose}
+          onClose={handleCloseMoreButton}
         >
+          <MenuItem onClick={handleOpenModalAddMember}>Add contact</MenuItem>
+          <MenuItem onClick={handleOpenModalRemoveMember}>Remove contact</MenuItem>
+          <MenuItem onClick={handleOpenModalListMember}>List contact</MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </StyledMenu>
       </div>
+      <Modal
+        open={isAddMember || isRemoveMember || isListMember}
+        onClose={handleCloseModal}
+        aria-labelledby="contact"
+        aria-describedby="contact"
+      >
+        {
+          isAddMember ? bodyModalAddMember : (
+            isRemoveMember ? bodyModalRemoveMember : bodyModalListMember
+          )
+        }
+      </Modal>
       <div className='sidebar__search'>
         <div className='sidebar__searchContainer'>
           <IconButton>
@@ -159,7 +317,7 @@ function Sidebar() {
         </div>
       </div>
       <div className='sidebar__chats'>
-        <SidebarChat addNewChat onCreateChat={handleCreateChat}/>
+        <SidebarChat addNewChat onCreateChat={handleCreateChat} />
         {rooms && rooms.map(room => room && (
           <SidebarChat
             key={room.id}
