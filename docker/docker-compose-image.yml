@@ -1,0 +1,132 @@
+version: "3"
+services:
+  eureka:
+    # build: ../microservice/microservice-eureka-server
+    image: chatapp_eureka
+    ports:
+      - "8761:8761"
+
+  config:
+    # build: ../microservice/microservice-config-server
+    image: chatapp_config
+    links:
+      - eureka
+    volumes:
+      - ../config/:/root/config
+
+  security:
+    # build: ../microservice/microservice-security
+    image: chatapp_security
+    links:
+      - eureka
+      - mysql
+      - kafka
+
+  message:
+    # build: ../microservice/microservice-message
+    image: chatapp_message
+    ports:
+      - "8079:8080"
+    links:
+      - eureka
+      - cassandra
+      - redis
+      - rabbitmq
+      - mysql
+    restart: on-failure
+
+  contact:
+    # build: ../microservice/microservice-contact
+    image: chatapp_contact
+    links:
+      - eureka
+      - config
+      - mysql
+      - kafka
+
+  storage:
+    # build: ../microservice/microservice-storage
+    image: chatapp_storage
+    links:
+      - eureka
+      - config
+      - mysql
+
+  zuul:
+    # build: ../microservice/microservice-zuul-server
+    image: chatapp_zuul
+    links:
+      - eureka
+    ports:
+      - "8080:8080"
+
+  turbine:
+    # build: ../microservice/microservice-turbine-server
+    image: chatapp_turbine
+    links:
+      - eureka
+    ports:
+      - "8989:8989"
+
+  chatapp:
+    # build: ../client/web/chatapp
+    image: chatapp_chatapp
+    links:
+      - zuul
+      - security
+      - message
+      - contact
+    ports:
+      - "8000:80"
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    links:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "user:3:1"
+
+  redis:
+    image: redis:3.0.6
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    links:
+      - redis
+    environment:
+      - REDIS_HOSTS=redis
+    ports:
+      - "7070:8081"
+
+  cassandra:
+    # image: "cassandra:3.0"
+    build: ./cassandra
+    ports:
+      - 9042:9042
+    environment:
+      - CASSANDRA_KEYSPACE=db_messages
+
+  rabbitmq:
+    build: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+
+  mysql:
+    build: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  adminer:
+    image: adminer
+    ports:
+      - 6060:8080
