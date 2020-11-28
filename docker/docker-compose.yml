@@ -39,6 +39,7 @@ services:
     build: ../microservice/microservice-contact
     links:
       - eureka
+      - config
       - mysql
       - kafka
 
