@@ -92,14 +92,14 @@ services:
     ports:
       - "6379:6379"
 
-  redis-commander:
-    image: rediscommander/redis-commander
-    links:
-      - redis
-    environment:
-      - REDIS_HOSTS=redis
-    ports:
-      - "7070:8081"
+  # redis-commander:
+  #   image: rediscommander/redis-commander
+  #   links:
+  #     - redis
+  #   environment:
+  #     - REDIS_HOSTS=redis
+  #   ports:
+  #     - "7070:8081"
 
   cassandra:
     # image: "cassandra:3.0"
@@ -121,7 +121,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
 
-  adminer:
-    image: adminer
-    ports:
-      - 6060:8080
+  # adminer:
+  #   image: adminer
+  #   ports:
+  #     - 6060:8080
