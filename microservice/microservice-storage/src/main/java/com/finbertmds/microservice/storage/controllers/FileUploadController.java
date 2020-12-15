@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 
 @RestController
 @RequestMapping("/api")
@@ -51,11 +51,11 @@ public class FileUploadController {
 	}
 
 	@PostMapping("/uploadFile")
-	public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
+	public UploadFileResponse uploadFile(@RequestPart("file") MultipartFile file) {
 		File fileObject = storageService.store(file);
 
-		return new UploadFileResponse(fileObject.getFileName(), getFileDownloadUri(fileObject), file.getContentType(),
-				file.getSize());
+		return new UploadFileResponse(fileObject.getFileId(), fileObject.getFileName(), getFileDownloadUri(fileObject),
+				file.getContentType(), file.getSize());
 	}
 
 	private String getFileDownloadUri(File file) {

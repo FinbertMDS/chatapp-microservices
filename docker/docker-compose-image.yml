@@ -1,30 +1,30 @@
 version: "3"
 services:
   eureka:
-    build: ../microservice/microservice-eureka-server
+    # build: ../microservice/microservice-eureka-server
+    image: chatapp_eureka
     ports:
       - "8761:8761"
 
   config:
-    build: ../microservice/microservice-config-server
+    # build: ../microservice/microservice-config-server
+    image: chatapp_config
     links:
       - eureka
     volumes:
       - ../config/:/root/config
-  user:
-    build: ../microservice/microservice-user
-    links:
-      - eureka
 
   security:
-    build: ../microservice/microservice-security
+    # build: ../microservice/microservice-security
+    image: chatapp_security
     links:
       - eureka
       - mysql
       - kafka
 
   message:
-    build: ../microservice/microservice-message
+    # build: ../microservice/microservice-message
+    image: chatapp_message
     ports:
       - "8079:8080"
     links:
@@ -36,7 +36,8 @@ services:
     restart: on-failure
 
   contact:
-    build: ../microservice/microservice-contact
+    # build: ../microservice/microservice-contact
+    image: chatapp_contact
     links:
       - eureka
       - config
@@ -44,28 +45,32 @@ services:
       - kafka
 
   storage:
-    build: ../microservice/microservice-storage
+    # build: ../microservice/microservice-storage
+    image: chatapp_storage
     links:
       - eureka
       - config
       - mysql
 
   zuul:
-    build: ../microservice/microservice-zuul-server
+    # build: ../microservice/microservice-zuul-server
+    image: chatapp_zuul
     links:
       - eureka
     ports:
       - "8080:8080"
 
   turbine:
-    build: ../microservice/microservice-turbine-server
+    # build: ../microservice/microservice-turbine-server
+    image: chatapp_turbine
     links:
       - eureka
     ports:
       - "8989:8989"
 
   chatapp:
-    build: ../client/web/chatapp
+    # build: ../client/web/chatapp
+    image: chatapp_chatapp
     links:
       - zuul
       - security
