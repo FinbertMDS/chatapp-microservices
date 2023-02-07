@@ -33,7 +33,6 @@ services:
       - redis
       - rabbitmq
       - mysql
-    restart: on-failure
 
   contact:
     # build: ../microservice/microservice-contact

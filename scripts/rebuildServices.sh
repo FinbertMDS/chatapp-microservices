@@ -58,7 +58,7 @@ buildService() {
       needBuildServiceJava=1
       executeCommand+="-pl $serviceName "
     else
-      cd $DIR/../client/web/chatapp && yarn build
+      cd $DIR/../client/web/chatapp && yarn && yarn build
       cd $DIR/../microservice
     fi
   done
@@ -69,8 +69,8 @@ buildService() {
 
 buildAndStartDocker() {
   cd ${DIR}/../docker
-  local dockerBuildCommand="docker-compose build "
-  local dockerUpCommand="docker-compose up -d "
+  local dockerBuildCommand="docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build "
+  local dockerUpCommand="docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d "
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="${services[$serviceIndex]//-}"
@@ -80,7 +80,7 @@ buildAndStartDocker() {
   done
   eval $dockerBuildCommand
   
-  docker-compose up -d zuul config
+  docker-compose -f docker-compose-base.yml up -d zuul config
   $DIR/wait-for-services.sh config
   
   eval $dockerUpCommand

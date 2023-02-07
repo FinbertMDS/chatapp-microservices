@@ -137,6 +137,10 @@ You can access:
 * The Hystrix dashboard at http://localhost:8989/
 * The Chat App client web at http://localhost:8000/
 * Swagger UI at http://localhost:8080/security/swagger-ui/
+```
+Signup user with roles:
+"role": ["admin", "mod", "user"]
+```
 
 Mange resources:
 
