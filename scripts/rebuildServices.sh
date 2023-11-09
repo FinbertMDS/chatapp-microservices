@@ -1,6 +1,6 @@
 #!/bin/bash
-services=("storage" "contact" "message" "security" "user" "config-server" "eureka-server" "turbine-server" "zuul-server" "chatapp")
-servicesNeedWaitWhenStart=("storage" "contact" "message" "security" "user" "config" "zuul")
+services=("contact" "message" "security" "user" "config-server" "eureka-server" "zuul-server" "chatapp")
+servicesNeedWaitWhenStart=("contact" "message" "security" "user" "config" "zuul")
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 declare -a servicesWillBeRebuild
@@ -26,6 +26,7 @@ initGitAtFolderConfig() {
   if [ ! -d "${DIR}/../config/.git" ]; then
     cd ${DIR}/../config
     git init
+    git add .
     git commit -m "init"
     cd $DIR
   fi
@@ -75,12 +76,16 @@ buildAndStartDocker() {
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="${services[$serviceIndex]//-}"
     serviceName="${serviceName//server}"
-    dockerBuildCommand+="$serviceName "
-    dockerUpCommand+="$serviceName "
+    if [[ "$serviceName" == "message" ]]; then
+      eval "docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build --no-cache cassandra sample-data-cassandra"
+    else
+      dockerBuildCommand+="$serviceName "
+      dockerUpCommand+="$serviceName "
+    fi
   done
   eval $dockerBuildCommand
   
-  docker-compose -f docker-compose-base.yml up -d zuul config
+  docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d zuul config
   $DIR/wait-for-services.sh config
   
   eval $dockerUpCommand
