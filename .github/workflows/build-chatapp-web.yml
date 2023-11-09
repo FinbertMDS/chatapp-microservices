@@ -12,10 +12,10 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-      - name: Use Node.js 12
+      - name: Use Node.js 18
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '18.x'
       - run: |
           cd client/web/chatapp && npm install
       - name: Create Docker images 
