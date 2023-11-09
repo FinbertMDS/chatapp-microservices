@@ -5,6 +5,7 @@ on:
       - develop
     paths:
     - "microservice/microservice-storage/**"
+  workflow_dispatch:
 jobs:
   push_to_registry:
     name: storage

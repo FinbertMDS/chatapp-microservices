@@ -5,6 +5,7 @@ on:
       - develop
     paths:
     - "client/web/chatapp/**"
+  workflow_dispatch:
 jobs:
   push_to_registry:
     name: chatapp web
