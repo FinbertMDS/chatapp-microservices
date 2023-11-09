@@ -5,6 +5,7 @@ on:
       - develop
     paths:
     - "microservice/microservice-contact/**"
+  workflow_dispatch:
 jobs:
   push_to_registry:
     name: contact

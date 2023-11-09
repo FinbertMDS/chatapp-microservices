@@ -11,6 +11,7 @@ services:
       - eureka
     volumes:
       - ../config/:/root/config
+
   user:
     build: ../microservice/microservice-user
     links:
@@ -23,18 +24,6 @@ services:
       - mysql
       - kafka
 
-  message:
-    build: ../microservice/microservice-message
-    ports:
-      - "8079:8080"
-    links:
-      - eureka
-      - cassandra
-      - redis
-      - rabbitmq
-      - mysql
-    restart: on-failure
-
   contact:
     build: ../microservice/microservice-contact
     links:
@@ -42,37 +31,6 @@ services:
       - config
       - mysql
       - kafka
-
-  storage:
-    build: ../microservice/microservice-storage
-    links:
-      - eureka
-      - config
-      - mysql
-
-  zuul:
-    build: ../microservice/microservice-zuul-server
-    links:
-      - eureka
-    ports:
-      - "8080:8080"
-
-  turbine:
-    build: ../microservice/microservice-turbine-server
-    links:
-      - eureka
-    ports:
-      - "8989:8989"
-
-  chatapp:
-    build: ../client/web/chatapp
-    links:
-      - zuul
-      - security
-      - message
-      - contact
-    ports:
-      - "8000:80"
 
   zookeeper:
     image: wurstmeister/zookeeper:3.4.6
@@ -87,27 +45,66 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "user:3:1"
 
+  mysql:
+    build: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+  adminer:
+    image: adminer
+    ports:
+      - 6060:8080
+
+  message:
+    build: ../microservice/microservice-message
+    ports:
+      - "8079:8080"
+    links:
+      - eureka
+      - cassandra
+      - redis
+      - rabbitmq
+      - mysql
+    networks:
+      - chatapp_default
+
+  cassandra:
+    image: "cassandra:4"
+    ports:
+      - 9042:9042
+    networks:
+      - chatapp_default
+      
+  sample-data-cassandra:
+    image: cassandra:4
+    depends_on:
+      - cassandra
+    restart: "no"
+    entrypoint: ["/init.sh"]
+    volumes:
+      - ./cassandra/init.sh:/init.sh
+    environment:
+      - CASSANDRA_KEYSPACE=db_messages
+    networks:
+      - chatapp_default
+      
   redis:
     image: redis:3.0.6
     ports:
       - "6379:6379"
+    networks:
+      - chatapp_default
 
-  # redis-commander:
-  #   image: rediscommander/redis-commander
-  #   links:
-  #     - redis
-  #   environment:
-  #     - REDIS_HOSTS=redis
-  #   ports:
-  #     - "7070:8081"
-
-  cassandra:
-    # image: "cassandra:3.0"
-    build: ./cassandra
-    ports:
-      - 9042:9042
+  redis-commander:
+    image: rediscommander/redis-commander
+    links:
+      - redis
     environment:
-      - CASSANDRA_KEYSPACE=db_messages
+      - REDIS_HOSTS=redis
+    ports:
+      - "7070:8081"
+    networks:
+      - chatapp_default
 
   rabbitmq:
     build: rabbitmq
@@ -115,13 +112,40 @@ services:
       - "5672:5672"
       - "15672:15672"
       - "61613:61613"
+    networks:
+      - chatapp_default
 
-  mysql:
-    build: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
+  zuul:
+    build: ../microservice/microservice-zuul-server
+    links:
+      - eureka
+    ports:
+      - "8080:8080"
 
-  # adminer:
-  #   image: adminer
+  chatapp:
+    build: ../client/web/chatapp
+    links:
+      - zuul
+      - security
+      - message
+      - contact
+    ports:
+      - "8000:80"
+
+  # storage:
+  #   build: ../microservice/microservice-storage
+  #   links:
+  #     - eureka
+  #     - config
+  #     - mysql
+
+  # turbine:
+  #   build: ../microservice/microservice-turbine-server
+  #   links:
+  #     - eureka
   #   ports:
-  #     - 6060:8080
+  #     - "8989:8989"
+
+networks:
+  chatapp:
+    driver: bridge

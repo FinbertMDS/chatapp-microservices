@@ -59,7 +59,7 @@ buildService() {
 
 buildDocker() {
   cd ../docker
-  local dockerBuildCommand="docker-compose build "
+  local dockerBuildCommand="docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build "
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceName="${servicesWillBeRebuild[$index]//-/}"
     serviceName="${serviceName//server/}"

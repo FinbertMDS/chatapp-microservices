@@ -5,6 +5,7 @@ on:
       - develop
     paths:
     - "microservice/microservice-eureka-server/**"
+  workflow_dispatch:
 jobs:
   push_to_registry:
     name: eureka server

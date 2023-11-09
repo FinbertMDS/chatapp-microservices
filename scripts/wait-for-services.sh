@@ -38,8 +38,8 @@ main() {
 
 checkContainerIsRunning() {
 	cd $DIR/../docker
-	if [ -z `docker ps -q --no-trunc | grep $(docker-compose ps -q ${1})` ]; then
-  	echo 0
+	if [ -z `docker ps -q --no-trunc | grep $(docker-compose -f docker-compose-base.yml -f docker-compose-message.yml ps -q ${1})` ]; then
+  		echo 0
 	else
 		echo 1
 	fi
