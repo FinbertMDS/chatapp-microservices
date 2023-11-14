@@ -5,6 +5,7 @@ on:
       - develop
     paths:
       - "client/mobile/chatapp/**"
+  workflow_dispatch:
 jobs:
   deploy-android:
     runs-on: ubuntu-latest
@@ -30,7 +31,7 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: Build Android Debug
-        run: yarn build-android
+        run: yarn install && chmod +x android/gradlew && yarn build-android
 
       # - name: Deploy App # 説明4
       #   working-directory: ./android
