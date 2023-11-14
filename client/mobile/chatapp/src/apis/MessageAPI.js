@@ -11,6 +11,17 @@ const sockeBaseURL = Platform.OS === "android" ? SOCKET_BASE_URL_ANDROID : SOCKE
 const MessageAPI = {
   wsSourceUrl: sockeBaseURL,
 
+  updateUrl: async function (params) {
+    let urlOld;
+    try {
+      urlOld = await AsyncStorage.getItem('url');
+      if (urlOld != null) {
+        this.wsSourceUrl = `${urlOld}:8079/ws`
+      }
+    } catch (e) {
+    }
+  },
+
   getPublicMessageTopicUrl: function (roomId) {
     return "/topic/" + roomId + ".public.messages"
   },

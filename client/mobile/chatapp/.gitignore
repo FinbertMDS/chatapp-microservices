@@ -38,8 +38,9 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
-!debug.keystore
+# *.keystore
+# !debug.keystore
+# !finbertmds.keystore
 
 # fastlane
 #

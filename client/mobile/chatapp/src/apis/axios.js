@@ -34,20 +34,38 @@ export const addAuthTokenToHeader = () => {
 addAuthTokenToHeader();
 
 const handleRequest = () => {
+  instance.interceptors.request.use(async config => {
+    let urlOld;
+    try {
+      urlOld = await AsyncStorage.getItem('url');
+      if (urlOld != null && urlOld != "") {
+        config.baseURL =  `${urlOld}:8080`;
+      }
+    } catch (e) {
+    }
+    return config; 
+  }, error => Promise.reject(error));
+}
+
+handleRequest();
+
+const handleResponse = () => {
   instance.interceptors.response.use(function (response) {
     return response;
   }, function (error) {
     if (error && error.response && error.response.status === 401) {
-      AppData.user = null;
-      AsyncStorage.removeItem('userInfo')
-        .then(RootNavigation.navigate(StackScreenName.Setting, {
-          signOut: true
-        }));
+      if (AppData.user != null) {
+        AppData.user = null;
+        AsyncStorage.removeItem('userInfo')
+          .then(RootNavigation.navigate(StackScreenName.Setting, {
+            signOut: true
+          }));
+      }
     }
     return Promise.reject(error)
   });
 }
 
-handleRequest();
+handleResponse();
 
 export default instance;

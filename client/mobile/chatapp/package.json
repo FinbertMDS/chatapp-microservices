@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "build-android": "SET NODE_OPTIONS=--openssl-legacy-provider && cd android && ./gradlew assembleRelease --no-daemon",
     "android": "SET NODE_OPTIONS=--openssl-legacy-provider && react-native run-android",
     "ios": "SET NODE_OPTIONS=--openssl-legacy-provider && react-native run-ios",
     "start": "SET NODE_OPTIONS=--openssl-legacy-provider && react-native start",

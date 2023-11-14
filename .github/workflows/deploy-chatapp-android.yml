@@ -1,0 +1,43 @@
+name: Deploy android app
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "client/mobile/chatapp/**"
+jobs:
+  deploy-android:
+    runs-on: ubuntu-latest
+    container: reactnativecommunity/react-native-android
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      # - name: Extract branch name # 説明1
+      #   shell: bash
+      #   run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+      #   id: extract_branch
+
+      # - name: copy env staging # 説明2
+      #   if: ${{ steps.extract_branch.outputs.branch == 'staging' }}
+      #   run: cp .env.staging .env
+      
+      # - name: copy env develop # 説明2
+      #   if: ${{ steps.extract_branch.outputs.branch == 'develop' }}
+      #   run: cp .env.development .env
+
+      - name: yarn install
+        run: yarn --frozen-lockfile
+
+      - name: Build Android Debug
+        run: yarn build-android
+
+      # - name: Deploy App # 説明4
+      #   working-directory: ./android
+      #   run: |
+      #     curl \
+      #       -H "Authorization: token ${{secrets.DEPLOY_GATE_API_KEY}}" \
+      #       -F "file=@app/build/outputs/apk/release/app-release.apk" \
+      #       -F "message=$(git rev-parse --short HEAD)" \
+      #       -F "distribution_name=${{ steps.extract_branch.outputs.branch }}" \
+      #       -v "https://deploygate.com/api/users/${{secrets.DEPLOY_GATE_USER_NAME}}/apps"
