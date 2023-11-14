@@ -31,7 +31,8 @@ main() {
 		local statusContainer=$(checkContainerIsRunning $serviceName)
 		if [ "${statusContainer}" == "0" ]; then
 			echo "${serviceName} is stopped"
-			break;
+			return 1;
+			# break;
 		fi
 	done
 }

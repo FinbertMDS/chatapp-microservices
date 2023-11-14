@@ -11,6 +11,16 @@ This is a step-by-step guide how to run the example:
    sufficient. After the installation you should be able to execute
    `java` and `javac` on the command line.
 
+Recommend: Java version 8, 11
+
+* The client is implemented in ReactJS and ReactNative. See 
+  https://nodejs.org/en to download and install NodeJS, and 
+  https://yarnpkg.com/getting-started/install to install Yarn .
+  After the installation you should be able to execute
+   `node -v` and `yarn -v` on the command line.
+
+Recommend: Node version 18, Yarn version 1.22
+
 * The example run in Docker Containers. You need to install Docker
   Community Edition, see https://www.docker.com/community-edition/
   . You should be able to run `docker` after the installation.
@@ -72,6 +82,7 @@ You must init git in folder `config` by below commands:
 ```sh
 cd config
 git init
+git add .
 git commit -m "init"
 ```
 ## Run the containers

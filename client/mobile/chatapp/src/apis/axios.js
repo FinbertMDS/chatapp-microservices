@@ -1,12 +1,15 @@
-import { API_BASE_URL } from "@env";
+import { API_BASE_URL, API_BASE_URL_ANDROID } from "@env";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import StackScreenName from "../constants/StackScreenName";
 import { AppData } from "../core/appData";
 import RootNavigation from "../navigation/RootNavigation";
+import { Platform } from 'react-native';
+
+const baseURL = Platform.OS === "android" ? API_BASE_URL_ANDROID : API_BASE_URL
 
 const instance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: baseURL,
 });
 
 const getAuthToken = () => {

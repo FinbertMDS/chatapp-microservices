@@ -58,7 +58,9 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 
-google-services.json
-GoogleService-Info.plist
+# google-services.json
+# GoogleService-Info.plist
 
 .env
+
+java_pid*
