@@ -10,10 +10,26 @@ on:
 jobs:
   deploy-android:
     runs-on: ubuntu-latest
-    container: reactnativecommunity/react-native-android
+    # container: reactnativecommunity/react-native-android
     steps:
       - name: checkout
         uses: actions/checkout@v2
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+          distribution: "adopt"
+          cache: "gradle"
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+        
+      # Node, Yarn and NPM
+      - name: Setup Node  
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
       # - name: Extract branch name # 説明1
       #   shell: bash
@@ -34,7 +50,7 @@ jobs:
 
       - name: yarn install
         run: |
-          cd client/mobile/chatapp && yarn install
+          cd client/mobile/chatapp && yarn --frozen-lockfile
 
       - name: Build Android Debug
         run: |
