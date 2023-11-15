@@ -2,7 +2,7 @@ name: eureka server
 on:
   push:
     tags:
-      - "*"
+      - "v*"
     branches: 
       - master
     paths:

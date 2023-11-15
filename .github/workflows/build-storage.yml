@@ -2,7 +2,7 @@ name: storage
 on:
   push:
     tags:
-      - "*"
+      - "v*"
     branches: 
       - master
     paths:

@@ -2,7 +2,7 @@ name: contact
 on:
   push:
     tags:
-      - "*"
+      - "v*"
     branches: 
       - master
     paths:

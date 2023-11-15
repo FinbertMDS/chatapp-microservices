@@ -2,7 +2,7 @@ name: chatapp mobile android
 on:
   push:
     tags:
-      - "*"
+      - "v*"
     branches:
       - develop
       - master

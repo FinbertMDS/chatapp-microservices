@@ -2,7 +2,7 @@ name: turbine server
 on:
   push:
     tags:
-      - "*"
+      - "v*"
     branches: 
       - master
     paths:
