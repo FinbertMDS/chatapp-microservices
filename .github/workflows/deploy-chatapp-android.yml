@@ -4,7 +4,6 @@ on:
     tags:
       - "v*"
     branches:
-      - develop
       - master
     paths:
       - "client/mobile/chatapp/**"
@@ -31,10 +30,10 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Extract branch name
-        shell: bash
-        run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
-        id: extract_branch
+      # - name: Extract branch name
+      #   shell: bash
+      #   run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+      #   id: extract_branch
 
       # - name: copy env staging # 説明2
       #   if: ${{ steps.extract_branch.outputs.branch == 'staging' }}
@@ -64,8 +63,7 @@ jobs:
       
       - name: Create Release and Uploading Files
         uses: softprops/action-gh-release@v1
-        if: ${{ startsWith(github.ref, 'refs/tags/') || steps.extract_branch.outputs.branch == 'develop'}}
-        # if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
         with:
             files: client/mobile/chatapp/android/app/build/outputs/apk/release/app-release.apk
 
