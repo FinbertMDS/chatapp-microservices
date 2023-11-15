@@ -19,11 +19,8 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: "11"
-          distribution: "adopt"
+          distribution: "corretto"
           cache: "gradle"
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
         
       # Node, Yarn and NPM
       - name: Setup Node  

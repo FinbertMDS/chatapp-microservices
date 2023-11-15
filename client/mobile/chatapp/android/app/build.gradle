@@ -122,6 +122,16 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
 
+def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())
+
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
+        }
+    }
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -147,14 +157,14 @@ android {
             }
         }
     }
-    // splits {
-    //     abi {
-    //         reset()
-    //         enable enableSeparateBuildPerCPUArchitecture
-    //         universalApk false  // If true, also generate a universal APK
-    //         include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
-    //     }
-    // }
+     splits {
+         abi {
+             reset()
+             enable enableSeparateBuildPerCPUArchitecture
+             universalApk false  // If true, also generate a universal APK
+             include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+         }
+     }
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
