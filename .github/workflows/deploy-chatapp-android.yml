@@ -55,6 +55,8 @@ jobs:
       - name: Build Android Debug
         run: |
           cd client/mobile/chatapp && chmod +x android/gradlew && yarn build-android
+        env: 
+          NODE_OPTIONS: --openssl-legacy-provider
 
       - name: List the .apks compiled
         run: |
