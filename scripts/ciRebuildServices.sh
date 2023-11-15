@@ -21,6 +21,7 @@ initGitAtFolderConfig() {
   if [ ! -d "${DIR}/../config/.git" ]; then
     cd ../config
     git init
+    git add .
     git commit -m "init"
     cd $DIR
   fi
