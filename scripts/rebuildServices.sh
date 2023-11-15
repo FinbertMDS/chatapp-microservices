@@ -10,15 +10,19 @@ main() {
   printListService
   getInputFromUser
   read -p "Do you wish to rebuild services? y/n: " ynService
-  read -p "Do you wish to build and start docker? y/n: " ynDocker
+  read -p "Do you wish to build docker? y/n: " ynBuildDocker
+  read -p "Do you wish to start docker? y/n: " ynStartDocker
   case $ynService in
     [Yy]* ) buildService;;
   esac
   if [[ "$?" -ne 0 ]] ; then
     echo 'Build service has error. Please check your code.'; exit $rc
   fi
-  case $ynDocker in
-    [Yy]* ) buildAndStartDocker;;
+  case $ynBuildDocker in
+    [Yy]* ) buildDocker;;
+  esac
+  case $ynStartDocker in
+    [Yy]* ) startDocker;;
   esac
 }
 
@@ -68,10 +72,9 @@ buildService() {
   fi
 }
 
-buildAndStartDocker() {
+buildDocker() {
   cd ${DIR}/../docker
   local dockerBuildCommand="docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build "
-  local dockerUpCommand="docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d "
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="${services[$serviceIndex]//-}"
@@ -80,11 +83,26 @@ buildAndStartDocker() {
       eval "docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build --no-cache cassandra sample-data-cassandra"
     else
       dockerBuildCommand+="$serviceName "
-      dockerUpCommand+="$serviceName "
     fi
   done
   eval $dockerBuildCommand
+}
   
+startDocker() {
+  cd ${DIR}/../docker
+  local dockerUpCommandBase="docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d "
+  local dockerUpCommand="${dockerUpCommandBase}"
+  for index in "${!servicesWillBeRebuild[@]}"; do
+    local serviceIndex="${servicesWillBeRebuild[$index]}"
+    local serviceName="${services[$serviceIndex]//-}"
+    serviceName="${serviceName//server}"
+    if [[ "$serviceName" == "message" ]]; then
+      eval "docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build --no-cache cassandra sample-data-cassandra"
+      eval "docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d cassandra sample-data-cassandra"
+    else
+      dockerUpCommand+="$serviceName "
+    fi
+  done
   docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d zuul config
   $DIR/wait-for-services.sh config
   
@@ -95,7 +113,17 @@ buildAndStartDocker() {
     local serviceName="${services[$serviceIndex]//-}"
     serviceName="${serviceName//server}"
     if [[ " ${servicesNeedWaitWhenStart[@]} " =~ " ${serviceName} " ]]; then
+    for i in {1..5}; do
       $DIR/wait-for-services.sh $serviceName
+      if [ $? == 1 ]; then
+        sleep 5;
+        local dockerUpCommandAgain="$dockerUpCommandBase $serviceName"
+        echo "Retry again to start service $serviceName with command: $dockerUpCommandAgain"
+        eval $dockerUpCommandAgain
+      else
+        break;
+      fi
+    done
     fi
   done
 }

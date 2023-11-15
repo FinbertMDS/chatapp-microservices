@@ -1,0 +1,78 @@
+name: chatapp mobile android
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - master
+    paths:
+      - "client/mobile/chatapp/**"
+      - ".github/workflows/deploy-chatapp-android.yml"
+  workflow_dispatch:
+jobs:
+  deploy-android:
+    runs-on: ubuntu-latest
+    # container: reactnativecommunity/react-native-android
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: "11"
+          distribution: "corretto"
+          cache: "gradle"
+        
+      # Node, Yarn and NPM
+      - name: Setup Node  
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # - name: Extract branch name
+      #   shell: bash
+      #   run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+      #   id: extract_branch
+
+      # - name: copy env staging # 説明2
+      #   if: ${{ steps.extract_branch.outputs.branch == 'staging' }}
+      #   run: cp .env.staging .env
+      
+      # - name: copy env develop # 説明2
+      #   if: ${{ steps.extract_branch.outputs.branch == 'develop' }}
+      #   run: cp .env.development .env
+
+      - name: copy env sample
+        run: |
+          cd client/mobile/chatapp && cp .env.sample .env
+
+      - name: yarn install
+        run: |
+          cd client/mobile/chatapp && yarn --frozen-lockfile
+
+      - name: Build Android Debug
+        run: |
+          cd client/mobile/chatapp && chmod +x android/gradlew && yarn build-android
+        env: 
+          NODE_OPTIONS: --openssl-legacy-provider
+
+      - name: List the .apks compiled
+        run: |
+          cd client/mobile/chatapp && ls ./android/app/build/outputs/apk/release/ -hal
+      
+      - name: Create Release and Uploading Files
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+            files: client/mobile/chatapp/android/app/build/outputs/apk/release/app-release.apk
+
+      # - name: Deploy App # 説明4
+      #   working-directory: ./android
+      #   run: |
+      #     curl \
+      #       -H "Authorization: token ${{secrets.DEPLOY_GATE_API_KEY}}" \
+      #       -F "file=@app/build/outputs/apk/release/app-release.apk" \
+      #       -F "message=$(git rev-parse --short HEAD)" \
+      #       -F "distribution_name=${{ steps.extract_branch.outputs.branch }}" \
+      #       -v "https://deploygate.com/api/users/${{secrets.DEPLOY_GATE_USER_NAME}}/apps"

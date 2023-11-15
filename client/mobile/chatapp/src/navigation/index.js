@@ -24,6 +24,7 @@ import UserListScreen from '../screens/UserListScreen';
 import LinkingConfiguration from './LinkingConfiguration';
 import MainTabNavigator from './MainTabNavigator';
 import { navigationRef } from './RootNavigation';
+import SettingApiBaseUrlScreen from '../screens/SettingApiBaseUrlScreen';
 
 
 // If you are not familiar with React Navigation, we recommend going through the
@@ -145,6 +146,10 @@ function RootNavigator() {
                 headerShown: false
               }}
             />
+            <Stack.Screen
+              name={StackScreenName.SettingApiBaseUrl}
+              component={SettingApiBaseUrlScreen}
+            />
           </>
         ) : (
               <>
@@ -210,6 +215,10 @@ function RootNavigator() {
                 <Stack.Screen
                   name={StackScreenName.Setting}
                   component={SettingScreen}
+                />
+                <Stack.Screen
+                  name={StackScreenName.SettingApiBaseUrl}
+                  component={SettingApiBaseUrlScreen}
                 />
                 <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
               </>

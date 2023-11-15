@@ -10,6 +10,7 @@ export default {
   ContactSetting: "ContactSetting",
   UserList: "UserList",
   Setting: "Setting",
+  SettingApiBaseUrl: "SettingApiBaseUrl",
   CreateRoom: "CreateRoom",
   Chats: "Chats",
   Camera: "Camera",

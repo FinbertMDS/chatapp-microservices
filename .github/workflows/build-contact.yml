@@ -1,8 +1,10 @@
 name: contact
 on:
   push:
+    tags:
+      - "v*"
     branches: 
-      - develop
+      - master
     paths:
     - "microservice/microservice-contact/**"
   workflow_dispatch:

@@ -6,6 +6,7 @@ import { Divider, Drawer } from 'react-native-paper';
 import { actionTypes } from '../../reducer';
 import { useStateValue } from '../../StateProvider';
 import BG from '../assets/images/BG.png';
+import StackScreenName from '../constants/StackScreenName';
 
 function SettingScreen() {
   const [{ }, dispatch] = useStateValue();
@@ -20,10 +21,15 @@ function SettingScreen() {
 
   const handleSignOut = async () => {
     await AsyncStorage.removeItem("userInfo");
+    await AsyncStorage.removeItem("url");
     dispatch({
       type: actionTypes.SET_USER,
       user: null
     })
+  }
+
+  const goToSettingApiBaseUrl = async () => {
+    navigation.navigate(StackScreenName.SettingApiBaseUrl)
   }
 
   return (
@@ -33,6 +39,13 @@ function SettingScreen() {
           <Drawer.Item
             icon="logout"
             label="Sign out"
+          />
+        </TouchableOpacity>
+        <Divider />
+        <TouchableOpacity onPress={goToSettingApiBaseUrl}>
+          <Drawer.Item
+            icon="settings"
+            label="Api Base Url"
           />
         </TouchableOpacity>
         <Divider />

@@ -1,8 +1,10 @@
 name: message
 on:
   push:
+    tags:
+      - "v*"
     branches: 
-      - develop
+      - master
     paths:
     - "microservice/microservice-message/**"
   workflow_dispatch:

@@ -18,3 +18,12 @@ export const nameValidator = (name) => {
 
   return '';
 };
+
+export const urlValidator = (url) => {
+  const re = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+
+  if (!url || url.length <= 0) return 'Url cannot be empty.';
+  if (!re.test(url)) return 'Ooops! We need a valid url.';
+
+  return '';
+};

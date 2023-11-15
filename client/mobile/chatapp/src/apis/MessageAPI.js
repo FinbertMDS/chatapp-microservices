@@ -1,12 +1,26 @@
-import { SOCKET_BASE_URL } from "@env";
+import { SOCKET_BASE_URL, SOCKET_BASE_URL_ANDROID } from "@env";
 import Config from "../constants/Config";
 import axios from "./axios";
+import { Platform } from 'react-native';
 
 const getAllMessageInRoomUrl = "/message/api/messages";
 const sendMessageUrl = "/message/api/messages";
 
+const sockeBaseURL = Platform.OS === "android" ? SOCKET_BASE_URL_ANDROID : SOCKET_BASE_URL
+
 const MessageAPI = {
-  wsSourceUrl: SOCKET_BASE_URL,
+  wsSourceUrl: sockeBaseURL,
+
+  updateUrl: async function (params) {
+    let urlOld;
+    try {
+      urlOld = await AsyncStorage.getItem('url');
+      if (urlOld != null) {
+        this.wsSourceUrl = `${urlOld}:8079/ws`
+      }
+    } catch (e) {
+    }
+  },
 
   getPublicMessageTopicUrl: function (roomId) {
     return "/topic/" + roomId + ".public.messages"

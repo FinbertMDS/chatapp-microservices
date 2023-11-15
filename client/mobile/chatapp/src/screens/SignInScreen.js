@@ -13,6 +13,7 @@ import TextInput from '../components/TextInput';
 import StackScreenName from '../constants/StackScreenName';
 import { theme } from '../core/theme';
 import { nameValidator, passwordValidator } from '../core/utils';
+import MessageAPI from '../apis/MessageAPI';
 
 const SignInScreen = () => {
   const [{}, dispatch] = useStateValue();
@@ -37,6 +38,7 @@ const SignInScreen = () => {
     SecurityAPI.signIn(signInData)
       .then(async (result) => {
         await AsyncStorage.setItem("userInfo", JSON.stringify(result));
+        await MessageAPI.updateUrl();
         // let loginMessage = {"message": "User login successfully!"}
         // Alert.alert("Login", loginMessage.message);
         dispatch({
@@ -53,7 +55,7 @@ const SignInScreen = () => {
     <Background>
       <Logo />
 
-      <Header>Welcome back.</Header>
+      <Header>Welcome back</Header>
 
       <TextInput
         label="Username"
@@ -88,9 +90,14 @@ const SignInScreen = () => {
       </Button>
 
       <View style={styles.row}>
-        <Text style={styles.label}>Don’t have an account? </Text>
+        <Text style={styles.label}>Don't have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate(StackScreenName.SignUp)}>
           <Text style={styles.link}>Sign up</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.row}>
+        <TouchableOpacity onPress={() => navigation.navigate(StackScreenName.SettingApiBaseUrl)}>
+          <Text style={styles.link}>Setting API</Text>
         </TouchableOpacity>
       </View>
     </Background>

@@ -1,8 +1,10 @@
 name: eureka server
 on:
   push:
+    tags:
+      - "v*"
     branches: 
-      - develop
+      - master
     paths:
     - "microservice/microservice-eureka-server/**"
   workflow_dispatch:

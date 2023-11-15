@@ -38,8 +38,9 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
-!debug.keystore
+# *.keystore
+# !debug.keystore
+# !finbertmds.keystore
 
 # fastlane
 #
@@ -58,7 +59,9 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 
-google-services.json
-GoogleService-Info.plist
+# google-services.json
+# GoogleService-Info.plist
 
 .env
+
+java_pid*
