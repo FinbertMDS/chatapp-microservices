@@ -1,8 +1,10 @@
 name: storage
 on:
   push:
+    tags:
+      - "*"
     branches: 
-      - develop
+      - master
     paths:
     - "microservice/microservice-storage/**"
   workflow_dispatch:

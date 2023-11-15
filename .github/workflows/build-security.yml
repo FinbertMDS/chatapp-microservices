@@ -1,8 +1,10 @@
 name: security
 on:
   push:
+    tags:
+      - "*"
     branches: 
-      - develop
+      - master
     paths:
     - "microservice/microservice-security/**"
   workflow_dispatch:

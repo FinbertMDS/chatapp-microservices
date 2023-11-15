@@ -1,8 +1,10 @@
 name: turbine server
 on:
   push:
+    tags:
+      - "*"
     branches: 
-      - develop
+      - master
     paths:
     - "microservice/microservice-turbine-server/**"
   workflow_dispatch:

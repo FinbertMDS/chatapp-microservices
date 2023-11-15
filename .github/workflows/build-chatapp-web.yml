@@ -1,8 +1,10 @@
 name: chatapp web
 on:
   push:
+    tags:
+      - "*"
     branches: 
-      - develop
+      - master
     paths:
     - "client/web/chatapp/**"
   workflow_dispatch:

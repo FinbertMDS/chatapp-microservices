@@ -1,8 +1,10 @@
 name: zuul server
 on:
   push:
+    tags:
+      - "*"
     branches: 
-      - develop
+      - master
     paths:
     - "microservice/microservice-zuul-server/**"
   workflow_dispatch:
