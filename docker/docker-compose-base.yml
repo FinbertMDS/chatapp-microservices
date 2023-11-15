@@ -32,6 +32,20 @@ services:
       - mysql
       - kafka
 
+  storage:
+    build: ../microservice/microservice-storage
+    links:
+      - eureka
+      - config
+      - mysql
+
+  turbine:
+    build: ../microservice/microservice-turbine-server
+    links:
+      - eureka
+    ports:
+      - "8989:8989"
+
   zookeeper:
     image: wurstmeister/zookeeper:3.4.6
 

@@ -132,19 +132,19 @@ services:
     ports:
       - "8000:80"
 
-  # storage:
-  #   build: ../microservice/microservice-storage
-  #   links:
-  #     - eureka
-  #     - config
-  #     - mysql
+  storage:
+    build: ../microservice/microservice-storage
+    links:
+      - eureka
+      - config
+      - mysql
 
-  # turbine:
-  #   build: ../microservice/microservice-turbine-server
-  #   links:
-  #     - eureka
-  #   ports:
-  #     - "8989:8989"
+  turbine:
+    build: ../microservice/microservice-turbine-server
+    links:
+      - eureka
+    ports:
+      - "8989:8989"
 
 networks:
   chatapp:

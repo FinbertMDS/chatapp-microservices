@@ -7,7 +7,7 @@ on:
       - master
     paths:
       - "client/mobile/chatapp/**"
-      - ".github/workflows/deploy-chatapp-android.yml"
+      - ".github/workflows/build-chatapp-android.yml"
   workflow_dispatch:
 jobs:
   deploy-android:
