@@ -1,10 +1,11 @@
-name: Deploy android app
+name: chatapp mobile android
 on:
   push:
     branches:
       - develop
     paths:
       - "client/mobile/chatapp/**"
+      - ".github/workflows/deploy-chatapp-android.yml"
   workflow_dispatch:
 jobs:
   deploy-android:
@@ -27,11 +28,21 @@ jobs:
       #   if: ${{ steps.extract_branch.outputs.branch == 'develop' }}
       #   run: cp .env.development .env
 
+      - name: copy env sample
+        run: |
+          cd client/mobile/chatapp && cp .env.sample .env
+
       - name: yarn install
-        run: yarn --frozen-lockfile
+        run: |
+          cd client/mobile/chatapp && yarn install
 
       - name: Build Android Debug
-        run: yarn install && chmod +x android/gradlew && yarn build-android
+        run: |
+          cd client/mobile/chatapp && chmod +x android/gradlew && yarn build-android
+
+      - name: List the .apks compiled
+        run: |
+          cd client/mobile/chatapp && ls ./android/app/build/outputs/apk/release/ -hal
 
       # - name: Deploy App # 説明4
       #   working-directory: ./android
