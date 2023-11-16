@@ -15,6 +15,7 @@ import SecurityAPI from '../apis/SecurityAPI';
 import { actionTypes } from '../reducer';
 import { useStateValue } from '../StateProvider';
 import SignUp from "./SignUp";
+import MessageAPI from '../apis/MessageAPI';
 
 function Copyright() {
   return (
@@ -107,6 +108,7 @@ function SignIn() {
     SecurityAPI.signIn(signInData)
       .then(result => {
         localStorage.setItem("userInfo", JSON.stringify(result));
+        MessageAPI.updateUrl();
         let loginMessage = { "message": "User login successfully!" };
         dispatch({
           type: actionTypes.SET_NOTIFICATION,
@@ -181,6 +183,13 @@ function SignIn() {
             <Grid item>
               <Link href="#" variant="body2" onClick={handleOpen}>
                 {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item>
+              <Link href="/settings" variant="body2">
+                Setting API
               </Link>
             </Grid>
           </Grid>

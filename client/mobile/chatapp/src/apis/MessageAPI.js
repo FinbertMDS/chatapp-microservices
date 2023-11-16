@@ -11,7 +11,7 @@ const sockeBaseURL = Platform.OS === "android" ? SOCKET_BASE_URL_ANDROID : SOCKE
 const MessageAPI = {
   wsSourceUrl: sockeBaseURL,
 
-  updateUrl: async function (params) {
+  updateUrl: async function () {
     let urlOld;
     try {
       urlOld = await AsyncStorage.getItem('url');

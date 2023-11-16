@@ -7,6 +7,17 @@ const sendMessageUrl = "./message/api/messages";
 const MessageAPI = {
   wsSourceUrl: process.env.REACT_APP_SOCKET_BASE_URL,
 
+  updateUrl: function () {
+    let urlOld;
+    try {
+      urlOld = localStorage.getItem('url');
+      if (urlOld != null) {
+        this.wsSourceUrl = `${urlOld}:8079/ws`
+      }
+    } catch (e) {
+    }
+  },
+
   getPublicMessageTopicUrl: function (roomId) {
     return "/topic/" + roomId + ".public.messages"
   },
