@@ -8,6 +8,7 @@ import SignIn from "./components/SignIn";
 import useDeviceDetect from "./helpers/useDeviceDetect";
 import { actionTypes } from "./reducer";
 import { useStateValue } from "./StateProvider";
+import Settings from "./components/Settings";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
@@ -70,7 +71,14 @@ function App() {
   return (
     <div className={`app ${isMobile ? 'mobile' : ''}`}>
       {!user ? (
-        <SignIn />
+        <Router>
+          <Route exact path="/settings">
+            <Settings />
+          </Route>
+          <Route exact path="/">
+            <SignIn />
+          </Route>
+        </Router>
       ) : (
           <div className={`app__body ${getHiddenState()}`}>
             <Router>
@@ -80,6 +88,9 @@ function App() {
                   <Chat />
                 </Route>
               </Switch>
+              <Route exact path="/settings">
+                <Settings />
+              </Route>
             </Router>
           </div>
         )}

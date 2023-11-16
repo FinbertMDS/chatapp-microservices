@@ -4,7 +4,7 @@ import DonutLargeIcon from '@material-ui/icons/DonutLarge';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import ChatRoomAPI from '../apis/ChatRoomAPI';
 import ContactAPI from '../apis/ContactAPI';
 import Const from '../constants/Const';
@@ -104,13 +104,19 @@ function Sidebar() {
   const history = useHistory();
 
   const handleLogout = () => {
-    setIsOpenMoreButton(false);
+    handleCloseMoreButton()
     localStorage.removeItem("userInfo");
+    // localStorage.removeItem("url");
     history.push("/");
     dispatch({
       type: actionTypes.SET_USER,
       user: null
     })
+  }
+
+  const handleGoToSettings = () => {
+    handleCloseMoreButton();
+    history.push("/settings");
   }
 
   const [input, setInput] = useState('');
@@ -165,20 +171,20 @@ function Sidebar() {
   const [modalStyle] = useState(getModalStyle);
   const [isAddMember, setIsAddMember] = useState(false);
   const handleOpenModalAddMember = () => {
-    setIsAddMember(true);
     handleCloseMoreButton();
+    setIsAddMember(true);
   };
 
   const [isRemoveMember, setIsRemoveMember] = useState(false);
   const handleOpenModalRemoveMember = () => {
-    setIsRemoveMember(true);
     handleCloseMoreButton();
+    setIsRemoveMember(true);
   };
 
   const [isListMember, setIsListMember] = useState(false);
   const handleOpenModalListMember = () => {
-    setIsListMember(true);
     handleCloseMoreButton();
+    setIsListMember(true);
   };
 
   const handleCloseModal = () => {
@@ -189,6 +195,7 @@ function Sidebar() {
   };
 
   const handleAddContact = async (userList, checked) => {
+    handleCloseMoreButton();
     if (checked.length > 0) {
       for (const index of checked) {
         let addUserContactRequest = {
@@ -259,6 +266,12 @@ function Sidebar() {
     </div>
   );
 
+  const location = useLocation();
+
+  if (location && location.pathname.includes("settings")) {
+    return <></>
+  }
+
   return (
     <div className='sidebar'>
       <div className='sidebar__header'>
@@ -286,6 +299,7 @@ function Sidebar() {
           <MenuItem onClick={handleOpenModalAddMember}>Add contact</MenuItem>
           <MenuItem onClick={handleOpenModalRemoveMember}>Remove contact</MenuItem>
           <MenuItem onClick={handleOpenModalListMember}>List contact</MenuItem>
+          <MenuItem onClick={handleGoToSettings}>Settings</MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </StyledMenu>
       </div>

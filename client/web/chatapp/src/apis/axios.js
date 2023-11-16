@@ -27,6 +27,22 @@ export const addAuthTokenToHeader = () => {
 addAuthTokenToHeader();
 
 const handleRequest = () => {
+  instance.interceptors.request.use(async config => {
+    let urlOld;
+    try {
+      urlOld = localStorage.getItem('url');
+      if (urlOld !== null && urlOld !== "") {
+        config.baseURL =  `${urlOld}:8080`;
+      }
+    } catch (e) {
+    }
+    return config; 
+  }, error => Promise.reject(error));
+}
+
+handleRequest();
+
+const handleResponse = () => {
   instance.interceptors.response.use(function (response) {
     return response;
   }, function (error) {
@@ -38,6 +54,6 @@ const handleRequest = () => {
   });
 }
 
-handleRequest();
+handleResponse();
 
 export default instance;

@@ -21,7 +21,7 @@ function SettingScreen() {
 
   const handleSignOut = async () => {
     await AsyncStorage.removeItem("userInfo");
-    await AsyncStorage.removeItem("url");
+    // await AsyncStorage.removeItem("url");
     dispatch({
       type: actionTypes.SET_USER,
       user: null
