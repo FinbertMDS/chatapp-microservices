@@ -3,7 +3,7 @@ on:
   push:
     tags:
       - "v*"
-    branches: 
+    branches:
       - master
       - develop
     paths:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Create Docker images 
+      - name: Create Docker images
         run: |
           cd scripts && ./ciRebuildServices.sh security
       - name: Login to DockerHub
@@ -31,7 +31,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Tag images
         run: |
-          docker tag chatapp_security ${{ secrets.DOCKERHUB_USERNAME }}/chatapp_security:latest
+          docker tag docker.io/library/chatapp_security ${{ secrets.DOCKERHUB_USERNAME }}/chatapp_security:latest
       - name: Push images to DockerHub
         if: startsWith(github.ref, 'refs/tags/')
         run: |

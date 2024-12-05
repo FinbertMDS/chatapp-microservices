@@ -3,7 +3,7 @@ on:
   push:
     tags:
       - "v*"
-    branches: 
+    branches:
       - master
       - develop
     paths:
@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Tag images
         run: |
-          docker tag chatapp_config ${{ secrets.DOCKERHUB_USERNAME }}/chatapp_config:latest
+          docker tag docker.io/library/chatapp_config ${{ secrets.DOCKERHUB_USERNAME }}/chatapp_config:latest
       - name: Push images to DockerHub
         if: startsWith(github.ref, 'refs/tags/')
         run: |
