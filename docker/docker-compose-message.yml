@@ -1,4 +1,3 @@
-version: "3"
 services:
   message:
     build: ../microservice/microservice-message
@@ -11,14 +10,14 @@ services:
       - rabbitmq
       - mysql
     networks:
-      - chatapp_default
+      - chatapp_default_test
 
   cassandra:
     image: cassandra:4
     ports:
       - "9042:9042"
     networks:
-      - chatapp_default
+      - chatapp_default_test
 
   sample-data-cassandra:
     image: cassandra:4
@@ -31,14 +30,14 @@ services:
     environment:
       - CASSANDRA_KEYSPACE=db_messages
     networks:
-      - chatapp_default
+      - chatapp_default_test
       
   redis:
-    image: redis:3.0.6
+    image: redis:7.4.1
     ports:
       - "6379:6379"
     networks:
-      - chatapp_default
+      - chatapp_default_test
 
   redis-commander:
     image: rediscommander/redis-commander
@@ -49,7 +48,7 @@ services:
     ports:
       - "7070:8081"
     networks:
-      - chatapp_default
+      - chatapp_default_test
 
   rabbitmq:
     build: rabbitmq
@@ -58,7 +57,7 @@ services:
       - "15672:15672"
       - "61613:61613"
     networks:
-      - chatapp_default
+      - chatapp_default_test
 
   zuul:
     build: ../microservice/microservice-zuul-server
@@ -79,5 +78,5 @@ services:
   
 
 networks:
-  chatapp_default:
+  chatapp_default_test:
     external: true

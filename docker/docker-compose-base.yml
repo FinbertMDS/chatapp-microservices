@@ -1,4 +1,3 @@
-version: "3"
 services:
   eureka:
     build: ../microservice/microservice-eureka-server
@@ -47,10 +46,10 @@ services:
       - "8989:8989"
 
   zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
+    image: zookeeper
 
   kafka:
-    image: wurstmeister/kafka:2.12-2.5.0
+    image: wurstmeister/kafka
     links:
       - zookeeper
     environment:
@@ -69,6 +68,67 @@ services:
     ports:
       - 6060:8080
 
-networks:
+  message:
+    build: ../microservice/microservice-message
+    ports:
+      - "8079:8080"
+    links:
+      - eureka
+      - cassandra
+      - redis
+      - rabbitmq
+      - mysql
+
+  cassandra:
+    image: cassandra:4
+    ports:
+      - "9042:9042"
+
+  sample-data-cassandra:
+    image: cassandra:4
+    depends_on:
+      - cassandra
+    restart: "no"
+    entrypoint: ["/init.sh"]
+    volumes:
+      - ./cassandra/init.sh:/init.sh
+    environment:
+      - CASSANDRA_KEYSPACE=db_messages
+      
+  redis:
+    image: redis:7.4.1
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    links:
+      - redis
+    environment:
+      - REDIS_HOSTS=redis
+    ports:
+      - "7070:8081"
+
+  rabbitmq:
+    build: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+
+  zuul:
+    build: ../microservice/microservice-zuul-server
+    links:
+      - eureka
+    ports:
+      - "8080:8080"
+
   chatapp:
-    driver: bridge
+    build: ../client/web/chatapp
+    links:
+      - zuul
+      - security
+      - message
+      - contact
+    ports:
+      - "8000:80"

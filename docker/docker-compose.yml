@@ -1,4 +1,3 @@
-version: "3"
 services:
   eureka:
     build: ../microservice/microservice-eureka-server
@@ -65,15 +64,11 @@ services:
       - redis
       - rabbitmq
       - mysql
-    networks:
-      - chatapp_default
 
   cassandra:
     image: "cassandra:4"
     ports:
       - 9042:9042
-    networks:
-      - chatapp_default
       
   sample-data-cassandra:
     image: cassandra:4
@@ -85,15 +80,11 @@ services:
       - ./cassandra/init.sh:/init.sh
     environment:
       - CASSANDRA_KEYSPACE=db_messages
-    networks:
-      - chatapp_default
       
   redis:
     image: redis:3.0.6
     ports:
       - "6379:6379"
-    networks:
-      - chatapp_default
 
   redis-commander:
     image: rediscommander/redis-commander
@@ -103,8 +94,6 @@ services:
       - REDIS_HOSTS=redis
     ports:
       - "7070:8081"
-    networks:
-      - chatapp_default
 
   rabbitmq:
     build: rabbitmq
@@ -112,8 +101,6 @@ services:
       - "5672:5672"
       - "15672:15672"
       - "61613:61613"
-    networks:
-      - chatapp_default
 
   zuul:
     build: ../microservice/microservice-zuul-server
@@ -145,7 +132,3 @@ services:
       - eureka
     ports:
       - "8989:8989"
-
-networks:
-  chatapp:
-    driver: bridge

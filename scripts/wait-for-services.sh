@@ -8,12 +8,21 @@ serviceName=$1
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 main() {
+	echo "${serviceName} is checking"
 	declare -a validate
 	while [[ "$done" = false ]]; do
 		healthPath="actuator/health"
 		urlCheck=http://${host}:${port}/${serviceName}/${healthPath}
 		if [[ "$serviceName" = "zuul" ]]; then
 			urlCheck=http://${host}:${port}/${healthPath}
+		fi
+		if [[ "$serviceName" = "eureka" ]]; then
+			port=8761
+			urlCheck=http://${host}:${port}/${healthPath}
+		fi
+		if [[ "$serviceName" = "config" ]]; then
+			sleep 10;
+			return 0
 		fi
 		local statusCode=$(checkStatus $urlCheck)
 		if [ "${statusCode}" == "200" ]; then

@@ -74,13 +74,13 @@ buildService() {
 
 buildDocker() {
   cd ${DIR}/../docker
-  local dockerBuildCommand="docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build "
+  local dockerBuildCommand="docker-compose -f docker-compose-base.yml build "
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="${services[$serviceIndex]//-}"
     serviceName="${serviceName//server}"
     if [[ "$serviceName" == "message" ]]; then
-      eval "docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build --no-cache cassandra sample-data-cassandra"
+      eval "docker-compose -f docker-compose-base.yml build --no-cache cassandra sample-data-cassandra"
     else
       dockerBuildCommand+="$serviceName "
     fi
@@ -90,20 +90,20 @@ buildDocker() {
   
 startDocker() {
   cd ${DIR}/../docker
-  local dockerUpCommandBase="docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d "
+  local dockerUpCommandBase="docker-compose -f docker-compose-base.yml up -d "
   local dockerUpCommand="${dockerUpCommandBase}"
   for index in "${!servicesWillBeRebuild[@]}"; do
     local serviceIndex="${servicesWillBeRebuild[$index]}"
     local serviceName="${services[$serviceIndex]//-}"
     serviceName="${serviceName//server}"
     if [[ "$serviceName" == "message" ]]; then
-      eval "docker-compose -f docker-compose-base.yml -f docker-compose-message.yml build --no-cache cassandra sample-data-cassandra"
-      eval "docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d cassandra sample-data-cassandra"
+      eval "docker-compose -f docker-compose-base.yml build --no-cache cassandra sample-data-cassandra"
+      eval "docker-compose -f docker-compose-base.yml up -d cassandra sample-data-cassandra"
     else
       dockerUpCommand+="$serviceName "
     fi
   done
-  docker-compose -f docker-compose-base.yml -f docker-compose-message.yml up -d zuul config
+  docker-compose -f docker-compose-base.yml up -d zuul config
   $DIR/wait-for-services.sh config
   
   eval $dockerUpCommand

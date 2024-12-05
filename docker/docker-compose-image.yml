@@ -1,4 +1,3 @@
-version: "3"
 services:
   eureka:
     # build: ../microservice/microservice-eureka-server
