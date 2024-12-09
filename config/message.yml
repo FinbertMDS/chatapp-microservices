@@ -1,3 +1,6 @@
+
+server:
+  port: 8080
 chatapp:
   relay:
     host: rabbitmq
@@ -11,7 +14,7 @@ finbertmds:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://eureka:8761/eureka/
+      defaultZone: http://eureka-server:8761/eureka/
   instance:
     leaseRenewalIntervalInSeconds: 5
     metadataMap:
@@ -35,15 +38,13 @@ management:
 security:
   basic:
     enabled: false
-server:
-  port: 8080
 spring:
   application:
     name: message
   datasource:
-    url: jdbc:mysql://mysql/db_security?useSSL=false
-    username: root
-    password: root
+    url: jdbc:mysql://mysql:3306/db_security?useSSL=false&allowPublicKeyRetrieval=true
+    username: admin
+    password: admin
     initialization-mode: always
   jpa:
     hibernate:
@@ -51,7 +52,9 @@ spring:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: 'true'
+    show-sql: 'true'
   data:
     cassandra:
       contact-points: cassandra
@@ -70,6 +73,8 @@ spring:
   redis:
     host: redis
     port: 6379
+  main:
+    allow-circular-references: true
 
 security.headers.cache: false 
 server.session.timeout: 600

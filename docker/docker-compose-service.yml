@@ -1,0 +1,65 @@
+services:
+  config-server:
+    build: ../microservice/microservice-config-server
+    volumes:
+      - ../config/:/root/config
+    ports:
+      - "9191:9191"
+    networks:
+      - chatapp_default
+
+  eureka-server:
+    build: ../microservice/microservice-eureka-server
+    ports:
+      - "8761:8761"
+    links:
+      - config-server
+    networks:
+      - chatapp_default
+
+  security:
+    build: ../microservice/microservice-security
+    links:
+      - eureka-server
+    networks:
+      - chatapp_default
+    ports:
+      - "8081:8080"
+
+  message:
+    build: ../microservice/microservice-message
+    links:
+      - eureka-server
+
+  contact:
+    build: ../microservice/microservice-contact
+    links:
+      - eureka-server
+      - config-server
+
+  storage:
+    build: ../microservice/microservice-storage
+    links:
+      - eureka-server
+      - config-server
+
+  api-gateway:
+    build: ../microservice/microservice-api-gateway
+    links:
+      - eureka-server
+    ports:
+      - "8080:8080"
+
+  # chatapp:
+  #   build: ../client/web/chatapp
+  #   links:
+  #     - api-gateway
+  #     - security
+  #     - message
+  #     - contact
+  #   ports:
+  #     - "8000:80"
+
+networks:
+  chatapp_default:
+    external: true
