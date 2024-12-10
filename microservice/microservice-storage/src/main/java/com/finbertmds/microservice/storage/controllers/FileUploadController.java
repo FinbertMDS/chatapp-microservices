@@ -7,11 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.finbertmds.microservice.storage.controllers.storage.StorageFileNotFoundException;
-import com.finbertmds.microservice.storage.controllers.storage.StorageService;
-import com.finbertmds.microservice.storage.logic.File;
-import com.finbertmds.microservice.storage.payload.UploadFileResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +25,13 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.finbertmds.microservice.storage.controllers.storage.StorageFileNotFoundException;
+import com.finbertmds.microservice.storage.controllers.storage.StorageService;
+import com.finbertmds.microservice.storage.logic.File;
+import com.finbertmds.microservice.storage.payload.UploadFileResponse;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/storage")
 public class FileUploadController {
 	private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
