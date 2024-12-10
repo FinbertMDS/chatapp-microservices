@@ -1,4 +1,4 @@
-package com.springbootmicroservices.apigateway;
+package com.finbertmds.microservice.apigateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

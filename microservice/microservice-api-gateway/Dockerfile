@@ -13,10 +13,10 @@ RUN ./mvnw package -Dmaven.test.skip
 # For Java 11,
 FROM eclipse-temurin:11-jre
 
-WORKDIR /zuul-server
+WORKDIR /api-gateway
 
-COPY --from=build /app/target/*.jar /zuul-server/microservice-zuul-server-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/target/*.jar /api-gateway/microservice-api-gateway-0.0.1-SNAPSHOT.jar
 
-ENTRYPOINT ["java","-jar","microservice-zuul-server-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","microservice-api-gateway-0.0.1-SNAPSHOT.jar"]
 
 EXPOSE 8080

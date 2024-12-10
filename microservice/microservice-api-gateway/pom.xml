@@ -10,10 +10,10 @@
 		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.finbertmds</groupId>
-	<artifactId>microservice-zuul-server</artifactId>
+	<artifactId>microservice-api-gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>zuul-server</name>
-	<description>Zuul Server</description>
+	<name>api-gateway</name>
+	<description>Api Gateway</description>
 
 	<properties>
 		<java.version>11</java.version>

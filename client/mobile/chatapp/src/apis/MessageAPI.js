@@ -1,10 +1,10 @@
 import { SOCKET_BASE_URL, SOCKET_BASE_URL_ANDROID } from "@env";
+import { Platform } from 'react-native';
 import Config from "../constants/Config";
 import axios from "./axios";
-import { Platform } from 'react-native';
 
-const getAllMessageInRoomUrl = "/message/api/messages";
-const sendMessageUrl = "/message/api/messages";
+const getAllMessageInRoomUrl = "/api/messages";
+const sendMessageUrl = "/api/messages";
 
 const sockeBaseURL = Platform.OS === "android" ? SOCKET_BASE_URL_ANDROID : SOCKET_BASE_URL
 

@@ -13,7 +13,9 @@ esac
 echo "OS: ${machine}"
 
 if [[ ${machine} == "Mac" ]]; then
-    LOCAL_IP=${LOCAL_IP:-`ipconfig getifaddr en0`}
+    network_device=$(scutil --dns |awk -F'[()]' '$1~/if_index/ {print $2;exit;}')
+    echo "Network device: $network_device"
+    LOCAL_IP=$(ipconfig getifaddr "$network_device")
 elif [[ ${machine} == "Linux" ]]; then
     LOCAL_IP=${LOCAL_IP:-`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'`}
 else

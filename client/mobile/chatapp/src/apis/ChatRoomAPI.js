@@ -1,10 +1,10 @@
 import axios, { addAuthTokenToHeader } from "./axios";
 
-const getAllUrl = "/message/api/chatroom";
-const createRoomUrl = "/message/api/chatroom";
-const getDetailUrl = "/message/api/chatroom";
-const addUserToChatRoomUrl = "/message/api/chatroom/participant";
-const removeUserFromChatRoomUrl = "/message/api/chatroom/participant";
+const getAllUrl = "/api/chatroom";
+const createRoomUrl = "/api/chatroom";
+const getDetailUrl = "/api/chatroom";
+const addUserToChatRoomUrl = "/api/chatroom/participant";
+const removeUserFromChatRoomUrl = "/api/chatroom/participant";
 
 const ChatRoomAPI = {
   getAll: function () {
