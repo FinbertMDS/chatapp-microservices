@@ -16,7 +16,7 @@ const MessageAPI = {
     try {
       urlOld = await AsyncStorage.getItem('url');
       if (urlOld != null) {
-        this.wsSourceUrl = `${urlOld}:8079/ws`
+        this.wsSourceUrl = `${urlOld}:8080/ws`
       }
     } catch (e) {
     }

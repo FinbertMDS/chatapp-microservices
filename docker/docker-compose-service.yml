@@ -32,8 +32,8 @@ services:
       - eureka-server
     networks:
       - chatapp_default
-    ports:
-      - "8079:8080"
+    # ports:
+    #   - "8079:8080"
 
   contact:
     build: ../microservice/microservice-contact

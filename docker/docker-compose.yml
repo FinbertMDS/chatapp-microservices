@@ -1,6 +1,7 @@
 services:
   zookeeper:
     image: zookeeper
+    tmpfs: "/datalog"
 
   kafka:
     image: wurstmeister/kafka

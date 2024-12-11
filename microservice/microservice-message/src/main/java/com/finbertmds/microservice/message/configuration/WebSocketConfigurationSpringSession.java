@@ -2,9 +2,6 @@ package com.finbertmds.microservice.message.configuration;
 
 import java.util.List;
 
-import com.finbertmds.microservice.message.security.jwt.JwtUtils;
-import com.finbertmds.microservice.message.security.services.UserDetailsServiceImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +24,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
+import com.finbertmds.microservice.message.security.jwt.JwtUtils;
+import com.finbertmds.microservice.message.security.services.UserDetailsServiceImpl;
+
 @Configuration
 @EnableScheduling
 @EnableWebSocketMessageBroker
@@ -46,7 +46,7 @@ public class WebSocketConfigurationSpringSession extends AbstractSessionWebSocke
 	private UserDetailsServiceImpl userDetailsService;
 
 	protected void configureStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
+		registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
 	}
 
 	public void configureMessageBroker(MessageBrokerRegistry registry) {

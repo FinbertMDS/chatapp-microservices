@@ -12,7 +12,7 @@ const MessageAPI = {
     try {
       urlOld = localStorage.getItem('url');
       if (urlOld != null) {
-        this.wsSourceUrl = `${urlOld}:8079/ws`
+        this.wsSourceUrl = `${urlOld}:8080/ws`
       }
     } catch (e) {
     }

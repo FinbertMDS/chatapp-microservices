@@ -33,5 +33,5 @@ else
 fi
 echo "LOCAL_IP: ${LOCAL_IP}"
 
-echo -e "REACT_APP_API_BASE_URL=http://$LOCAL_IP:8080\nREACT_APP_SOCKET_BASE_URL=http://$LOCAL_IP:8079/ws" > ../client/web/chatapp/.env
-echo -e "API_BASE_URL=http://$LOCAL_IP:8080\nSOCKET_BASE_URL=http://$LOCAL_IP:8079/ws\nAPI_BASE_URL_ANDROID=http://10.0.2.2:8080\nSOCKET_BASE_URL_ANDROID=http://10.0.2.2:8079/ws" > ../client/mobile/chatapp/.env
+echo -e "REACT_APP_API_BASE_URL=http://$LOCAL_IP:8080\nREACT_APP_SOCKET_BASE_URL=http://$LOCAL_IP:8080/ws" > ../client/web/chatapp/.env
+echo -e "API_BASE_URL=http://$LOCAL_IP:8080\nSOCKET_BASE_URL=http://$LOCAL_IP:8080/ws\nAPI_BASE_URL_ANDROID=http://10.0.2.2:8080\nSOCKET_BASE_URL_ANDROID=http://10.0.2.2:8080/ws" > ../client/mobile/chatapp/.env
