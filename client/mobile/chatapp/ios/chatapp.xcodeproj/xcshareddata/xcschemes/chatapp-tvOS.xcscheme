@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "chatapp-tvOS.app"
+               BuildableName = "chatapp-tvOS"
                BlueprintName = "chatapp-tvOS"
                ReferencedContainer = "container:chatapp.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "chatapp-tvOSTests.xctest"
+               BuildableName = "chatapp-tvOSTests"
                BlueprintName = "chatapp-tvOSTests"
                ReferencedContainer = "container:chatapp.xcodeproj">
             </BuildableReference>
@@ -55,7 +55,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "chatapp-tvOS.app"
+            BuildableName = "chatapp-tvOS"
             BlueprintName = "chatapp-tvOS"
             ReferencedContainer = "container:chatapp.xcodeproj">
          </BuildableReference>
@@ -72,7 +72,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "chatapp-tvOS.app"
+            BuildableName = "chatapp-tvOS"
             BlueprintName = "chatapp-tvOS"
             ReferencedContainer = "container:chatapp.xcodeproj">
          </BuildableReference>
