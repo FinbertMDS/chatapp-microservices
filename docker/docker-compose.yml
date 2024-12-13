@@ -9,6 +9,7 @@ services:
       - zookeeper
     depends_on:
       - zookeeper
+    restart: "on-failure"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092

@@ -14,21 +14,18 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'newProject' do
+target 'chatapp' do
   config = use_native_modules!
 
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  # add the Firebase pod for Google Analytics
-  pod 'Firebase/Analytics'
-  # add pods for any other desired Firebase products
-  # https://firebase.google.com/docs/ios/setup#available-pods
-
-  target 'newProjectTests' do
+  target 'chatappTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -43,3 +40,5 @@ target 'newProject' do
     )
   end
 end
+
+use_modular_headers!
