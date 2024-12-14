@@ -7,18 +7,6 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import com.finbertmds.microservice.security.models.ERole;
-import com.finbertmds.microservice.security.models.Role;
-import com.finbertmds.microservice.security.models.User;
-import com.finbertmds.microservice.security.payload.request.LoginRequest;
-import com.finbertmds.microservice.security.payload.request.SignupRequest;
-import com.finbertmds.microservice.security.payload.response.JwtResponse;
-import com.finbertmds.microservice.security.payload.response.MessageResponse;
-import com.finbertmds.microservice.security.security.jwt.JwtUtils;
-import com.finbertmds.microservice.security.security.services.UserDetailsImpl;
-import com.finbertmds.microservice.security.services.RoleService;
-import com.finbertmds.microservice.security.services.UserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +19,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.finbertmds.microservice.security.models.ERole;
+import com.finbertmds.microservice.security.models.Role;
+import com.finbertmds.microservice.security.models.User;
+import com.finbertmds.microservice.security.payload.request.LoginRequest;
+import com.finbertmds.microservice.security.payload.request.SignupRequest;
+import com.finbertmds.microservice.security.payload.response.JwtResponse;
+import com.finbertmds.microservice.security.payload.response.MessageResponse;
+import com.finbertmds.microservice.security.security.jwt.JwtUtils;
+import com.finbertmds.microservice.security.security.services.UserDetailsImpl;
+import com.finbertmds.microservice.security.services.RoleService;
+import com.finbertmds.microservice.security.services.UserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

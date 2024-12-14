@@ -6,10 +6,10 @@ A microservices demo implemented with stacks:
 3. React Native
 
 ## Technologies
-- Spring
+- Spring Boot
 - Spring Cloud Config
 - Eureka
-- Zuul
+- Spring Cloud gateway
 - Spring Cassandra
 - Spring Kafka
 - Kafka
@@ -31,7 +31,7 @@ A microservices demo implemented with stacks:
     messages to Kafka, servie contact receive the message and create 
     data about contact.
 
-All service has Api Documentation which written by Swagger.
+Api Documentation of all services in [`ChatApp-Microservices.postman_collection.json`](ChatApp-Microservices.postman_collection.json).
 
 ## How To Run
 The demo can be run with Docker Compose.

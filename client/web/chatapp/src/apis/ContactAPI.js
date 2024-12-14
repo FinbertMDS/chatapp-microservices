@@ -1,11 +1,11 @@
 import Config from "../constants/Config";
 import axios from "./axios";
 
-const getAllUrl = "./contact/api/contacts";
-const searchContactUrl = "./contact/api/contacts/search";
-const getContactForUserUrl = (username) => `./contact/api/users/${username}/contacts`;
-const createContactForUserUrl = (username) => `./contact/api/users/${username}/contacts`;
-const removeContactForUserUrl = (username) => `./contact/api/users/${username}/contacts`;
+const getAllUrl = "./api/contacts";
+const searchContactUrl = "./api/contacts/search";
+const getContactForUserUrl = (username) => `./api/users/${username}/contacts`;
+const createContactForUserUrl = (username) => `./api/users/${username}/contacts`;
+const removeContactForUserUrl = (username) => `./api/users/${username}/contacts`;
 
 const ContactAPI = {
   getAll: function () {

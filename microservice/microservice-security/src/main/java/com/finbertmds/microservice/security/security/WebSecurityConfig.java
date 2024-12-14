@@ -1,10 +1,7 @@
 package com.finbertmds.microservice.security.security;
 
 import java.util.Arrays;
-
-import com.finbertmds.microservice.security.security.jwt.AuthEntryPointJwt;
-import com.finbertmds.microservice.security.security.jwt.AuthTokenFilter;
-import com.finbertmds.microservice.security.security.services.UserDetailsServiceImpl;
+import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.finbertmds.microservice.security.security.jwt.AuthEntryPointJwt;
+import com.finbertmds.microservice.security.security.jwt.AuthTokenFilter;
+import com.finbertmds.microservice.security.security.services.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -57,8 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
-	private static final String[] AUTH_WHITELIST = { 
+
+	private static final String[] AUTH_WHITELIST = {
 		// @formatter:off
 		"/swagger-resources/**",
 		"/swagger-ui/**",
@@ -72,19 +73,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers(AUTH_WHITELIST);
 	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// @formatter:off
 		http
-			.cors().and()
-			.csrf().disable()
-			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
-			.antMatchers("/actuator/**").permitAll()
-			.antMatchers("/api/test/**").authenticated()
-			.anyRequest().authenticated();
-		// @formatter:on	
+				.cors(c -> c.configurationSource(this.corsConfigurationSource()))
+				.csrf(csrf -> csrf.disable())
+				.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler))
+				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeRequests(requests -> requests.antMatchers("/api/auth/**").permitAll()
+						.antMatchers("/actuator/**").permitAll()
+						.antMatchers("/api/test/**").authenticated()
+						.anyRequest().authenticated());
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
@@ -93,7 +93,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedMethods(Arrays.asList("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS"));
 		configuration.addAllowedHeader("*");
-		configuration.addAllowedOrigin("*");
+		configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;

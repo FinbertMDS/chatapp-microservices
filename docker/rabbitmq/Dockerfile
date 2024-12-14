@@ -1,4 +1,4 @@
-FROM rabbitmq:latest
+FROM rabbitmq:4.0.4
 
 RUN rabbitmq-plugins enable rabbitmq_stomp
 RUN rabbitmq-plugins enable rabbitmq_web_stomp
