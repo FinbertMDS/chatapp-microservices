@@ -505,14 +505,7 @@
 		}
 	],
 	"auth": {
-		"type": "bearer",
-		"bearer": [
-			{
-				"key": "token",
-				"value": "hbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTczNDE3OTM4OSwiZXhwIjoxNzM0MjY1Nzg5fQ.SIzVQkMseuG4Hi1iYYGYKI_WKgOghvllngIQRXlHcfZMuFstUHvDs3TKFTtOeQEH82lgBux1XZ1owHuThHj1Jw",
-				"type": "string"
-			}
-		]
+		"type": "inherit"
 	},
 	"event": [
 		{
