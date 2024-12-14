@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Tag images
         run: |
-          docker tag docker.io/library/chatapp-zuul ${{ secrets.DOCKERHUB_USERNAME }}/chatapp-api-gateway:latest
+          docker tag docker.io/library/chatapp-api-gateway ${{ secrets.DOCKERHUB_USERNAME }}/chatapp-api-gateway:latest
       - name: Push images to DockerHub
         if: startsWith(github.ref, 'refs/tags/')
         run: |
