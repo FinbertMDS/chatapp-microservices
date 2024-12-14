@@ -5,7 +5,6 @@ on:
       - "v*"
     branches:
       - master
-      - develop
     paths:
       - "microservice/microservice-security/**"
       - ".github/workflows/build-security.yml"

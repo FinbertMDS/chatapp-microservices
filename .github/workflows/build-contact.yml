@@ -5,7 +5,6 @@ on:
       - "v*"
     branches:
       - master
-      - develop
     paths:
       - "microservice/microservice-contact/**"
       - ".github/workflows/build-contact.yml"

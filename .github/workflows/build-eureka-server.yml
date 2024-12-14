@@ -5,10 +5,9 @@ on:
       - "v*"
     branches:
       - master
-      - develop
     paths:
       - "microservice/microservice-eureka-server/**"
-      - ".github/workflows/build-eureka.yml"
+      - ".github/workflows/build-eureka-server.yml"
   workflow_dispatch:
 jobs:
   push_to_registry:

@@ -5,7 +5,6 @@ on:
       - "v*"
     branches:
       - master
-      - develop
     paths:
       - "client/web/chatapp/**"
       - ".github/workflows/build-chatapp-web.yml"

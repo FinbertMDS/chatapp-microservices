@@ -5,10 +5,9 @@ on:
       - "v*"
     branches:
       - master
-      - develop
     paths:
-      - "microservice/microservice-zuul-server/**"
-      - ".github/workflows/build-zuul.yml"
+      - "microservice/microservice-api-gateway/**"
+      - ".github/workflows/build-api-gateway.yml"
   workflow_dispatch:
 jobs:
   push_to_registry:

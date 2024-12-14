@@ -5,11 +5,10 @@ on:
       - "v*"
     branches:
       - master
-      - develop
     paths:
       - "config/**"
       - "microservice/microservice-config-server/**"
-      - ".github/workflows/build-config.yml"
+      - ".github/workflows/build-config-server.yml"
   workflow_dispatch:
 jobs:
   push_to_registry:

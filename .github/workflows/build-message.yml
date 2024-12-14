@@ -5,7 +5,6 @@ on:
       - "v*"
     branches:
       - master
-      - develop
     paths:
       - "microservice/microservice-message/**"
       - ".github/workflows/build-message.yml"
