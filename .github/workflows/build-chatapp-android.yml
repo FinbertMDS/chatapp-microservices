@@ -15,20 +15,20 @@ jobs:
     # container: reactnativecommunity/react-native-android
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          java-version: "11"
+          java-version: "17"
           distribution: "corretto"
           cache: "gradle"
         
       # Node, Yarn and NPM
       - name: Setup Node  
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       # - name: Extract branch name
       #   shell: bash
@@ -62,7 +62,7 @@ jobs:
           cd client/mobile/chatapp && ls ./android/app/build/outputs/apk/release/ -hal
       
       - name: Create Release and Uploading Files
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
             files: client/mobile/chatapp/android/app/build/outputs/apk/release/app-release.apk

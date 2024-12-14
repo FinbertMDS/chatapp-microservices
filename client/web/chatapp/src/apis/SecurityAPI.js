@@ -1,7 +1,7 @@
 import axios from "./axios";
 
-const signInUrl = "./security/api/auth/signin";
-const signUpUrl = "./security/api/auth/signup";
+const signInUrl = "./api/auth/signin";
+const signUpUrl = "./api/auth/signup";
 
 const SecurityAPI = {
   signIn: function (data) {

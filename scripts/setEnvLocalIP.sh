@@ -13,7 +13,9 @@ esac
 echo "OS: ${machine}"
 
 if [[ ${machine} == "Mac" ]]; then
-    LOCAL_IP=${LOCAL_IP:-`ipconfig getifaddr en0`}
+    network_device=$(scutil --dns |awk -F'[()]' '$1~/if_index/ {print $2;exit;}')
+    echo "Network device: $network_device"
+    LOCAL_IP=$(ipconfig getifaddr "$network_device")
 elif [[ ${machine} == "Linux" ]]; then
     LOCAL_IP=${LOCAL_IP:-`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'`}
 else
@@ -31,5 +33,5 @@ else
 fi
 echo "LOCAL_IP: ${LOCAL_IP}"
 
-echo -e "REACT_APP_API_BASE_URL=http://$LOCAL_IP:8080\nREACT_APP_SOCKET_BASE_URL=http://$LOCAL_IP:8079/ws" > ../client/web/chatapp/.env
-echo -e "API_BASE_URL=http://$LOCAL_IP:8080\nSOCKET_BASE_URL=http://$LOCAL_IP:8079/ws\nAPI_BASE_URL_ANDROID=http://10.0.2.2:8080\nSOCKET_BASE_URL_ANDROID=http://10.0.2.2:8079/ws" > ../client/mobile/chatapp/.env
+echo -e "REACT_APP_API_BASE_URL=http://$LOCAL_IP:8080\nREACT_APP_SOCKET_BASE_URL=http://$LOCAL_IP:8080/ws" > ../client/web/chatapp/.env
+echo -e "API_BASE_URL=http://$LOCAL_IP:8080\nSOCKET_BASE_URL=http://$LOCAL_IP:8080/ws\nAPI_BASE_URL_ANDROID=http://10.0.2.2:8080\nSOCKET_BASE_URL_ANDROID=http://10.0.2.2:8080/ws" > ../client/mobile/chatapp/.env

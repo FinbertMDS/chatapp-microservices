@@ -1,8 +1,8 @@
 import Config from "../constants/Config";
 import axios from "./axios";
 
-const getAllMessageInRoomUrl = "./message/api/messages";
-const sendMessageUrl = "./message/api/messages";
+const getAllMessageInRoomUrl = "./api/messages";
+const sendMessageUrl = "./api/messages";
 
 const MessageAPI = {
   wsSourceUrl: process.env.REACT_APP_SOCKET_BASE_URL,
@@ -12,7 +12,7 @@ const MessageAPI = {
     try {
       urlOld = localStorage.getItem('url');
       if (urlOld != null) {
-        this.wsSourceUrl = `${urlOld}:8079/ws`
+        this.wsSourceUrl = `${urlOld}:8080/ws`
       }
     } catch (e) {
     }

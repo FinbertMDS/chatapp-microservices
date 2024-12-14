@@ -1,44 +1,15 @@
-version: "3"
 services:
-  eureka:
-    build: ../microservice/microservice-eureka-server
-    ports:
-      - "8761:8761"
-
-  config:
-    build: ../microservice/microservice-config-server
-    links:
-      - eureka
-    volumes:
-      - ../config/:/root/config
-
-  user:
-    build: ../microservice/microservice-user
-    links:
-      - eureka
-
-  security:
-    build: ../microservice/microservice-security
-    links:
-      - eureka
-      - mysql
-      - kafka
-
-  contact:
-    build: ../microservice/microservice-contact
-    links:
-      - eureka
-      - config
-      - mysql
-      - kafka
-
   zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
+    image: zookeeper:3.9.3
+    tmpfs: "/datalog"
 
   kafka:
-    image: wurstmeister/kafka:2.12-2.5.0
+    image: wurstmeister/kafka:2.13-2.8.1
     links:
       - zookeeper
+    depends_on:
+      - zookeeper
+    restart: "on-failure:2"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ADVERTISED_PORT: 9092
@@ -46,34 +17,29 @@ services:
       KAFKA_CREATE_TOPICS: "user:3:1"
 
   mysql:
-    build: mysql
+    image: mysql:9.1
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_database
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    ports:
+     - 3306:3306
+      
 
   adminer:
     image: adminer
     ports:
       - 6060:8080
 
-  message:
-    build: ../microservice/microservice-message
-    ports:
-      - "8079:8080"
-    links:
-      - eureka
-      - cassandra
-      - redis
-      - rabbitmq
-      - mysql
-    networks:
-      - chatapp_default
-
   cassandra:
     image: "cassandra:4"
     ports:
       - 9042:9042
-    networks:
-      - chatapp_default
       
   sample-data-cassandra:
     image: cassandra:4
@@ -85,26 +51,11 @@ services:
       - ./cassandra/init.sh:/init.sh
     environment:
       - CASSANDRA_KEYSPACE=db_messages
-    networks:
-      - chatapp_default
       
   redis:
-    image: redis:3.0.6
+    image: redis:7.4.1
     ports:
       - "6379:6379"
-    networks:
-      - chatapp_default
-
-  redis-commander:
-    image: rediscommander/redis-commander
-    links:
-      - redis
-    environment:
-      - REDIS_HOSTS=redis
-    ports:
-      - "7070:8081"
-    networks:
-      - chatapp_default
 
   rabbitmq:
     build: rabbitmq
@@ -112,40 +63,7 @@ services:
       - "5672:5672"
       - "15672:15672"
       - "61613:61613"
-    networks:
-      - chatapp_default
-
-  zuul:
-    build: ../microservice/microservice-zuul-server
-    links:
-      - eureka
-    ports:
-      - "8080:8080"
-
-  chatapp:
-    build: ../client/web/chatapp
-    links:
-      - zuul
-      - security
-      - message
-      - contact
-    ports:
-      - "8000:80"
-
-  storage:
-    build: ../microservice/microservice-storage
-    links:
-      - eureka
-      - config
-      - mysql
-
-  turbine:
-    build: ../microservice/microservice-turbine-server
-    links:
-      - eureka
-    ports:
-      - "8989:8989"
 
 networks:
-  chatapp:
+  default:
     driver: bridge
