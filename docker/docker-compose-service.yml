@@ -30,6 +30,7 @@ services:
     build: ../microservice/microservice-message
     links:
       - eureka-server
+    restart: "on-failure:2"
     networks:
       - chatapp_default
     # ports:
@@ -59,6 +60,14 @@ services:
     build: ../microservice/microservice-api-gateway
     links:
       - eureka-server
+      - config-server
+    depends_on:
+      - eureka-server
+      - config-server
+      - security
+      - message
+      - contact
+      - storage
     ports:
       - "8080:8080"
 

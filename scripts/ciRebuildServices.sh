@@ -1,5 +1,5 @@
 #!/bin/bash
-services=("storage" "contact" "message" "security" "user" "config-server" "eureka-server" "turbine-server" "zuul-server" "chatapp")
+services=("storage" "contact" "message" "security" "config-server" "eureka-server" "api-gateway" "chatapp")
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 declare -a servicesInput
@@ -9,11 +9,6 @@ main() {
   initGitAtFolderConfig
   servicesInput+=($@)
   validateServicesName $@
-  buildService
-  if [[ "$?" -ne 0 ]]; then
-    echo 'Build service has error. Please check your code.'
-    exit $rc
-  fi
   buildDocker
 }
 
@@ -39,34 +34,10 @@ validateServicesName() {
   done
 }
 
-buildService() {
-  cd ../microservice
-  local executeCommand="./mvnw -am clean package "
-  local needBuildServiceJava=0
-  for index in "${!servicesWillBeRebuild[@]}"; do
-    local serviceName="microservice-${servicesWillBeRebuild[$index]}"
-    if [[ ${serviceName} != *"chatapp"* ]]; then
-      needBuildServiceJava=1
-      executeCommand+="-pl $serviceName "
-    else
-      cd $DIR/../client/web/chatapp && npm run build --if-present
-      cd $DIR/../microservice
-    fi
-  done
-  if [[ "${needBuildServiceJava}" = "1" ]]; then
-    eval $executeCommand
-  fi
-}
-
 buildDocker() {
-  cd ../docker
-  local dockerBuildCommand="docker compose -f docker-compose-base.yml -f docker-compose-message.yml build "
-  for index in "${!servicesWillBeRebuild[@]}"; do
-    local serviceName="${servicesWillBeRebuild[$index]//-/}"
-    serviceName="${serviceName//server/}"
-    dockerBuildCommand+="$serviceName "
-  done
-  eval $dockerBuildCommand
+  cd $DIR/../docker
+  docker compose build --no-cache
+  docker compose -f docker-compose-service.yml build --no-cache
 }
 
 main $@

@@ -59,7 +59,7 @@ public class FileUploadController {
 	}
 
 	private String getFileDownloadUri(File file) {
-		return appName + "/api/downloadFile/" + file.getFileId() + "/" + file.getFileName();
+		return "/api/" + appName + "/downloadFile/" + file.getFileId() + "/" + file.getFileName();
 	}
 
 	@PostMapping("/uploadMultipleFiles")

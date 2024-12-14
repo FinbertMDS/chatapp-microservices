@@ -11,18 +11,34 @@ main() {
 	echo "${serviceName} is checking"
 	declare -a validate
 	while [[ "$done" = false ]]; do
+		# check service started by actuator health
+		if [[ "$serviceName" = "kafka" ]]; then
+			local statusContainer=$(checkContainerIsRunning "sample-data-cassandra")
+			local statusContainer1=$(checkContainerIsRunning $serviceName)
+			if [ "${statusContainer}" == "0" ] && [ "${statusContainer1}" == "1" ]; then
+				echo "${serviceName} is started"
+				return 0;
+			else
+				echo -n .
+				sleep 5
+				continue;
+			fi
+		fi
+
+		# check service started by actuator health
 		healthPath="actuator/health"
 		urlCheck=http://${host}:${port}/${serviceName}/${healthPath}
-		if [[ "$serviceName" = "zuul" ]]; then
+		if [[ "$serviceName" = "api-gateway" ]]; then
+			port=8080
 			urlCheck=http://${host}:${port}/${healthPath}
 		fi
-		if [[ "$serviceName" = "eureka" ]]; then
+		if [[ "$serviceName" = "eureka-server" ]]; then
 			port=8761
 			urlCheck=http://${host}:${port}/${healthPath}
 		fi
-		if [[ "$serviceName" = "config" ]]; then
-			sleep 10;
-			return 0
+		if [[ "$serviceName" = "config-server" ]]; then
+			port=9191
+			urlCheck=http://${host}:${port}/${healthPath}
 		fi
 		local statusCode=$(checkStatus $urlCheck)
 		if [ "${statusCode}" == "200" ]; then
@@ -48,8 +64,8 @@ main() {
 
 checkContainerIsRunning() {
 	cd $DIR/../docker
-	if [ -z `docker ps -q --no-trunc | grep $(docker-compose -f docker-compose-base.yml -f docker-compose-message.yml ps -q ${1})` ]; then
-  		echo 0
+	if [ -z `docker compose ps -q ${1}` ] || [ -z `docker ps -q --no-trunc | grep $(docker compose ps -q ${1})` ]; then
+		echo 0
 	else
 		echo 1
 	fi
