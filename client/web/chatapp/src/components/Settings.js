@@ -1,3 +1,4 @@
+import { Grid } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -6,13 +7,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useStateValue } from '../StateProvider';
 import MessageAPI from '../apis/MessageAPI';
-import { Grid } from '@material-ui/core';
-import { useEffect } from 'react';
 import { actionTypes } from '../reducer';
+import { useStateValue } from '../StateProvider';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const baseUrl = process.env.REACT_APP_API_BASE_URL.replace(":8080", "")
+const baseUrl = process.env.REACT_APP_API_BASE_URL ? process.env.REACT_APP_API_BASE_URL.replace(":8080", "") : ""
 
 function Settings() {
   // eslint-disable-next-line
@@ -112,19 +111,19 @@ function Settings() {
             Change
           </Button>
         </form>
-          <Grid container>
-            <Grid item xs>
-              <Button
-                type="button"
-                onClick={onBackSignIn}
-                fullWidth
-                variant="contained"
-                color="primary"
-              >
-                Back
-              </Button>
-            </Grid>
+        <Grid container>
+          <Grid item xs>
+            <Button
+              type="button"
+              onClick={onBackSignIn}
+              fullWidth
+              variant="contained"
+              color="primary"
+            >
+              Back
+            </Button>
           </Grid>
+        </Grid>
       </div>
     </Container>
   );
